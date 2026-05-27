@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>照合管理ツール｜株式会社みどリむし</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ===== ログイン画面 ===== -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">株式会社みどリむし</div>
+    <div class="login-title">照合管理ツール</div>
+    <div class="login-subtitle">Gmail・日報・売上集計を自動照合します</div>
+    <button class="btn-google" id="btn-login">
+      <svg width="20" height="20" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.2l6.8-6.8C35.7 2.2 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.1 17.8 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.4c-.5 2.8-2.1 5.2-4.5 6.8l7.1 5.5c4.1-3.8 6.5-9.4 6.5-16.3z"/>
+        <path fill="#FBBC05" d="M10.6 28.6A14.7 14.7 0 0 1 9.5 24c0-1.6.3-3.2.7-4.6l-7.9-6.1A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.9-6.1z"/>
+        <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.1-5.5c-2 1.4-4.6 2.2-8.1 2.2-6.2 0-11.5-4.2-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/>
+      </svg>
+      Google アカウントでログイン
+    </button>
+  </div>
+</div>
+
+<!-- ===== メイン画面 ===== -->
+<div id="app-screen">
+
+  <!-- ヘッダー -->
+  <header class="header">
+    <div class="header-brand">みどリむし <span>照合管理</span></div>
+    <div class="header-user">
+      <div class="header-avatar">下</div>
+      <span>下村 未来</span>
+    </div>
+  </header>
+
+  <div class="main-content">
+
+    <!-- コントロールバー -->
+    <div class="control-bar">
+      <label for="date-picker">日付</label>
+      <input type="date" id="date-picker">
+      <button class="btn-primary" id="btn-sync">照合を実行</button>
+      <div class="sync-timestamp">最終取得: 2026/05/27 10:58</div>
+    </div>
+
+    <!-- サマリーカード -->
+    <div class="summary-grid">
+      <div class="summary-card gmail">
+        <div class="card-label">Gmail 取得件数</div>
+        <div class="card-value" id="val-gmail">—<span class="card-unit">件</span></div>
+        <div class="card-sub">施術・決済メール</div>
+      </div>
+      <div class="summary-card nippo">
+        <div class="card-label">日報チェック済み</div>
+        <div class="card-value" id="val-nippo">—<span class="card-unit">件</span></div>
+        <div class="card-sub">施術チェック数</div>
+      </div>
+      <div class="summary-card uriage">
+        <div class="card-label">売上合計</div>
+        <div class="card-value" id="val-uriage">—</div>
+        <div class="card-sub">売上集計シート</div>
+      </div>
+      <div class="summary-card diff">
+        <div class="card-label">差異件数</div>
+        <div class="card-value" id="val-diff">—<span class="card-unit">件</span></div>
+        <div class="card-sub">要確認</div>
+      </div>
+    </div>
+
+    <!-- アラートバナー -->
+    <div class="alert-banner" id="alert-banner">
+      <div class="alert-icon">⚠️</div>
+      <div>
+        <strong><span id="alert-count">0</span> 件の差異が見つかりました。</strong>以下のサービスで内容を確認してください。
+        <div class="alert-links" id="alert-links"></div>
+      </div>
+    </div>
+
+    <!-- フィルター -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">すべて</button>
+      <button class="filter-btn" data-filter="ok">一致のみ</button>
+      <button class="filter-btn" data-filter="diff">差異あり</button>
+      <button class="filter-btn" data-filter="miss">記録なし</button>
+    </div>
+
+    <!-- 照合テーブル -->
+    <div class="table-wrapper">
+      <table class="match-table">
+        <colgroup>
+          <col class="col-status">
+          <col class="col-time">
+          <col class="col-name">
+          <col class="col-amount">
+          <col class="col-nippo-name">
+          <col class="col-nippo-check">
+          <col class="col-uriage">
+          <col class="col-diff">
+          <col class="col-service">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>状態</th>
+            <th class="section-gmail">時刻</th>
+            <th class="section-gmail">顧客名</th>
+            <th class="section-gmail">金額 / 決済</th>
+            <th class="section-nippo">日報：顧客名</th>
+            <th class="section-nippo">日報：チェック</th>
+            <th class="section-uriage">売上：金額 / 決済</th>
+            <th>差異の内容</th>
+            <th>確認先</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="9">
+            <div class="empty-state">
+              <div class="empty-icon">📅</div>
+              <p>日付を選択して「照合を実行」を押してください</p>
+            </div>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app-screen -->
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

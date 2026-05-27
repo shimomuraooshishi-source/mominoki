@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>照合管理ツール｜株式会社みどリむし</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-title">
+        <span class="header-logo">🔗</span>
+        <div>
+          <h1>照合管理ツール</h1>
+          <p>Gmail・日報・売上集計 の照合</p>
+        </div>
+      </div>
+      <span class="header-company">株式会社みどリむし</span>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- 操作パネル -->
+    <section class="control-panel card">
+      <div class="control-row">
+        <div class="control-group">
+          <label for="date-from">対象期間</label>
+          <div class="date-range">
+            <input type="date" id="date-from">
+            <span>〜</span>
+            <input type="date" id="date-to">
+          </div>
+        </div>
+        <div class="control-group">
+          <label>表示フィルター</label>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">すべて表示</button>
+            <button class="filter-btn" data-filter="diff">差異のみ</button>
+          </div>
+        </div>
+        <button class="run-btn" id="run-btn">
+          <span class="run-icon">▶</span> 照合を実行
+        </button>
+      </div>
+    </section>
+
+    <!-- サマリーカード -->
+    <section class="summary-row" id="summary-row" style="display:none;">
+      <div class="summary-card">
+        <div class="summary-icon gmail">📧</div>
+        <div class="summary-body">
+          <span class="summary-label">Gmail 取得件数</span>
+          <span class="summary-value" id="s-gmail">0</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon report">📋</div>
+        <div class="summary-body">
+          <span class="summary-label">日報 記録件数</span>
+          <span class="summary-value" id="s-report">0</span>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon sales">💴</div>
+        <div class="summary-body">
+          <span class="summary-label">売上集計 件数</span>
+          <span class="summary-value" id="s-sales">0</span>
+        </div>
+      </div>
+      <div class="summary-card diff">
+        <div class="summary-icon alert">⚠️</div>
+        <div class="summary-body">
+          <span class="summary-label">差異あり件数</span>
+          <span class="summary-value" id="s-diff">0</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 照合結果テーブル -->
+    <section class="result-section" id="result-section" style="display:none;">
+      <div class="result-header">
+        <h2>照合結果</h2>
+        <span class="result-count" id="result-count"></span>
+      </div>
+
+      <div class="table-wrap">
+        <table class="result-table" id="result-table">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>施術者</th>
+              <th>Gmail<br><small>施術記録</small></th>
+              <th>日報<br><small>記録</small></th>
+              <th>照合<br><small>（日報）</small></th>
+              <th>Gmail<br><small>金額</small></th>
+              <th>売上集計<br><small>金額</small></th>
+              <th>差額</th>
+              <th>決済手段</th>
+              <th>確認先</th>
+              <th>ステータス</th>
+            </tr>
+          </thead>
+          <tbody id="result-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 初期表示 -->
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">📊</div>
+      <p>期間を選択して「照合を実行」を押してください</p>
+    </div>
+
+    <!-- ローディング -->
+    <div class="loading" id="loading" style="display:none;">
+      <div class="spinner"></div>
+      <p>照合中です…</p>
+    </div>
+
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
