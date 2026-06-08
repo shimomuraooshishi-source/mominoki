@@ -7,10 +7,10 @@
 *{box-sizing:border-box;margin:0;padding:0}
 
 :root{
-  --cn:#4F46E5;
-  --cn2:#6366F1;
-  --cnl:#EEF2FF;
-  --cnd:#3730A3;
+  --cn:#1D6BC4;
+  --cn2:#2E86DE;
+  --cnl:#E3F0FC;
+  --cnd:#1558A0;
   --ct:#059669;
   --ctl:#ECFDF5;
   --ctm:#10B981;
@@ -22,10 +22,10 @@
   --crm:#EF4444;
   --cg:#6B7280;
   --cgl:#F9FAFB;
-  --bg:#F5F5FF;
+  --bg:#F0F4F8;
   --surface:#ffffff;
-  --border:#E5E7EB;
-  --border2:#D1D5DB;
+  --border:#D6E4F0;
+  --border2:#BDD3E8;
   --text:#111827;
   --sub:#374151;
   --dim:#6B7280;
@@ -41,11 +41,11 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 /* ── HEADER ── */
 .app{position:relative}
 .tb{
-  background:linear-gradient(135deg,#4338CA 0%,#6366F1 50%,#818CF8 100%);
+  background:linear-gradient(135deg,#1558A0 0%,#1D6BC4 50%,#2C5282 100%);
   padding:14px 20px;
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
   border-radius:16px 16px 0 0;
-  box-shadow:0 2px 8px rgba(79,70,229,.3);
+  box-shadow:0 2px 8px rgba(30,58,95,.3);
 }
 .tbt{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
 .tbt i{font-size:20px;opacity:.9}
@@ -61,7 +61,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   cursor:pointer;
   font-family:inherit;
 }
-.tb select option{background:#4338CA;color:#fff}
+.tb select option{background:#1558A0;color:#fff}
 .bset{
   padding:6px 14px;font-size:12px;font-weight:500;
   border:1.5px solid rgba(255,255,255,.35);
@@ -88,7 +88,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   color:var(--dim);border-radius:36px;text-align:center;
   transition:all .18s;font-family:inherit;
 }
-.tab.active{background:var(--cn);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.35)}
+.tab.active{background:var(--cn);color:#fff;box-shadow:0 2px 8px rgba(30,58,95,.35)}
 .tab:hover:not(.active){background:var(--cnl);color:var(--cn)}
 .sec{display:none}.sec.active{display:block}
 
@@ -108,7 +108,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 
 /* ── OVERALL TABLE ── */
 .ot{width:100%;border-collapse:collapse;font-size:13px}
-.ot thead tr{background:linear-gradient(to right,#4338CA,#6366F1)}
+.ot thead tr{background:linear-gradient(to right,#1558A0,#1D6BC4)}
 .ot thead th{padding:11px 14px;font-weight:600;font-size:11px;text-align:left;color:#fff;letter-spacing:.5px;text-transform:uppercase}
 .ot thead th:last-child{text-align:center}
 .ot tbody tr{transition:background .1s}
@@ -142,7 +142,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   cursor:pointer;background:#fff;color:var(--sub);
   transition:all .15s;font-family:inherit;
 }
-.ptab.active{background:var(--cn);color:#fff;border-color:var(--cn);box-shadow:0 2px 6px rgba(79,70,229,.3)}
+.ptab.active{background:var(--cn);color:#fff;border-color:var(--cn);box-shadow:0 2px 6px rgba(30,58,95,.3)}
 .ptab:hover:not(.active){background:var(--cnl);color:var(--cn);border-color:var(--cn)}
 
 /* ── STAFF GRID ── */
@@ -174,10 +174,10 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   border:none;border-radius:20px;
   background:linear-gradient(135deg,var(--cn),var(--cn2));
   color:#fff;cursor:pointer;
-  box-shadow:0 2px 6px rgba(79,70,229,.3);
+  box-shadow:0 2px 6px rgba(30,58,95,.3);
   transition:all .15s;font-family:inherit;
 }
-.badd:hover{box-shadow:0 4px 12px rgba(79,70,229,.4);transform:translateY(-1px)}
+.badd:hover{box-shadow:0 4px 12px rgba(30,58,95,.4);transform:translateY(-1px)}
 .bo{
   padding:6px 14px;font-size:13px;font-weight:500;
   border:1.5px solid var(--border2);border-radius:20px;
@@ -209,7 +209,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
   cursor:pointer;background:#fff;color:var(--sub);
   transition:all .15s;font-family:inherit;
 }
-.fb.active{background:var(--cn);color:#fff;border-color:var(--cn);box-shadow:0 2px 6px rgba(79,70,229,.25)}
+.fb.active{background:var(--cn);color:#fff;border-color:var(--cn);box-shadow:0 2px 6px rgba(30,58,95,.25)}
 
 /* ── ALERT BARS ── */
 .abar{
@@ -255,7 +255,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 .lt th{
   text-align:left;padding:8px 12px;font-weight:600;font-size:11px;
   letter-spacing:.5px;text-transform:uppercase;
-  background:var(--cnl);color:var(--cn);border-bottom:2px solid #C7D2FE;
+  background:var(--cnl);color:var(--cn);border-bottom:2px solid #A8C4DC;
 }
 .lt td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
 .lt tr:hover td{background:#FAFAFE}
@@ -290,7 +290,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
   box-shadow:var(--shadow-lg);
 }
 .mh{
-  background:linear-gradient(135deg,#4338CA,#6366F1);
+  background:linear-gradient(135deg,#1558A0,#1D6BC4);
   padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
 }
 .mh span{font-size:14px;font-weight:600;color:#fff;letter-spacing:-.2px}
@@ -356,7 +356,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
     <div id="detailView" style="display:none">
       <button class="bback" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
       <div class="pnl">
-        <div class="ph"><i class="ti ti-user-circle" aria-hidden="true"></i><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:10px;color:#818CF8;font-weight:400" id="dHeadKana"></span><span id="dHeadName"></span></span><span class="bdg" id="dBadge" style="margin-left:6px"></span></div>
+        <div class="ph"><i class="ti ti-user-circle" aria-hidden="true"></i><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:10px;color:#4A7BAB;font-weight:400" id="dHeadKana"></span><span id="dHeadName"></span></span><span class="bdg" id="dBadge" style="margin-left:6px"></span></div>
         <div class="pb">
           <div id="dExpAlert"></div>
           <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
@@ -373,11 +373,11 @@ input[type="text"],input[type="number"],input[type="date"],select{
           <div id="dCal"></div>
           <hr class="sep">
           <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-gift" aria-hidden="true" style="margin-right:5px"></i>付与日・付与日数を入力</div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--cnl);border-radius:10px;border:1px solid #C7D2FE">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--cnl);border-radius:10px;border:1px solid #A8C4DC">
             <label style="font-size:13px;color:var(--dim);font-weight:500">付与日</label>
-            <input type="date" id="inpGrantDate" style="font-size:13px;padding:6px 10px;border:1.5px solid #C7D2FE;border-radius:8px;background:#fff;color:var(--text)">
+            <input type="date" id="inpGrantDate" style="font-size:13px;padding:6px 10px;border:1.5px solid #A8C4DC;border-radius:8px;background:#fff;color:var(--text)">
             <label style="font-size:13px;color:var(--dim);font-weight:500">付与日数</label>
-            <input type="number" id="inpGrantDays" min="0.5" step="0.5" value="" placeholder="日数" style="width:80px;font-size:13px;padding:6px 10px;border:1.5px solid #C7D2FE;border-radius:8px;background:#fff;color:var(--text)">
+            <input type="number" id="inpGrantDays" min="0.5" step="0.5" value="" placeholder="日数" style="width:80px;font-size:13px;padding:6px 10px;border:1.5px solid #A8C4DC;border-radius:8px;background:#fff;color:var(--text)">
             <span style="font-size:13px;color:var(--dim)">日</span>
             <button class="badd" onclick="addGrant()" style="background:linear-gradient(135deg,#059669,#10B981)"><i class="ti ti-check" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px"></i>反映</button>
             <span style="font-size:11px;color:var(--dim)">※ 現在選択中の期「<span id="grantPeriodLabel"></span>」に反映されます</span>
@@ -447,7 +447,7 @@ function addYrs(ds,n){const d=new Date(ds);d.setFullYear(d.getFullYear()+n);retu
 // 付与日から2年後の1日前（有効期限）
 function calcExpires(ds){const d=new Date(ds);d.setFullYear(d.getFullYear()+2);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-let CFG={tl:{seishain:'正社員',part:'パート'},jl:['もみのき','第二事業所','第三事業所']};
+let CFG={tl:{seishain:'正社員',part:'パート'},jl:['もみのき','第二事業所','第三事業所','よつのは保育園']};
 let ALL={
   'もみのき':[
     {id:'suzuki',name:'鈴木　真理',kana:'スズキ マリ',type:'seishain',join:'2023-09-22',
@@ -475,6 +475,28 @@ let ALL={
     {id:'sato',name:'佐藤　一郎',kana:'サトウ イチロウ',type:'part',join:'2024-06-01',hourlyWage:1050,hoursPerDay:5,
      periods:[{label:'① 2024年度',start:'2024-12-01',end:'2025-11-30',total:5,carried:0,expires:calcExpires('2024-12-01')}],
      leaves:[{date:'2025-03-20',days:0.5,period:0}]}
+  ],
+  'よつのは保育園':[
+    {id:'date_keiko',name:'伊達　啓子',kana:'ダテ ケイコ',type:'seishain',join:'2019-05-01',
+     periods:[
+       {label:'⑥ 2024年度',start:'2024-11-01',end:'2025-10-31',total:18,carried:8.5625,expires:'2026-10-31'},
+       {label:'⑦ 2025年度',start:'2025-11-01',end:'2026-10-31',total:20,carried:0,expires:'2027-10-31'},
+     ],
+     leaves:[
+       {date:'2024-11-11',days:1,period:0},{date:'2024-11-12',days:1,period:0},
+       {date:'2024-12-09',days:1,period:0},{date:'2024-12-10',days:0.5,period:0},
+       {date:'2025-01-08',days:1,period:0},{date:'2025-01-09',days:1,period:0},{date:'2025-01-10',days:1,period:0},{date:'2025-01-14',days:1,period:0},{date:'2025-01-15',days:0.25,period:0},{date:'2025-01-16',days:0.125,period:0},
+       {date:'2025-02-10',days:1,period:0},{date:'2025-02-17',days:1,period:0},
+       {date:'2025-03-17',days:1,period:0},
+       {date:'2025-04-09',days:1,period:0},{date:'2025-04-14',days:0.5,period:0},
+       {date:'2025-07-07',days:1,period:0},{date:'2025-07-08',days:1,period:0},
+       {date:'2025-10-20',days:0.6875,period:0},
+       {date:'2025-11-10',days:1,period:1},{date:'2025-11-17',days:1,period:1},
+       {date:'2026-01-19',days:0.5,period:1},
+       {date:'2026-02-09',days:1,period:1},{date:'2026-02-16',days:1,period:1},{date:'2026-02-17',days:0.5,period:1},
+       {date:'2026-03-17',days:1,period:1},
+       {date:'2026-05-11',days:1,period:1},{date:'2026-05-12',days:1,period:1},
+     ]}
   ]
 };
 
