@@ -447,7 +447,7 @@ function addYrs(ds,n){const d=new Date(ds);d.setFullYear(d.getFullYear()+n);retu
 // 付与日から2年後の1日前（有効期限）
 function calcExpires(ds){const d=new Date(ds);d.setFullYear(d.getFullYear()+2);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-let CFG={tl:{seishain:'正社員',part:'パート'},jl:['もみのき','第二事業所','第三事業所','よつのは保育園']};
+let CFG={tl:{seishain:'正社員',part:'パート'},jl:['よつのは保育園','放デイ ふぉー','放デイ フジラボ','もみのき','第二事業所','第三事業所']};
 let ALL={
   'もみのき':[
     {id:'suzuki',name:'鈴木　真理',kana:'スズキ マリ',type:'seishain',join:'2023-09-22',
@@ -497,10 +497,12 @@ let ALL={
        {date:'2026-03-17',days:1,period:1},
        {date:'2026-05-11',days:1,period:1},{date:'2026-05-12',days:1,period:1},
      ]}
-  ]
+  ],
+  '放デイ ふぉー':[],
+  '放デイ フジラボ':[]
 };
 
-let curJ='もみのき',ST=ALL[curJ],curS=null,curP=0,flt='all',editId=null;
+let curJ='よつのは保育園',ST=ALL[curJ],curS=null,curP=0,flt='all',editId=null;
 
 function du(s){return Math.ceil((new Date(s)-today)/86400000);}
 // 有効期限が早い期から優先消費して各期の実消費日数を返す
