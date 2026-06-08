@@ -365,7 +365,10 @@ input[type="text"],input[type="number"],input[type="date"],select{
           </div>
           <div class="sr" id="dStats"></div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center" id="dPtabs"></div>
-          <div style="margin-bottom:12px">
+          <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="bo" onclick="addPastPeriod()" style="font-size:12px;padding:5px 14px;border-color:#FCD34D;color:var(--ca)">
+              <i class="ti ti-chevron-left" aria-hidden="true"></i> 過去の年度を追加
+            </button>
             <button class="bo" onclick="addNewPeriod()" style="font-size:12px;padding:5px 14px;border-color:#A7F3D0;color:var(--ct)">
               <i class="ti ti-plus" aria-hidden="true"></i> 新しい年度を追加
             </button>
@@ -997,6 +1000,26 @@ function addGrant(){
   const endD=new Date(gd);endD.setFullYear(endD.getFullYear()+1);endD.setDate(endD.getDate()-1);
   s.periods[curP].end=endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+'-'+String(endD.getDate()).padStart(2,'0');
   renderDetail();
+}
+function addPastPeriod(){
+  const s=curS;
+  const first=s.periods[0];
+  let newStart='',newEnd='',newExpires='',newTotal=first?first.total:0;
+  if(first&&first.start){
+    const d=new Date(first.start);
+    d.setFullYear(d.getFullYear()-1);
+    newStart=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const endD=new Date(first.start);endD.setDate(endD.getDate()-1);
+    newEnd=endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+'-'+String(endD.getDate()).padStart(2,'0');
+    newExpires=calcExpires(newStart);
+  }
+  const nums=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+  s.periods.unshift({label:'',start:newStart,end:newEnd,total:newTotal,carried:0,expires:newExpires});
+  s.periods.forEach((p,i)=>{const yr=p.start?new Date(p.start).getFullYear():'';p.label=(nums[i]||(i+1)+'')+' '+yr+'年度';});
+  s.leaves.forEach(l=>l.period++);
+  curP=0;
+  renderDetail();
+  renderOverall();
 }
 function addNewPeriod(){
   const s=curS;
