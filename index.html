@@ -1,128 +1,1094 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>照合管理ツール｜株式会社みどリむし</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
 
-  <header class="header">
-    <div class="header-inner">
-      <div class="header-title">
-        <span class="header-logo">🔗</span>
-        <div>
-          <h1>照合管理ツール</h1>
-          <p>Gmail・日報・売上集計 の照合</p>
-        </div>
-      </div>
-      <span class="header-company">株式会社みどリむし</span>
-    </div>
-  </header>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <main class="main">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-    <!-- 操作パネル -->
-    <section class="control-panel card">
-      <div class="control-row">
-        <div class="control-group">
-          <label for="date-from">対象期間</label>
-          <div class="date-range">
-            <input type="date" id="date-from">
-            <span>〜</span>
-            <input type="date" id="date-to">
-          </div>
-        </div>
-        <div class="control-group">
-          <label>表示フィルター</label>
-          <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">すべて表示</button>
-            <button class="filter-btn" data-filter="diff">差異のみ</button>
-          </div>
-        </div>
-        <button class="run-btn" id="run-btn">
-          <span class="run-icon">▶</span> 照合を実行
-        </button>
-      </div>
-    </section>
+:root{
+  --cn:#4F46E5;
+  --cn2:#6366F1;
+  --cnl:#EEF2FF;
+  --cnd:#3730A3;
+  --ct:#059669;
+  --ctl:#ECFDF5;
+  --ctm:#10B981;
+  --ca:#D97706;
+  --cal:#FFFBEB;
+  --cam:#F59E0B;
+  --cr:#DC2626;
+  --crl:#FEF2F2;
+  --crm:#EF4444;
+  --cg:#6B7280;
+  --cgl:#F9FAFB;
+  --bg:#F5F5FF;
+  --surface:#ffffff;
+  --border:#E5E7EB;
+  --border2:#D1D5DB;
+  --text:#111827;
+  --sub:#374151;
+  --dim:#6B7280;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.08),0 2px 4px -1px rgba(0,0,0,.05);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -2px rgba(0,0,0,.04);
+  --radius:12px;
+  --radius-sm:8px;
+}
 
-    <!-- サマリーカード -->
-    <section class="summary-row" id="summary-row" style="display:none;">
-      <div class="summary-card">
-        <div class="summary-icon gmail">📧</div>
-        <div class="summary-body">
-          <span class="summary-label">Gmail 取得件数</span>
-          <span class="summary-value" id="s-gmail">0</span>
-        </div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-icon report">📋</div>
-        <div class="summary-body">
-          <span class="summary-label">日報 記録件数</span>
-          <span class="summary-value" id="s-report">0</span>
-        </div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-icon sales">💴</div>
-        <div class="summary-body">
-          <span class="summary-label">売上集計 件数</span>
-          <span class="summary-value" id="s-sales">0</span>
-        </div>
-      </div>
-      <div class="summary-card diff">
-        <div class="summary-icon alert">⚠️</div>
-        <div class="summary-body">
-          <span class="summary-label">差異あり件数</span>
-          <span class="summary-value" id="s-diff">0</span>
-        </div>
-      </div>
-    </section>
+body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
 
-    <!-- 照合結果テーブル -->
-    <section class="result-section" id="result-section" style="display:none;">
-      <div class="result-header">
-        <h2>照合結果</h2>
-        <span class="result-count" id="result-count"></span>
-      </div>
+/* ── HEADER ── */
+.app{position:relative}
+.tb{
+  background:linear-gradient(135deg,#4338CA 0%,#6366F1 50%,#818CF8 100%);
+  padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  border-radius:16px 16px 0 0;
+  box-shadow:0 2px 8px rgba(79,70,229,.3);
+}
+.tbt{font-size:17px;font-weight:700;color:#fff;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.tbt i{font-size:20px;opacity:.9}
+.tbs{font-size:16px;font-weight:600;color:rgba(255,255,255,.9);margin-top:2px;letter-spacing:-.2px}
+.tbr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tb select{
+  font-size:13px;padding:6px 10px;
+  border:1.5px solid rgba(255,255,255,.35);
+  border-radius:20px;
+  background:rgba(255,255,255,.15);
+  color:#fff;
+  backdrop-filter:blur(8px);
+  cursor:pointer;
+  font-family:inherit;
+}
+.tb select option{background:#4338CA;color:#fff}
+.bset{
+  padding:6px 14px;font-size:12px;font-weight:500;
+  border:1.5px solid rgba(255,255,255,.35);
+  border-radius:20px;background:rgba(255,255,255,.15);color:#fff;
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:background .15s;
+  font-family:inherit;
+}
+.bset:hover{background:rgba(255,255,255,.28)}
 
-      <div class="table-wrap">
-        <table class="result-table" id="result-table">
-          <thead>
-            <tr>
-              <th>日付</th>
-              <th>施術者</th>
-              <th>Gmail<br><small>施術記録</small></th>
-              <th>日報<br><small>記録</small></th>
-              <th>照合<br><small>（日報）</small></th>
-              <th>Gmail<br><small>金額</small></th>
-              <th>売上集計<br><small>金額</small></th>
-              <th>差額</th>
-              <th>決済手段</th>
-              <th>確認先</th>
-              <th>ステータス</th>
-            </tr>
-          </thead>
-          <tbody id="result-body">
-          </tbody>
+/* ── BODY ── */
+.body{padding:16px;background:var(--bg)}
+
+/* ── TABS ── */
+.tw{
+  display:flex;margin-bottom:14px;
+  background:#fff;border-radius:40px;
+  padding:4px;gap:4px;
+  box-shadow:var(--shadow);
+}
+.tab{
+  flex:1;padding:8px 16px;font-size:13px;font-weight:500;
+  cursor:pointer;border:none;background:transparent;
+  color:var(--dim);border-radius:36px;text-align:center;
+  transition:all .18s;font-family:inherit;
+}
+.tab.active{background:var(--cn);color:#fff;box-shadow:0 2px 8px rgba(79,70,229,.35)}
+.tab:hover:not(.active){background:var(--cnl);color:var(--cn)}
+.sec{display:none}.sec.active{display:block}
+
+/* ── PANELS ── */
+.pnl{
+  background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:12px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.ph{
+  background:linear-gradient(to right,var(--cnl),#fff);
+  border-bottom:1px solid var(--border);
+  padding:10px 16px;font-size:13px;font-weight:600;
+  color:var(--cn);display:flex;align-items:center;gap:7px;
+}
+.pb{padding:14px 16px}
+
+/* ── OVERALL TABLE ── */
+.ot{width:100%;border-collapse:collapse;font-size:13px}
+.ot thead tr{background:linear-gradient(to right,#4338CA,#6366F1)}
+.ot thead th{padding:11px 14px;font-weight:600;font-size:11px;text-align:left;color:#fff;letter-spacing:.5px;text-transform:uppercase}
+.ot thead th:last-child{text-align:center}
+.ot tbody tr{transition:background .1s}
+.ot tbody tr:nth-child(even){background:#FAFAFA}
+.ot tbody tr:hover{background:var(--cnl)}
+.ot tbody td{padding:11px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
+.ot tbody tr:last-child td{border-bottom:none}
+
+/* ── BADGES ── */
+.bdg{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:.3px}
+.bs{background:var(--ctl);color:var(--ct)}
+.bp{background:var(--cal);color:var(--ca)}
+
+/* ── STAT CARDS ── */
+.sr{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.st{border-radius:10px;padding:10px 8px;text-align:center;border:none;box-shadow:var(--shadow)}
+.so{background:var(--ctl)}.sw{background:var(--cal)}.sd{background:var(--crl)}.sn{background:var(--cnl)}.sg2{background:#F3F4F6}
+.slbl{font-size:10px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;display:block;margin-bottom:5px}
+.so .slbl{color:var(--ct)}.sw .slbl{color:var(--ca)}.sd .slbl{color:var(--cr)}.sn .slbl{color:var(--cn)}.sg2 .slbl{color:var(--cg)}
+.sv{font-size:18px;font-weight:700}
+.so .sv{color:var(--ct)}.sw .sv{color:var(--ca)}.sd .sv{color:var(--cr)}.sn .sv{color:var(--cn)}.sg2 .sv{color:var(--cg)}
+
+/* ── AVATAR ── */
+.avs{background:var(--ctl);color:var(--ct);border:2.5px solid var(--ctm)}
+.avp{background:var(--cal);color:var(--ca);border:2.5px solid var(--cam)}
+
+/* ── PERIOD TABS ── */
+.ptab{
+  padding:5px 16px;font-size:12px;font-weight:500;
+  border:1.5px solid var(--border2);border-radius:20px;
+  cursor:pointer;background:#fff;color:var(--sub);
+  transition:all .15s;font-family:inherit;
+}
+.ptab.active{background:var(--cn);color:#fff;border-color:var(--cn);box-shadow:0 2px 6px rgba(79,70,229,.3)}
+.ptab:hover:not(.active){background:var(--cnl);color:var(--cn);border-color:var(--cn)}
+
+/* ── STAFF GRID ── */
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.sc{
+  background:#fff;border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:14px;cursor:pointer;
+  border:1.5px solid var(--border);
+  transition:all .18s;
+  border-top:4px solid transparent;
+}
+.sc.ts{border-top-color:var(--ctm)}
+.sc.tp{border-top-color:var(--cam)}
+.sc.al{border-top-color:var(--crm);box-shadow:0 0 0 2px rgba(239,68,68,.15),var(--shadow)}
+.sc:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+
+/* ── BUTTONS ── */
+.bback{
+  display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;
+  color:var(--cn);cursor:pointer;margin-bottom:12px;
+  border:1.5px solid var(--border2);border-radius:20px;
+  background:#fff;padding:6px 14px;width:fit-content;
+  box-shadow:var(--shadow);transition:all .15s;font-family:inherit;
+}
+.bback:hover{background:var(--cnl);border-color:var(--cn)}
+.badd{
+  padding:7px 18px;font-size:13px;font-weight:600;
+  border:none;border-radius:20px;
+  background:linear-gradient(135deg,var(--cn),var(--cn2));
+  color:#fff;cursor:pointer;
+  box-shadow:0 2px 6px rgba(79,70,229,.3);
+  transition:all .15s;font-family:inherit;
+}
+.badd:hover{box-shadow:0 4px 12px rgba(79,70,229,.4);transform:translateY(-1px)}
+.bo{
+  padding:6px 14px;font-size:13px;font-weight:500;
+  border:1.5px solid var(--border2);border-radius:20px;
+  background:#fff;color:var(--sub);cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;
+  transition:all .15s;font-family:inherit;
+}
+.bo:hover{background:var(--cnl);color:var(--cn);border-color:var(--cn)}
+.bsm{
+  padding:3px 10px;font-size:11px;font-weight:500;
+  border:1px solid var(--border);border-radius:12px;
+  background:#fff;color:var(--dim);cursor:pointer;
+  transition:all .15s;font-family:inherit;
+}
+.bsm:hover{background:var(--crl);color:var(--cr);border-color:var(--crm)}
+.bdel{
+  padding:7px 16px;font-size:13px;font-weight:500;
+  border:1.5px solid var(--crm);border-radius:20px;
+  background:#fff;color:var(--cr);cursor:pointer;
+  transition:all .15s;font-family:inherit;
+}
+.bdel:hover{background:var(--crl)}
+
+/* ── FILTER BUTTONS ── */
+.fr{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.fb{
+  padding:5px 16px;font-size:12px;font-weight:500;
+  border:1.5px solid var(--border2);border-radius:20px;
+  cursor:pointer;background:#fff;color:var(--sub);
+  transition:all .15s;font-family:inherit;
+}
+.fb.active{background:var(--cn);color:#fff;border-color:var(--cn);box-shadow:0 2px 6px rgba(79,70,229,.25)}
+
+/* ── ALERT BARS ── */
+.abar{
+  background:var(--crl);border:1px solid #FECACA;
+  border-left:4px solid var(--crm);border-radius:10px;
+  padding:11px 14px;margin-bottom:10px;
+  display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#7F1D1D;
+  box-shadow:0 1px 3px rgba(220,38,38,.1);
+}
+.ibar{
+  background:var(--cal);border:1px solid #FDE68A;
+  border-left:4px solid var(--cam);border-radius:10px;
+  padding:11px 14px;margin-bottom:10px;
+  display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#78350F;
+  box-shadow:0 1px 3px rgba(217,119,6,.1);
+}
+.gbar{
+  background:#F9FAFB;border:1px solid #E5E7EB;
+  border-left:4px solid #9CA3AF;border-radius:10px;
+  padding:11px 14px;margin-bottom:10px;
+  display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#4B5563;
+}
+
+/* ── CALENDAR ── */
+.cm{
+  background:#fff;border-radius:10px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+  border-top:3px solid var(--cn);padding:8px;
+}
+.cmn{font-size:12px;font-weight:600;color:var(--cn);text-align:center;margin-bottom:6px;letter-spacing:-.2px}
+.cgr{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.dw{font-size:9px;text-align:center;color:var(--dim);padding:2px 0;font-weight:600;letter-spacing:.3px}
+.dd{font-size:11px;text-align:center;padding:3px 1px;border-radius:4px;cursor:pointer;color:var(--sub);line-height:1.3;transition:background .1s}
+.dd:hover:not(.emp){background:var(--cnl)}
+.dd.emp{cursor:default;color:transparent}
+.dd.full{background:var(--ctm);color:#fff;font-weight:600}.dd.full:hover{background:var(--ct)}
+.dd.frac{background:#A7F3D0;color:var(--ct);font-weight:600}.dd.frac:hover{background:#6EE7B7}
+.dd .dv{font-size:9px;display:block;line-height:1}
+
+/* ── LOG TABLE ── */
+.lt{width:100%;font-size:13px;border-collapse:collapse}
+.lt th{
+  text-align:left;padding:8px 12px;font-weight:600;font-size:11px;
+  letter-spacing:.5px;text-transform:uppercase;
+  background:var(--cnl);color:var(--cn);border-bottom:2px solid #C7D2FE;
+}
+.lt td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.lt tr:hover td{background:#FAFAFE}
+
+/* ── DOT LEGEND ── */
+.dot-full{display:inline-block;width:10px;height:10px;background:var(--ctm);border-radius:3px;flex-shrink:0}
+.dot-frac{display:inline-block;width:10px;height:10px;background:#A7F3D0;border:1.5px solid var(--ctm);border-radius:3px;flex-shrink:0}
+
+/* ── WAGE BOX ── */
+.wb{margin-top:12px;padding:14px;background:var(--cal);border:1px solid #FDE68A;border-left:4px solid var(--cam);border-radius:10px}
+
+/* ── SEPARATOR ── */
+.sep{border:none;border-top:1px dashed var(--border2);margin:16px 0}
+
+/* ── FORM ── */
+.frow{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.frow label{font-size:13px;color:var(--dim);min-width:90px;font-weight:500}
+input[type="text"],input[type="number"],input[type="date"],select{
+  font-family:'Noto Sans JP','Inter',sans-serif;
+}
+
+/* ── MODAL ── */
+.mbg{
+  display:none;position:absolute;top:0;left:0;width:100%;
+  background:rgba(17,24,39,.5);z-index:100;padding:32px 16px;min-height:300px;
+  backdrop-filter:blur(3px);
+}
+.mbg.open{display:block}
+.mdl{
+  background:#fff;border-radius:16px;border:1px solid var(--border);
+  max-width:490px;margin:0 auto;overflow:hidden;
+  box-shadow:var(--shadow-lg);
+}
+.mh{
+  background:linear-gradient(135deg,#4338CA,#6366F1);
+  padding:12px 18px;display:flex;justify-content:space-between;align-items:center;
+}
+.mh span{font-size:14px;font-weight:600;color:#fff;letter-spacing:-.2px}
+.mb{padding:16px 18px}
+.mf{padding:12px 18px;background:#F9FAFB;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+/* ── PERIOD ROW ── */
+.pr{border:1px solid var(--border);border-top:3px solid var(--ctm);border-radius:10px;padding:10px;margin-bottom:8px;background:#FAFFF8}
+
+/* ── NOTICE ── */
+.nb{background:var(--ctl);border:1px solid #A7F3D0;border-radius:8px;padding:9px 12px;font-size:12px;color:var(--ct);margin-bottom:12px;font-weight:500}
+.elbl{background:var(--ctl);border:1px solid #A7F3D0;border-radius:6px;padding:5px 8px;font-size:12px;color:var(--ct);font-weight:500}
+</style>
+
+<div class="app" style="position:relative">
+<div class="tb">
+  <div><div class="tbt"><i class="ti ti-calendar-check" aria-hidden="true"></i>有給休暇管理</div><div class="tbs" id="osub">もみのき</div></div>
+  <div class="tbr">
+    <select id="selJ" onchange="onJC()"></select>
+    <span style="font-size:12px;color:rgba(255,255,255,.75)" id="tlbl"></span>
+    <button class="bset" onclick="openSet()"><i class="ti ti-settings" aria-hidden="true" style="font-size:14px"></i> 設定</button>
+  </div>
+</div>
+
+<div class="body">
+  <div id="alertArea"></div>
+  <div class="tw">
+    <button class="tab active" onclick="swTab('overall')"><i class="ti ti-layout-list" aria-hidden="true" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>全体一覧</button>
+    <button class="tab" onclick="swTab('personal')"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>個人詳細</button>
+  </div>
+
+  <div id="tab-overall" class="sec active">
+    <div class="pnl">
+      <div class="ph"><i class="ti ti-users" aria-hidden="true"></i> スタッフ一覧</div>
+      <div style="overflow-x:auto">
+        <table class="ot" style="min-width:620px">
+          <thead><tr>
+            <th>氏名</th>
+            <th>区分</th>
+            <th>入社日</th>
+            <th>有給残日数</th>
+            <th>有効期限</th>
+            <th>あと何日</th>
+            <th>失効見込</th>
+            <th></th>
+          </tr></thead>
+          <tbody id="overallBody"></tbody>
         </table>
       </div>
-    </section>
-
-    <!-- 初期表示 -->
-    <div class="empty-state" id="empty-state">
-      <div class="empty-icon">📊</div>
-      <p>期間を選択して「照合を実行」を押してください</p>
     </div>
+  </div>
 
-    <!-- ローディング -->
-    <div class="loading" id="loading" style="display:none;">
-      <div class="spinner"></div>
-      <p>照合中です…</p>
+  <div id="tab-personal" class="sec">
+    <div id="listView">
+      <div class="fr">
+        <button class="fb active" onclick="setFlt('all',this)">全員</button>
+        <button class="fb" onclick="setFlt('seishain',this)">正社員</button>
+        <button class="fb" onclick="setFlt('part',this)">パート</button>
+        <button class="bo" onclick="openStaffMdl(null)" style="margin-left:auto;font-size:12px"><i class="ti ti-plus" aria-hidden="true"></i> スタッフ追加</button>
+      </div>
+      <div class="sg" id="staffGrid"></div>
     </div>
+    <div id="detailView" style="display:none">
+      <button class="bback" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
+      <div class="pnl">
+        <div class="ph"><i class="ti ti-user-circle" aria-hidden="true"></i><span style="display:flex;flex-direction:column;gap:1px"><span style="font-size:10px;color:#818CF8;font-weight:400" id="dHeadKana"></span><span id="dHeadName"></span></span><span class="bdg" id="dBadge" style="margin-left:6px"></span></div>
+        <div class="pb">
+          <div id="dExpAlert"></div>
+          <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+            <div id="dAv" style="width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0"></div>
+            <div><div style="font-size:20px;font-weight:700;color:var(--text);letter-spacing:-.3px" id="dName"></div><div style="font-size:12px;color:var(--dim);margin-top:3px" id="dJoin"></div></div>
+          </div>
+          <div class="sr" id="dStats"></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center" id="dPtabs"></div>
+          <div style="margin-bottom:12px">
+            <button class="bo" onclick="addNewPeriod()" style="font-size:12px;padding:5px 14px;border-color:#A7F3D0;color:var(--ct)">
+              <i class="ti ti-plus" aria-hidden="true"></i> 新しい年度を追加
+            </button>
+          </div>
+          <div id="dCal"></div>
+          <hr class="sep">
+          <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-gift" aria-hidden="true" style="margin-right:5px"></i>付与日・付与日数を入力</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--cnl);border-radius:10px;border:1px solid #C7D2FE">
+            <label style="font-size:13px;color:var(--dim);font-weight:500">付与日</label>
+            <input type="date" id="inpGrantDate" style="font-size:13px;padding:6px 10px;border:1.5px solid #C7D2FE;border-radius:8px;background:#fff;color:var(--text)">
+            <label style="font-size:13px;color:var(--dim);font-weight:500">付与日数</label>
+            <input type="number" id="inpGrantDays" min="0.5" step="0.5" value="" placeholder="日数" style="width:80px;font-size:13px;padding:6px 10px;border:1.5px solid #C7D2FE;border-radius:8px;background:#fff;color:var(--text)">
+            <span style="font-size:13px;color:var(--dim)">日</span>
+            <button class="badd" onclick="addGrant()" style="background:linear-gradient(135deg,#059669,#10B981)"><i class="ti ti-check" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px"></i>反映</button>
+            <span style="font-size:11px;color:var(--dim)">※ 現在選択中の期「<span id="grantPeriodLabel"></span>」に反映されます</span>
+          </div>
+          <hr class="sep">
+          <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-calendar-plus" aria-hidden="true" style="margin-right:5px"></i>有給を追加</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <label style="font-size:13px;color:var(--dim);font-weight:500">日付</label>
+            <input type="date" id="inpDate" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
+            <label style="font-size:13px;color:var(--dim);font-weight:500">日数</label>
+            <select id="inpDays" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
+              <option value="1">1日</option><option value="0.5">0.5日</option><option value="0.25">0.25日</option><option value="0.75">0.75日</option>
+            </select>
+            <button class="badd" onclick="addLeave()">追加</button>
+          </div>
+          <div id="wageArea"></div>
+          <hr class="sep">
+          <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
+          <table class="lt">
+            <thead><tr><th style="width:32px"></th><th>日付</th><th>日数</th><th>期</th><th>累計</th><th></th></tr></thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  </main>
+<!-- 設定モーダル -->
+<div class="mbg" id="setMdl">
+  <div class="mdl"><div class="mh"><span><i class="ti ti-settings" aria-hidden="true" style="margin-right:7px"></i>設定</span>
+    <button class="bsm" onclick="closeMdl('setMdl')" style="background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="mb">
+      <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px">事業所の管理</div>
+      <div id="jigyoshoList" style="margin-bottom:10px"></div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:16px">
+        <input type="text" id="newJigyosho" placeholder="新しい事業所名" style="font-size:13px;padding:7px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text);flex:1">
+        <button class="badd" onclick="addJigyosho()">追加</button>
+      </div>
+      <hr class="sep" style="margin:0 0 14px">
+      <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px">雇用種別の名称</div>
+      <div class="frow"><label>正社員の表示名</label><input type="text" id="typeSei" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text);width:160px"></div>
+      <div class="frow"><label>パートの表示名</label><input type="text" id="typePart" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text);width:160px"></div>
+    </div>
+    <div class="mf"><button class="bo" onclick="closeMdl('setMdl')">キャンセル</button><button class="badd" onclick="saveSet()">保存</button></div>
+  </div>
+</div>
 
-  <script src="app.js"></script>
-</body>
-</html>
+<!-- スタッフ編集モーダル -->
+<div class="mbg" id="staffMdl">
+  <div class="mdl"><div class="mh"><span id="staffMdlTitle">スタッフ編集</span>
+    <button class="bsm" onclick="closeMdl('staffMdl')" style="background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.3);color:#fff"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="mb" id="staffMdlBody"></div>
+    <div class="mf" style="justify-content:space-between">
+      <button class="bdel" id="btnDel" onclick="deleteStaff()" style="display:none">削除</button>
+      <div style="display:flex;gap:8px;margin-left:auto"><button class="bo" onclick="closeMdl('staffMdl')">キャンセル</button><button class="badd" onclick="saveStaff()">保存</button></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const today=new Date();
+document.getElementById('tlbl').textContent=today.getFullYear()+'年'+(today.getMonth()+1)+'月'+today.getDate()+'日';
+
+function addYrs(ds,n){const d=new Date(ds);d.setFullYear(d.getFullYear()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+// 付与日から2年後の1日前（有効期限）
+function calcExpires(ds){const d=new Date(ds);d.setFullYear(d.getFullYear()+2);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+let CFG={tl:{seishain:'正社員',part:'パート'},jl:['もみのき','第二事業所','第三事業所']};
+let ALL={
+  'もみのき':[
+    {id:'suzuki',name:'鈴木　真理',kana:'スズキ マリ',type:'seishain',join:'2023-09-22',
+     periods:[
+       {label:'① 2024年度',start:'2024-03-01',end:'2025-02-28',total:10,carried:0,expires:calcExpires('2024-03-01')},
+       {label:'② 2025年度',start:'2025-03-01',end:'2026-02-28',total:11,carried:0,expires:calcExpires('2025-03-01')},
+       {label:'③ 2026年度',start:'2026-03-01',end:'2027-02-28',total:12,carried:0,expires:calcExpires('2026-03-01')},
+     ],
+     leaves:[{date:'2024-11-09',days:1,period:0},{date:'2024-11-20',days:1,period:0},{date:'2024-12-05',days:1,period:0},{date:'2025-09-30',days:1,period:1},{date:'2026-09-30',days:1,period:2}]},
+    {id:'higa',name:'比嘉　華徠',kana:'ヒガ カテ',type:'part',join:'2025-08-15',hourlyWage:1200,hoursPerDay:6,
+     periods:[
+       {label:'① 2026年度',start:'2026-02-01',end:'2027-01-31',total:7,carried:0,expires:calcExpires('2026-02-01')},
+       {label:'② 2027年度',start:'2027-02-01',end:'2028-01-31',total:8,carried:0,expires:calcExpires('2027-02-01')},
+     ],leaves:[]}
+  ],
+  '第二事業所':[
+    {id:'tanaka',name:'田中　花子',kana:'タナカ ハナコ',type:'seishain',join:'2022-04-01',
+     periods:[
+       {label:'① 2024年度',start:'2024-04-01',end:'2025-03-31',total:14,carried:2,expires:calcExpires('2024-04-01')},
+       {label:'② 2025年度',start:'2025-04-01',end:'2026-03-31',total:16,carried:0,expires:calcExpires('2025-04-01')},
+     ],
+     leaves:[{date:'2024-06-10',days:1,period:0},{date:'2024-08-15',days:0.5,period:0},{date:'2025-05-02',days:1,period:1}]}
+  ],
+  '第三事業所':[
+    {id:'sato',name:'佐藤　一郎',kana:'サトウ イチロウ',type:'part',join:'2024-06-01',hourlyWage:1050,hoursPerDay:5,
+     periods:[{label:'① 2024年度',start:'2024-12-01',end:'2025-11-30',total:5,carried:0,expires:calcExpires('2024-12-01')}],
+     leaves:[{date:'2025-03-20',days:0.5,period:0}]}
+  ]
+};
+
+let curJ='もみのき',ST=ALL[curJ],curS=null,curP=0,flt='all',editId=null;
+
+function du(s){return Math.ceil((new Date(s)-today)/86400000);}
+// 有効期限が早い期から優先消費して各期の実消費日数を返す
+function calcPeriodConsumed(s){
+  const sorted=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
+  const n=s.periods.length;
+  const avail=new Array(n).fill(0);
+  const consumed=new Array(n).fill(0);
+
+  // Step1: 付与日数のみで初期化（繰越なし）
+  for(let i=0;i<n;i++){
+    avail[i]=s.periods[i].total+(i===0?s.periods[0].carried||0:0);
+  }
+
+  // Step2: 消費→繰越→再消費 を3回繰り返して収束させる
+  for(let pass=0;pass<3;pass++){
+    // 消費計算
+    const c=new Array(n).fill(0);
+    for(const l of sorted){
+      let rem=l.days;
+      const order=[...Array(n).keys()]
+        .filter(i=>l.date>=s.periods[i].start&&l.date<=s.periods[i].expires)
+        .sort((a,b)=>s.periods[a].expires.localeCompare(s.periods[b].expires));
+      for(const i of order){
+        if(rem<=0) break;
+        const use=Math.min(rem,Math.max(0,avail[i]-c[i]));
+        c[i]+=use; rem-=use;
+      }
+    }
+    for(let i=0;i<n;i++) consumed[i]=c[i];
+
+    // 繰越計算（expires切れなら0、そうでなければ残日数）
+    for(let i=1;i<n;i++){
+      const prevExpired=new Date(s.periods[i-1].expires)<today;
+      const prevRem=Math.max(0,avail[i-1]-consumed[i-1]);
+      avail[i]=s.periods[i].total+(prevExpired?0:prevRem);
+    }
+  }
+
+  return s.periods.map((p,i)=>({
+    i, start:p.start, end:p.end, expires:p.expires,
+    total:p.total, carried:avail[i]-p.total,
+    consumed:consumed[i], avail:avail[i]
+  }));
+}function gc(s,i){
+  if(i===0) return s.periods[0].carried||0;
+  const b=calcPeriodConsumed(s)[i];
+  return b.carried;
+}
+function gu(s,i){
+  return calcPeriodConsumed(s)[i].consumed;
+}
+function gr(s,i){
+  const b=calcPeriodConsumed(s)[i];
+  // expires切れの期の残は失効済みなので0
+  if(new Date(s.periods[i].expires)<today) return 0;
+  return Math.max(0,b.avail-b.consumed);
+}
+function getExpired(s,i){
+  const p=s.periods[i];
+  if(new Date(p.expires)>=today) return 0;
+  const b=calcPeriodConsumed(s)[i];
+  return Math.max(0,b.avail-b.consumed);
+}
+function tl(t){return CFG.tl[t]||t;}
+function fmtD(s){const d=new Date(s);return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';}
+function fmtSlash(s){const d=new Date(s);return d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate();}
+
+// 全期合計の有給日数（付与+繰越）・消化日数・残日数
+function getTotals(s){
+  // 全期付与合計（繰越なし・付与日数のみ）
+  const totalGiven=s.periods.reduce((a,p)=>a+p.total,0);
+  // 全期消化合計
+  const totalUsed=s.periods.reduce((a,p,i)=>a+gu(s,i),0);
+  // 全期失効合計
+  const totalExpired=s.periods.reduce((a,p,i)=>a+getExpired(s,i),0);
+  // 現時点の有給残（最新有効期の残）
+  const buckets=calcPeriodConsumed(s);
+  let totalRem=0;
+  for(let i=s.periods.length-1;i>=0;i--){
+    if(du(s.periods[i].expires)>0){totalRem=Math.max(0,buckets[i].avail-buckets[i].consumed);break;}
+  }
+  return{totalGiven,totalUsed,totalExpired,totalRem};
+}
+
+function getNearestExpiry(s){
+  let best=null;
+  s.periods.forEach((p,i)=>{
+    const rem=gr(s,i),dl=du(p.expires);
+    if(rem>0&&dl>0){if(!best||dl<best.dl) best={dl,expires:p.expires,rem,label:p.label};}
+  });
+  return best;
+}
+
+function renderAlerts(){
+  const a=document.getElementById('alertArea'),crits=[];
+  ST.forEach(s=>{s.periods.forEach((p,i)=>{if(du(p.expires)<=31&&du(p.expires)>0&&gr(s,i)>0) crits.push({name:s.name,period:p.label,expires:p.expires,rem:gr(s,i),dl:du(p.expires)});});});
+  a.innerHTML=crits.map(c=>`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div><span style="font-weight:600">${c.name}</span>（${c.period}）の有給 <span style="font-weight:600">${c.rem}日</span> が <span style="font-weight:600;color:var(--cr)">${c.dl}日後（${fmtD(c.expires)}）</span> に失効します</div></div>`).join('');
+}
+
+function buildSel(){
+  const s=document.getElementById('selJ');
+  s.innerHTML=CFG.jl.map(j=>`<option value="${j}"${j===curJ?' selected':''}>${j}</option>`).join('');
+  document.getElementById('osub').textContent=curJ;
+}
+function onJC(){curJ=document.getElementById('selJ').value;if(!ALL[curJ])ALL[curJ]=[];ST=ALL[curJ];document.getElementById('osub').textContent=curJ;curS=null;document.getElementById('listView').style.display='';document.getElementById('detailView').style.display='none';renderAlerts();renderOverall();renderList();}
+function swTab(t){document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',['overall','personal'][i]===t));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');if(t==='overall')renderOverall();if(t==='personal')renderList();}
+function setFlt(f,b){flt=f;document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderList();}
+
+function renderOverall(){
+  const tb = document.getElementById('overallBody');
+  tb.innerHTML = '';
+  if(!ST.length){
+    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--dim);padding:24px">スタッフがいません</td></tr>';
+    return;
+  }
+  ST.forEach(s => {
+    const buckets = calcPeriodConsumed(s);
+    let totalRem = 0;
+    for(let i = s.periods.length-1; i >= 0; i--){
+      if(du(s.periods[i].expires) > 0){
+        totalRem = Math.max(0, buckets[i].avail - buckets[i].consumed);
+        break;
+      }
+    }
+    let nextExpiryPeriod = null;
+    let minDaysLeft = Infinity;
+    s.periods.forEach((p, i) => {
+      const dl = du(p.expires);
+      const rem = gr(s, i);
+      if(dl > 0 && rem > 0 && dl < minDaysLeft){
+        minDaysLeft = dl;
+        nextExpiryPeriod = { expires: p.expires, rem, dl };
+      }
+    });
+    const joinDateFmt = s.join ? fmtSlash(s.join) : '—';
+    const remCol = totalRem <= 2 ? 'var(--cr)' : totalRem <= 5 ? 'var(--ca)' : 'var(--ct)';
+    let daysLeftCell = '<span style="color:var(--dim)">—</span>';
+    let expiryOnlyCell = '<span style="color:var(--dim)">—</span>';
+    if(nextExpiryPeriod){
+      const col = nextExpiryPeriod.dl <= 31 ? 'var(--cr)' : 'var(--ca)';
+      const icon = nextExpiryPeriod.dl <= 31 ? '<i class="ti ti-alert-triangle" style="font-size:11px;margin-right:2px;vertical-align:-1px" aria-hidden="true"></i>' : '';
+      expiryOnlyCell = `<span style="font-weight:600;color:${col}">${fmtSlash(nextExpiryPeriod.expires)}</span>`;
+      daysLeftCell = `<span style="font-size:15px;font-weight:700;color:${col}">${icon}${nextExpiryPeriod.dl}日</span>`;
+    }
+    const willExpire = nextExpiryPeriod ? nextExpiryPeriod.rem : 0;
+    const willExpCol = willExpire > 0 ? (nextExpiryPeriod.dl <= 31 ? 'var(--cr)' : 'var(--ca)') : 'var(--dim)';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span style="font-size:10px;color:var(--dim);display:block">${s.kana||''}</span><span style="font-weight:600;color:var(--text);font-size:15px">${s.name}</span></td>
+      <td><span class="bdg ${s.type==='seishain'?'bs':'bp'}">${tl(s.type)}</span></td>
+      <td><span style="color:var(--sub)">${joinDateFmt}</span></td>
+      <td><span style="font-size:16px;font-weight:700;color:${remCol}">${totalRem}日</span></td>
+      <td>${expiryOnlyCell}</td>
+      <td>${daysLeftCell}</td>
+      <td>${willExpire > 0 ? `<span style="font-size:15px;font-weight:700;color:${willExpCol}">${willExpire}日</span>` : '<span style="color:var(--dim)">—</span>'}</td>
+      <td><button class="bsm" onclick="openDetail('${s.id}')">詳細</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function renderList(){
+  const g=document.getElementById('staffGrid');g.innerHTML='';
+  const fi=ST.filter(s=>flt==='all'||s.type===flt);
+  if(!fi.length){g.innerHTML='<div style="color:var(--dim);font-size:13px;padding:14px">該当するスタッフがいません</div>';return;}
+  fi.forEach(s=>{
+    const {totalGiven,totalUsed,totalExpired,totalRem}=getTotals(s);
+    const nearest=getNearestExpiry(s);
+    const dl=nearest?nearest.dl:null;
+    const ic=dl!==null&&dl<=31;
+    const d=document.createElement('div');
+    d.className='sc '+(s.type==='seishain'?'ts':'tp')+(ic?' al':'');
+    d.onclick=()=>openDetail(s.id);
+    const ini=s.name.replace(/[\s　]/g,'').slice(-2);
+    d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <div style="width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0" class="${s.type==='seishain'?'avs':'avp'}">${ini}</div>
+      <div style="flex:1;min-width:0"><div style="font-size:10px;color:var(--dim);margin-bottom:2px">${s.kana||''}</div><div style="font-weight:700;font-size:15px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div><div style="font-size:12px;color:var(--dim);margin-top:1px">${tl(s.type)}</div></div>
+      ${ic?'<i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:20px;color:var(--crm);flex-shrink:0"></i>':''}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
+      <div style="background:var(--ctl);border-radius:8px;padding:7px;text-align:center">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--ct);margin-bottom:3px">合計</div>
+        <div style="font-size:18px;font-weight:700;color:var(--ct)">${totalGiven}日</div>
+      </div>
+      <div style="background:#F9FAFB;border-radius:8px;padding:7px;text-align:center">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--dim);margin-bottom:3px">消化</div>
+        <div style="font-size:18px;font-weight:700;color:var(--sub)">${totalUsed}日</div>
+      </div>
+      <div style="background:${totalExpired>0?'#F3F4F6':'#F9FAFB'};border-radius:8px;padding:7px;text-align:center">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:${totalExpired>0?'#6B7280':'var(--dim)'};margin-bottom:3px">失効</div>
+        <div style="font-size:18px;font-weight:700;color:${totalExpired>0?'#6B7280':'var(--dim)'}">${totalExpired>0?totalExpired+'日':'—'}</div>
+      </div>
+      <div style="background:${totalRem<=2?'var(--crl)':totalRem<=5?'var(--cal)':'var(--ctl)'};border-radius:8px;padding:7px;text-align:center">
+        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:${totalRem<=2?'var(--cr)':totalRem<=5?'var(--ca)':'var(--ct)'};margin-bottom:3px">残</div>
+        <div style="font-size:18px;font-weight:700;color:${totalRem<=2?'var(--cr)':totalRem<=5?'var(--ca)':'var(--ct)'}">${totalRem}日</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px">
+      <button class="bsm" onclick="event.stopPropagation();if(confirm('「${s.name}」を削除しますか？')){ST.splice(ST.findIndex(x=>x.id==='${s.id}'),1);renderAlerts();renderOverall();renderList();}"><i class="ti ti-trash" aria-hidden="true" style="margin-right:2px"></i>削除</button>
+    </div>`;
+    g.appendChild(d);
+  });
+}
+
+function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('listView').style.display='none';document.getElementById('detailView').style.display='block';document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===1));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-personal').classList.add('active');renderDetail();}
+function showList(){curS=null;document.getElementById('listView').style.display='';document.getElementById('detailView').style.display='none';}
+
+function renderDetail(){
+  const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
+  document.getElementById('dHeadName').textContent=s.name;
+  const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=s.kana||'';
+  const av=document.getElementById('dAv');av.textContent=ini;av.className=s.type==='seishain'?'avs':'avp';
+  av.style.cssText='width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0';
+  const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
+  const j=new Date(s.join);document.getElementById('dJoin').textContent=`入社 ${j.getFullYear()}年${j.getMonth()+1}月${j.getDate()}日`;
+  document.getElementById('dName').textContent=s.name;
+  const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
+  const carried=gc(s,curP),avail=p.total+carried;
+  const isExpired=new Date(p.expires)<today,expiredDays=getExpired(s,curP);
+  const ea=document.getElementById('dExpAlert');
+  if(isExpired&&expiredDays>0){
+    const usedIn=s.leaves.filter(l=>l.date>=p.start&&l.date<=p.expires).reduce((a,l)=>a+l.days,0);
+    ea.innerHTML=`<div class="gbar"><i class="ti ti-ban" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>
+      <strong>${fmtD(p.expires)}</strong> に有効期限切れ。&nbsp;
+      付与日数 <strong>${p.total}日</strong> ー 期限内消化 <strong>${usedIn}日</strong> ＝ <strong style="color:var(--cr)">${expiredDays}日が失効</strong>
+    </div></div>`;
+  }
+  else if(dl<=31&&rem>0) ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
+  else if(dl<=90&&rem>0) ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
+  else ea.innerHTML='';
+  const expiredStat=getExpired(s,curP);
+  document.getElementById('dStats').innerHTML=`
+    <div class="st sn">
+      <span class="slbl">付与日</span>
+      ${p.start?`<span style="font-size:13px;font-weight:700;color:var(--cn);display:block;line-height:1.5">${new Date(p.start).getFullYear()}年</span><span style="font-size:13px;font-weight:700;color:var(--cn)">${new Date(p.start).getMonth()+1}月${new Date(p.start).getDate()}日</span>`:`<span class="sv" style="color:var(--cn)">—</span>`}
+    </div>
+    <div class="st sn">
+      <span class="slbl">付与日数</span>
+      <span class="sv">${p.total}日</span>
+      <span style="font-size:10px;color:var(--dim);display:block;margin-top:3px">期限: ${p.expires||'—'}</span>
+    </div>
+    <div class="st sn">
+      <span class="slbl">繰越</span>
+      <span class="sv">${carried}日</span>
+    </div>
+    <div class="st ${rem<=2&&!isExpired?'sd':rem<=5&&!isExpired?'sw':'so'}" ${isExpired?'style="background:#F3F4F6"':''}>
+      <span class="slbl">有給残</span>
+      <span class="sv" style="color:${isExpired?'var(--cg)':rem<=2?'var(--cr)':rem<=5?'var(--ca)':'var(--ct)'}">${isExpired?0:rem}日</span>
+    </div>
+    <div class="st sn" style="grid-column:span 2">
+      <span class="slbl">有給消化</span>
+      ${(()=>{
+        const buckets=calcPeriodConsumed(s);
+        const sorted2=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
+        const avail2=s.periods.map((p2,i)=>({total:p2.total,carried:buckets[i].carried,consumed:0}));
+        const leaveFrom={};
+        sorted2.forEach((l,li)=>{
+          let rem=l.days;
+          const order=[...Array(s.periods.length).keys()]
+            .filter(i=>l.date>=s.periods[i].start&&l.date<=s.periods[i].expires)
+            .sort((a,bx)=>s.periods[a].expires.localeCompare(s.periods[bx].expires));
+          leaveFrom[li]=[];
+          for(const i of order){
+            if(rem<=0) break;
+            const av=Math.max(0,avail2[i].total+avail2[i].carried-avail2[i].consumed);
+            const use=Math.min(rem,av);
+            if(use>0){leaveFrom[li].push({periodIdx:i,days:use});avail2[i].consumed+=use;rem-=use;}
+          }
+        });
+        const fromThisBucket=[];
+        sorted2.forEach((l,li)=>{
+          (leaveFrom[li]||[]).forEach(src=>{
+            if(src.periodIdx===curP) fromThisBucket.push({...l,usedDays:src.days});
+          });
+        });
+        const fromOtherBucket=[];
+        sorted2.forEach((l,li)=>{
+          if(l.period!==curP) return;
+          (leaveFrom[li]||[]).forEach(src=>{
+            if(src.periodIdx!==curP) fromOtherBucket.push({...l,usedDays:src.days,fromPeriodIdx:src.periodIdx});
+          });
+        });
+        if(fromThisBucket.length===0&&fromOtherBucket.length===0){
+          return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
+        }
+        let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">`;
+        if(fromThisBucket.length>0){
+          const byPeriodLabel={};
+          fromThisBucket.forEach(l=>{
+            let periodLabel=s.periods[curP].label;
+            s.periods.forEach(pd=>{if(l.date>=pd.start&&l.date<=pd.end) periodLabel=pd.label;});
+            byPeriodLabel[periodLabel]=(byPeriodLabel[periodLabel]||0)+l.usedDays;
+          });
+          const tot=fromThisBucket.reduce((a,l)=>a+l.usedDays,0);
+          Object.keys(byPeriodLabel).forEach(label=>{
+            html+=`<div style="font-size:13px;color:var(--text)"><span style="font-weight:600">${label}</span> ${byPeriodLabel[label]}日消化</div>`;
+          });
+          html+=`<div style="font-size:14px;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:4px;margin-top:3px">計 ${tot}日</div>`;
+        }
+        if(fromOtherBucket.length>0){
+          const byPeriod={};
+          fromOtherBucket.forEach(l=>{
+            const key=l.fromPeriodIdx;
+            if(!byPeriod[key]) byPeriod[key]={days:0,fromPeriodIdx:l.fromPeriodIdx};
+            byPeriod[key].days+=l.usedDays;
+          });
+          Object.keys(byPeriod).sort().forEach(key=>{
+            const info=byPeriod[key];
+            const fromLabel=s.periods[info.fromPeriodIdx].label;
+            const l0=fromOtherBucket[0];
+            let periodLabel=s.periods[curP].label;
+            s.periods.forEach(pd=>{if(l0.date>=pd.start&&l0.date<=pd.end) periodLabel=pd.label;});
+            const tot2=info.days;
+            html+=`<div style="font-size:13px;color:var(--text);margin-top:4px"><span style="font-weight:600">${periodLabel}</span> ${tot2}日消化</div>`;
+            html+=`<div style="font-size:11px;color:var(--ca);background:var(--cal);border:1px solid #FDE68A;border-radius:4px;padding:2px 6px;margin-bottom:2px">${fromLabel}付与から消化</div>`;
+          });
+        }
+        html+=`</div>`;
+        return html;
+      })()}
+    </div>
+    <div class="st ${expiredStat>0?'sg2':'sn'}">
+      <span class="slbl">失効${isExpired?'日数':'見込'}</span>
+      <span class="sv" style="color:${expiredStat>0?'var(--cr)':'var(--dim)'}">${expiredStat>0?expiredStat+'日':'—'}</span>
+      ${isExpired&&expiredStat>0?`<span style="font-size:10px;color:var(--dim);display:block;margin-top:2px">${p.expires}</span>`:''}
+    </div>`;
+  const pt=document.getElementById('dPtabs');pt.innerHTML='';
+  s.periods.forEach((pd,i)=>{
+    const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
+    const pdl=du(pd.expires),warn=pdl<=31&&pdl>0&&gr(s,i)>0;
+    const pdExpiredDays=getExpired(s,i);
+    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''}`;
+    btn.onclick=()=>{curP=i;renderDetail();};pt.appendChild(btn);
+  });
+  renderCal();renderLog();renderWage();
+  const glEl=document.getElementById('grantPeriodLabel');
+  if(glEl) glEl.textContent=s.periods[curP].label;
+  const gdEl=document.getElementById('inpGrantDate');
+  if(gdEl) gdEl.value=s.periods[curP].start||'';
+  const gdDEl=document.getElementById('inpGrantDays');
+  if(gdDEl) gdDEl.value=s.periods[curP].total||'';
+}
+
+function renderCal(){
+  const s=curS,p=s.periods[curP];
+  const lm={};s.leaves.filter(l=>l.period===curP).forEach(l=>{lm[l.date]=(lm[l.date]||0)+l.days;});
+  const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const grantDate=p.start||'';
+  const startMo=p.start?new Date(new Date(p.start).getFullYear(),new Date(p.start).getMonth(),1):new Date(today.getFullYear(),today.getMonth(),1);
+  const endMo=new Date(startMo.getFullYear(),startMo.getMonth()+11,1);
+  const expDate=p.expires?new Date(p.expires):null;
+  let months=[],d=new Date(startMo);
+  while(d<=endMo){months.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+1,1);}
+  const dl=du(p.expires),isExp=expDate&&expDate<today;
+  const carried=gc(s,curP),rem=gr(s,curP),used=gu(s,curP);
+  const barBg=isExp?'#F3F4F6':dl<=31?'var(--crl)':dl<=90?'var(--cal)':'var(--ctl)';
+  const barBd=isExp?'#D1D5DB':dl<=31?'#FECACA':dl<=90?'#FDE68A':'#A7F3D0';
+  const barCol=isExp?'var(--cg)':dl<=31?'var(--cr)':dl<=90?'var(--ca)':'var(--ct)';
+  const expiredDaysBar=getExpired(s,curP);
+  const usedInPeriod=isExp?p.total-expiredDaysBar:s.leaves.filter(l=>l.date>=p.start&&l.date<=p.expires).reduce((a,l)=>a+l.days,0);
+  const barMsg=isExp
+    ?`有効期限 <strong>${p.expires}</strong> 切れ。&nbsp; 付与日数 <strong>${p.total}日</strong> ー 期限内消化 <strong>${usedInPeriod}日</strong> ＝ <strong style="color:var(--cr)">${expiredDaysBar}日失効</strong>`
+    :`有効期限 <strong>${p.expires||'—'}</strong> までに、付与日数 <strong>${p.total}日</strong> を消化してください。`;
+  let h=`<div style="font-size:12px;padding:10px 14px;background:${barBg};border:1px solid ${barBd};border-left:4px solid ${barBd};border-radius:10px;margin-bottom:12px;color:${barCol};display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <i class="ti ti-info-circle" aria-hidden="true" style="font-size:15px;flex-shrink:0"></i>
+    <span>${barMsg}</span>
+    <span style="margin-left:auto;font-size:11px;font-weight:600">${isExp?'失効済':'残'+dl+'日'}</span>
+  </div>`;
+  const calEnd=new Date(endMo.getFullYear(),endMo.getMonth()+1,0);
+  const allExpiredInfos=[];
+  s.periods.forEach((pd,i)=>{
+    if(!pd.expires) return;
+    const expDate2=new Date(pd.expires);
+    if(expDate2<startMo||expDate2>calEnd) return;
+    const expDays=getExpired(s,i);
+    const dlPd=du(pd.expires);
+    const remPd=gr(s,i);
+    if(expDays>0){
+      const usedIn=s.leaves.filter(l=>l.date>=pd.start&&l.date<=pd.expires).reduce((a,l)=>a+l.days,0);
+      allExpiredInfos.push({type:'expired',label:pd.label,expires:pd.expires,expiredDays:expDays,usedIn,rem:0,dl:dlPd});
+    } else if(dlPd>0&&dlPd<=31&&remPd>0){
+      allExpiredInfos.push({type:'warning',label:pd.label,expires:pd.expires,expiredDays:remPd,rem:remPd,dl:dlPd});
+    }
+  });
+  if(allExpiredInfos.length>0){
+    const hasExpired=allExpiredInfos.some(x=>x.type==='expired');
+    h+=`<div style="background:${hasExpired?'var(--crl)':'var(--cal)'};border:1.5px solid ${hasExpired?'#FECACA':'#FDE68A'};border-radius:12px;padding:14px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <i class="ti ti-alert-octagon" aria-hidden="true" style="font-size:20px;color:${hasExpired?'var(--cr)':'var(--ca)'};flex-shrink:0"></i>
+        <span style="font-size:14px;font-weight:700;color:${hasExpired?'var(--cr)':'var(--ca)'}">${hasExpired?'有給失効あり':'有給失効まで1ヶ月以内'}</span>
+      </div>
+      ${allExpiredInfos.map(info=>{
+        const isExp=info.type==='expired';
+        return `<div style="background:#fff;border:1px solid ${isExp?'#FECACA':'#FDE68A'};border-left:4px solid ${isExp?'var(--cr)':'var(--ca)'};border-radius:8px;padding:10px 14px;margin-bottom:6px;font-size:13px;color:${isExp?'#7F1D1D':'#78350F'}">
+          <div style="font-weight:700;font-size:14px;margin-bottom:6px"><i class="ti ti-calendar-x" aria-hidden="true" style="margin-right:5px"></i>${info.label}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;font-size:13px">
+            <div>有効期限：<strong>${info.expires}</strong>${isExp?'（失効済）':`（残${info.dl}日）`}</div>
+            ${isExp
+              ?`<div>失効日数：<strong style="font-size:15px;color:var(--cr)">${info.expiredDays}日失効</strong>（付与${info.usedIn+info.expiredDays}日 ー 消化${info.usedIn}日）</div>`
+              :`<div>失効見込：<strong style="font-size:15px;color:var(--ca)">${info.expiredDays}日</strong> が失効する可能性があります</div>`
+            }
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`
+  }
+
+  const expiryMap={};
+  s.periods.forEach((pd,i)=>{
+    if(!pd.expires) return;
+    const expDays=getExpired(s,i);
+    if(!expiryMap[pd.expires]) expiryMap[pd.expires]=[];
+    expiryMap[pd.expires].push({label:pd.label,expiredDays:expDays,isExpired:new Date(pd.expires)<today});
+  });
+
+  h+=`<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">`;
+  months.forEach(mo=>{
+    const yr=mo.getFullYear(),mn=mo.getMonth(),dim=new Date(yr,mn+1,0).getDate(),fd=new Date(yr,mn,1).getDay();
+    h+=`<div class="cm"><div class="cmn">${yr}年${MN[mn]}</div><div class="cgr">`;
+    ['日','月','火','水','木','金','土'].forEach(x=>{h+=`<div class="dw">${x}</div>`;});
+    for(let i=0;i<fd;i++) h+=`<div class="dd emp">0</div>`;
+    for(let day=1;day<=dim;day++){
+      const ds=`${yr}-${String(mn+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const val=lm[ds];
+      const isGrant=ds===grantDate;
+      const expInfo=expiryMap[ds]||null;
+      let cls=val===1||val>1?'full':val?'frac':'';
+      if(expInfo){
+        const hasExp=expInfo.some(e=>e.expiredDays>0);
+        const expLabel=expInfo.map(e=>e.expiredDays>0?`${e.label} ${e.expiredDays}日失効`:`${e.label} 期限日`).join('\n');
+        const title=`${mn+1}/${day} 🔴有効期限\n${expLabel}${val?' — '+val+'日取得':''}`;
+        const bgCol=hasExp?'var(--cr)':'#7C3AED';
+        h+=`<div class="dd" style="background:${bgCol};color:#fff;border-radius:4px;font-weight:600;cursor:pointer;font-size:10px;padding:2px 1px;line-height:1.1" onclick="dayClick('${ds}',${curP})" title="${title}">
+          ${day}<span style="font-size:8px;display:block;line-height:1">${hasExp?'失効':'期限'}</span>
+        </div>`;
+        continue;
+      }
+      if(isGrant){
+        const grantStyle=val?'background:#A7F3D0;color:#065F46;border:1.5px solid var(--ctm);border-radius:4px;font-weight:600;'
+          :'background:#FEF9C3;color:#713F12;border:1.5px solid #FDE047;border-radius:4px;font-weight:600;';
+        const title=`${mn+1}/${day} ★付与日${val?' — '+val+'日取得':''}`;
+        h+=`<div class="dd ${cls}" style="${grantStyle}cursor:pointer" onclick="dayClick('${ds}',${curP})" title="${title}">
+          ${day}<span class="dv" style="color:${val?'#065F46':'#A16207'}">★</span>
+        </div>`;
+        continue;
+      }
+      h+=`<div class="dd ${cls}" onclick="dayClick('${ds}',${curP})" title="${mn+1}/${day}${val?' — '+val+'日取得':''}">
+        ${day}${val?`<span class="dv">${val}</span>`:''}
+      </div>`;
+    }
+    h+=`</div></div>`;
+  });
+  h+=`</div>`;
+
+  const expInfoList=Object.entries(expiryMap).filter(([dt,])=>{
+    const d=new Date(dt);
+    return d>=new Date(startMo)&&d<=new Date(endMo.getFullYear(),endMo.getMonth()+1,0);
+  });
+  if(expInfoList.length>0){
+    h+=`<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">`;
+    expInfoList.sort((a,b)=>a[0].localeCompare(b[0])).forEach(([dt,infos])=>{
+      infos.forEach(info=>{
+        const hasExp=info.expiredDays>0;
+        h+=`<div style="font-size:13px;padding:8px 12px;background:${hasExp?'var(--crl)':'#F5F3FF'};border:1px solid ${hasExp?'#FECACA':'#DDD6FE'};border-left:4px solid ${hasExp?'var(--cr)':'#7C3AED'};border-radius:8px;color:${hasExp?'#7F1D1D':'#4C1D95'};display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <i class="ti ti-calendar-x" aria-hidden="true" style="font-size:16px;flex-shrink:0"></i>
+          <span><strong>${dt}</strong>（${info.label}）有効期限 ${hasExp?`→ <strong style="color:var(--cr)">${info.expiredDays}日失効</strong>`:'→ 失効なし'}</span>
+        </div>`;
+      });
+    });
+    h+=`</div>`;
+  }
+
+  h+=`<div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--dim);align-items:center;flex-wrap:wrap">
+    <div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;background:#FEF9C3;border:1.5px solid #FDE047;border-radius:3px"></div>付与日</div>
+    <div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;background:var(--cr);border-radius:3px"></div>有効期限（失効）</div>
+    <div style="display:flex;align-items:center;gap:5px"><div class="dot-full"></div>1日取得</div>
+    <div style="display:flex;align-items:center;gap:5px"><div class="dot-frac"></div>半日・時間休</div>
+    <span>· 日付クリックで追加/削除</span></div>`;
+  document.getElementById('dCal').innerHTML=h;
+}
+
+function dayClick(ds,pi){const s=curS,ei=s.leaves.findIndex(l=>l.date===ds&&l.period===pi);if(ei>=0){if(confirm(`${ds} の有給を削除しますか？`)){s.leaves.splice(ei,1);renderDetail();}return;}const c=prompt(`${ds}\n日数を入力 (1 / 0.75 / 0.5 / 0.25)`,'1');if(c===null)return;const days=parseFloat(c);if(isNaN(days)||days<=0||days>1){alert('0より大きく1以下を入力してください');return;}s.leaves.push({date:ds,days,period:pi});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
+function addGrant(){
+  const s=curS;
+  const gd=document.getElementById('inpGrantDate').value;
+  const gdays=parseFloat(document.getElementById('inpGrantDays').value);
+  if(!gd){alert('付与日を選択してください');return;}
+  if(isNaN(gdays)||gdays<=0){alert('付与日数を入力してください');return;}
+  s.periods[curP].start=gd;
+  s.periods[curP].total=gdays;
+  s.periods[curP].expires=calcExpires(gd);
+  const endD=new Date(gd);endD.setFullYear(endD.getFullYear()+1);endD.setDate(endD.getDate()-1);
+  s.periods[curP].end=endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+'-'+String(endD.getDate()).padStart(2,'0');
+  renderDetail();
+}
+function addNewPeriod(){
+  const s=curS;
+  const last=s.periods[s.periods.length-1];
+  let newStart='',newTotal=0;
+  if(last&&last.start){
+    const d=new Date(last.start);
+    d.setFullYear(d.getFullYear()+1);
+    newStart=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    newTotal=last.total;
+  }
+  const nums=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+  const n=s.periods.length;
+  const num=nums[n]||(n+1)+'';
+  const yr=newStart?new Date(newStart).getFullYear():'';
+  const newLabel=`${num} ${yr}年度`;
+  let newEnd='',newExpires='';
+  if(newStart){
+    const endD=new Date(newStart);endD.setFullYear(endD.getFullYear()+1);endD.setDate(endD.getDate()-1);
+    newEnd=endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+'-'+String(endD.getDate()).padStart(2,'0');
+    newExpires=calcExpires(newStart);
+  }
+  s.periods.push({label:newLabel,start:newStart,end:newEnd,total:newTotal,carried:0,expires:newExpires});
+  curP=s.periods.length-1;
+  renderDetail();
+  renderOverall();
+}
+function addLeave(){const s=curS,dv=document.getElementById('inpDate').value,days=parseFloat(document.getElementById('inpDays').value);if(!dv){alert('日付を選択してください');return;}s.leaves.push({date:dv,days,period:curP});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
+function delLeave(i){curS.leaves.splice(i,1);renderDetail();}
+
+function renderLog(){
+  const s=curS,tb=document.getElementById('logBody');tb.innerHTML='';
+  const pl=s.leaves.map((l,i)=>({...l,idx:i})).filter(l=>l.period===curP);
+  if(!pl.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:14px">記録がありません</td></tr>';return;}
+  const buckets=calcPeriodConsumed(s);
+  const sorted=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
+  const tempBuckets=s.periods.map((p,i)=>({
+    i, start:p.start, end:p.end, expires:p.expires,
+    total:p.total, carried:i===0?(p.carried||0):0, consumed:0
+  }));
+  for(let i=1;i<tempBuckets.length;i++){
+    const prev=tempBuckets[i-1];
+    const prevRem=prev.total+prev.carried-prev.consumed;
+    tempBuckets[i].carried=new Date(prev.expires)<today?0:Math.max(0,prevRem);
+  }
+  const leaveSource={};
+  for(const l of sorted){
+    let rem=l.days;
+    const sources=[];
+    const eligible=tempBuckets
+      .filter(b=>l.date>=b.start&&l.date<=b.expires)
+      .sort((a,b)=>a.expires.localeCompare(b.expires));
+    for(const b of eligible){
+      if(rem<=0) break;
+      const avail=Math.max(0,b.total+b.carried-b.consumed);
+      const use=Math.min(rem,avail);
+      if(use>0){sources.push({label:s.periods[b.i].label,days:use});b.consumed+=use;rem-=use;}
+    }
+    leaveSource[l.date+'_'+l.days]=sources;
+  }
+  let cumul=0;
+  pl.forEach(l=>{
+    cumul+=l.days;const d=new Date(l.date),tr=document.createElement('tr');
+    const key=l.date+'_'+l.days;
+    const sources=leaveSource[key]||[];
+    const sourceLabel=sources.length>0
+      ?sources.map(src=>`<span style="font-size:11px;font-weight:500;background:${src.label===s.periods[curP].label?'var(--cnl)':'var(--cal)'};color:${src.label===s.periods[curP].label?'var(--cn)':'var(--ca)'};padding:2px 7px;border-radius:10px;white-space:nowrap">${src.label}から${src.days}日</span>`).join(' ')
+      :`<span style="font-size:11px;color:var(--dim)">${s.periods[l.period].label}</span>`;
+    tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
+      <td style="font-weight:600;color:var(--text)">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
+      <td><span style="font-size:14px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span></td>
+      <td>${sourceLabel}</td>
+      <td><span style="font-size:13px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
+      <td><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
+    tb.appendChild(tr);
+  });
+  const tot=pl.reduce((a,l)=>a+l.days,0);
+  const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
+  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:12px">合計</td><td colspan="2"><span style="font-size:15px;font-weight:700;color:var(--cn)">${tot}日</span></td><td colspan="2"></td>`;
+  tb.appendChild(tfr);
+}
+
+function renderWage(){
+  const s=curS,a=document.getElementById('wageArea');
+  if(s.type!=='part'){a.innerHTML='';return;}
+  const wage=s.hourlyWage||1200,hours=s.hoursPerDay||6;
+  a.innerHTML=`<hr class="sep"><div class="wb">
+    <div style="font-size:13px;font-weight:700;color:var(--ca);margin-bottom:12px"><i class="ti ti-currency-yen" aria-hidden="true" style="margin-right:5px"></i>有給賃金計算（${tl('part')}）</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+      <label style="font-size:13px;color:var(--dim);font-weight:500;min-width:80px">時給（円）</label>
+      <input type="number" id="wWage" value="${wage}" min="0" oninput="updWage()" style="width:100px;font-size:13px;padding:6px 10px;border:1.5px solid #FDE68A;border-radius:8px;background:#fff;color:var(--text)">
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <label style="font-size:13px;color:var(--dim);font-weight:500;min-width:80px">1日の時間数</label>
+      <input type="number" id="wHours" value="${hours}" min="1" max="24" step="0.5" oninput="updWage()" style="width:80px;font-size:13px;padding:6px 10px;border:1.5px solid #FDE68A;border-radius:8px;background:#fff;color:var(--text)">
+      <span style="font-size:13px;color:var(--dim)">時間</span>
+    </div>
+    <div id="wageResult" style="margin-top:8px;padding:12px;background:#fff;border-radius:8px;border:1px solid #FDE68A;font-size:13px"></div>
+  </div>`;updWage();
+}
+function updWage(){const s=curS,wage=parseFloat(document.getElementById('wWage').value)||0,hours=parseFloat(document.getElementById('wHours').value)||0;s.hourlyWage=wage;s.hoursPerDay=hours;const used=s.leaves.filter(l=>l.period===curP).reduce((a,l)=>a+l.days,0);const pd=wage*hours,tot=pd*used;document.getElementById('wageResult').innerHTML=`<table style="width:100%;font-size:13px"><tr><td style="color:var(--dim);padding:3px 0">1日あたり賃金</td><td style="text-align:right;font-weight:600;color:var(--sub)">¥${pd.toLocaleString()}</td></tr><tr><td style="color:var(--dim);padding:3px 0">本期取得日数</td><td style="text-align:right;font-weight:600;color:var(--sub)">${used}日</td></tr><tr style="border-top:2px solid #FDE68A"><td style="font-weight:600;padding-top:8px;color:var(--ca)">有給合計金額</td><td style="text-align:right;font-size:18px;font-weight:700;color:var(--ca);padding-top:8px">¥${tot.toLocaleString()}</td></tr></table>`;}
+
+function openSet(){document.getElementById('typeSei').value=CFG.tl.seishain;document.getElementById('typePart').value=CFG.tl.part;renderJList();document.getElementById('setMdl').classList.add('open');}
+function renderJList(){const el=document.getElementById('jigyoshoList');el.innerHTML='';CFG.jl.forEach((j,i)=>{const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px';row.innerHTML=`<input type="text" value="${j}" data-idx="${i}" onchange="renameJ(this)" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><button class="bsm" onclick="removeJ(${i})" ${CFG.jl.length<=1?'disabled':''}><i class="ti ti-trash" aria-hidden="true"></i></button>`;el.appendChild(row);});}
+function renameJ(inp){const i=parseInt(inp.dataset.idx),o=CFG.jl[i],n=inp.value.trim();if(!n){inp.value=o;return;}if(n===o)return;CFG.jl[i]=n;if(ALL[o]){ALL[n]=ALL[o];delete ALL[o];}if(curJ===o)curJ=n;}
+function addJigyosho(){const inp=document.getElementById('newJigyosho'),name=inp.value.trim();if(!name)return;if(CFG.jl.includes(name)){alert('同じ名前の事業所が既に存在します');return;}CFG.jl.push(name);ALL[name]=[];inp.value='';renderJList();}
+function removeJ(i){const n=CFG.jl[i];if(!confirm(`「${n}」を削除しますか？`))return;CFG.jl.splice(i,1);delete ALL[n];if(curJ===n){curJ=CFG.jl[0];ST=ALL[curJ]||[];}renderJList();}
+function saveSet(){CFG.tl.seishain=document.getElementById('typeSei').value||'正社員';CFG.tl.part=document.getElementById('typePart').value||'パート';closeMdl('setMdl');buildSel();renderAlerts();renderOverall();renderList();if(curS)renderDetail();}
+
+function openStaffMdl(id){editId=id;document.getElementById('staffMdlTitle').textContent=id?'スタッフ編集':'スタッフ追加';const s=id?ST.find(s=>s.id===id):null;document.getElementById('btnDel').style.display=id?'':'none';document.getElementById('staffMdlBody').innerHTML=`<div class="nb"><i class="ti ti-info-circle" aria-hidden="true" style="margin-right:5px"></i>有効期限は各期の<strong>開始日から自動で2年後</strong>に設定されます</div><div class="frow"><label>氏名</label><input type="text" id="smName" value="${s?s.name:''}" placeholder="例：鈴木　真理" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>よみがな</label><input type="text" id="smKana" value="${s?s.kana:''}" placeholder="例：スズキ マリ" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>雇用種別</label><select id="smType" onchange="togWage()" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><option value="seishain"${s&&s.type==='seishain'?' selected':''}>${CFG.tl.seishain}</option><option value="part"${s&&s.type==='part'?' selected':''}>${CFG.tl.part}</option></select></div><div class="frow"><label>入社日</label><input type="date" id="smJoin" value="${s?s.join:''}" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div id="wageFields" style="${s&&s.type==='part'?'':'display:none'}"><div class="frow"><label>時給（円）</label><input type="number" id="smWage" value="${s?s.hourlyWage||1200:1200}" min="0" style="width:120px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>1日の時間</label><input type="number" id="smHours" value="${s?s.hoursPerDay||6:6}" min="1" max="24" step="0.5" style="width:100px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><span style="font-size:13px;color:var(--dim);margin-left:4px">時間</span></div></div><div style="border-top:2px dashed var(--border);padding-top:12px;margin-top:6px"><div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px">有給付与期</div><div id="periodList"></div><button class="bo" onclick="addPeriodRow(null)" style="font-size:12px;margin-top:6px"><i class="ti ti-plus" aria-hidden="true"></i> 期を追加</button></div>`;const ps=s?s.periods:[{label:'① 2025年度',start:'2025-04-01',end:'2026-03-31',total:10,carried:0}];ps.forEach(p=>addPeriodRow(p));document.getElementById('staffMdl').classList.add('open');}
+function togWage(){document.getElementById('wageFields').style.display=document.getElementById('smType').value==='part'?'':'none';}
+function addPeriodRow(p){const list=document.getElementById('periodList'),idx=list.children.length;const div=document.createElement('div');div.className='pr';div.dataset.period=idx;const expV=p&&p.start?addYrs(p.start,2):'';div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><input type="text" class="pLabel" value="${p?p.label:'期のラベル'}" style="font-size:12px;font-weight:600;border:none;background:transparent;color:var(--cn);width:130px"><button class="bsm" onclick="this.closest('[data-period]').remove()"><i class="ti ti-trash" aria-hidden="true"></i></button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px"><div><span style="color:var(--dim);font-weight:500">開始</span><br><input type="date" class="pStart" value="${p?p.start:''}" oninput="autoExp(this)" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div><span style="color:var(--dim);font-weight:500">終了</span><br><input type="date" class="pEnd" value="${p?p.end:''}" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div><span style="color:var(--dim);font-weight:500">付与日数</span><br><input type="number" class="pTotal" value="${p?p.total:10}" min="0" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div><span style="color:var(--dim);font-weight:500">繰越</span><br><input type="number" class="pCarried" value="${p?p.carried:0}" min="0" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div style="grid-column:span 2" class="elbl"><i class="ti ti-lock" aria-hidden="true" style="font-size:12px;margin-right:3px"></i>有効期限（開始日+2年・自動）: <span class="pExpDisp" style="margin-left:4px;font-weight:600">${expV||'—'}</span><input type="hidden" class="pExp" value="${expV}"></div></div>`;list.appendChild(div);}
+function autoExp(inp){const row=inp.closest('[data-period]');if(!inp.value)return;const e=calcExpires(inp.value);row.querySelector('.pExp').value=e;row.querySelector('.pExpDisp').textContent=e;}
+function saveStaff(){const name=document.getElementById('smName').value.trim(),kana=document.getElementById('smKana').value.trim(),type=document.getElementById('smType').value,join=document.getElementById('smJoin').value;if(!name||!join){alert('氏名と入社日は必須です');return;}const periods=[...document.querySelectorAll('#periodList [data-period]')].map(d=>({label:d.querySelector('.pLabel').value,start:d.querySelector('.pStart').value,end:d.querySelector('.pEnd').value,total:parseFloat(d.querySelector('.pTotal').value)||0,carried:parseFloat(d.querySelector('.pCarried').value)||0,expires:d.querySelector('.pExp').value}));if(!periods.length){alert('有給付与期を1つ以上追加してください');return;}if(editId){const s=ST.find(s=>s.id===editId);s.name=name;s.kana=kana;s.type=type;s.join=join;s.periods=periods;if(type==='part'){s.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;s.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}if(curS&&curS.id===editId)curS=s;}else{const ns={id:'s'+Date.now(),name,kana,type,join,periods,leaves:[]};if(type==='part'){ns.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;ns.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}ST.push(ns);}closeMdl('staffMdl');renderAlerts();renderOverall();renderList();if(curS&&curS.id===editId)renderDetail();}
+function deleteStaff(){if(!confirm(`「${ST.find(s=>s.id===editId).name}」を削除しますか？`))return;ST.splice(ST.findIndex(s=>s.id===editId),1);closeMdl('staffMdl');showList();renderAlerts();renderOverall();renderList();}
+function closeMdl(id){document.getElementById(id).classList.remove('open');}
+
+buildSel();renderAlerts();renderOverall();renderList();
+</script>
