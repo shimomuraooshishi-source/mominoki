@@ -323,6 +323,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
   </div>
 
   <div id="tab-overall" class="sec active">
+    <div id="alertCards"></div>
     <div class="pnl">
       <div class="ph"><i class="ti ti-users" aria-hidden="true"></i> スタッフ一覧</div>
       <div style="overflow-x:auto">
@@ -365,7 +366,10 @@ input[type="text"],input[type="number"],input[type="date"],select{
           </div>
           <div class="sr" id="dStats"></div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center" id="dPtabs"></div>
-          <div style="margin-bottom:12px">
+          <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="bo" onclick="addPastPeriod()" style="font-size:12px;padding:5px 14px;border-color:#FCD34D;color:var(--ca)">
+              <i class="ti ti-chevron-left" aria-hidden="true"></i> 過去の年度を追加
+            </button>
             <button class="bo" onclick="addNewPeriod()" style="font-size:12px;padding:5px 14px;border-color:#A7F3D0;color:var(--ct)">
               <i class="ti ti-plus" aria-hidden="true"></i> 新しい年度を追加
             </button>
@@ -388,9 +392,8 @@ input[type="text"],input[type="number"],input[type="date"],select{
             <label style="font-size:13px;color:var(--dim);font-weight:500">日付</label>
             <input type="date" id="inpDate" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
             <label style="font-size:13px;color:var(--dim);font-weight:500">日数</label>
-            <select id="inpDays" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
-              <option value="1">1日</option><option value="0.5">0.5日</option><option value="0.25">0.25日</option><option value="0.75">0.75日</option>
-            </select>
+            <input type="number" id="inpDays" value="1" min="0.001" max="1" step="0.001" style="width:90px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)" placeholder="例:0.625">
+            <span style="font-size:13px;color:var(--dim)">日</span>
             <button class="badd" onclick="addLeave()">追加</button>
           </div>
           <div id="wageArea"></div>
@@ -447,7 +450,7 @@ function addYrs(ds,n){const d=new Date(ds);d.setFullYear(d.getFullYear()+n);retu
 // 付与日から2年後の1日前（有効期限）
 function calcExpires(ds){const d=new Date(ds);d.setFullYear(d.getFullYear()+2);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
-let CFG={tl:{seishain:'正社員',part:'パート'},jl:['もみのき','第二事業所','第三事業所']};
+let CFG={tl:{seishain:'正社員',part:'パート'},jl:['よつのは保育園','放デイ ふぉー','放デイ フジラボ','もみのき','第二事業所','第三事業所']};
 let ALL={
   'もみのき':[
     {id:'suzuki',name:'鈴木　真理',kana:'スズキ マリ',type:'seishain',join:'2023-09-22',
@@ -475,10 +478,96 @@ let ALL={
     {id:'sato',name:'佐藤　一郎',kana:'サトウ イチロウ',type:'part',join:'2024-06-01',hourlyWage:1050,hoursPerDay:5,
      periods:[{label:'① 2024年度',start:'2024-12-01',end:'2025-11-30',total:5,carried:0,expires:calcExpires('2024-12-01')}],
      leaves:[{date:'2025-03-20',days:0.5,period:0}]}
-  ]
+  ],
+  'よつのは保育園':[
+    {id:'date_keiko',name:'伊達　啓子',kana:'ダテ ケイコ',type:'seishain',join:'2019-05-22',
+     periods:[
+       {label:'① 2019年度',start:'2019-11-01',end:'2020-10-31',total:10,carried:0,expires:'2021-10-31'},
+       {label:'② 2020年度',start:'2020-11-01',end:'2021-10-31',total:11,carried:5,expires:'2022-10-31'},
+       {label:'③ 2021年度',start:'2021-11-01',end:'2022-10-31',total:12,carried:10,expires:'2023-10-31'},
+       {label:'④ 2022年度',start:'2022-11-01',end:'2023-10-31',total:14,carried:12,expires:'2024-10-31'},
+       {label:'⑤ 2023年度',start:'2023-11-01',end:'2024-10-31',total:16,carried:10,expires:'2025-10-31'},
+       {label:'⑥ 2024年度',start:'2024-11-01',end:'2025-10-31',total:18,carried:8.5625,expires:'2026-10-31'},
+       {label:'⑦ 2025年度',start:'2025-11-01',end:'2026-10-31',total:20,carried:0,expires:'2027-10-31'},
+     ],
+     leaves:[
+       // ① 2019年度
+       {date:'2019-12-05',days:1,period:0},{date:'2019-12-11',days:1,period:0},{date:'2019-12-19',days:1,period:0},
+       {date:'2020-05-08',days:1,period:0},{date:'2020-05-09',days:1,period:0},
+       // ② 2020年度
+       {date:'2020-12-13',days:1,period:1},{date:'2020-12-29',days:1,period:1},
+       {date:'2021-03-14',days:0.5,period:1},{date:'2021-03-22',days:0.5,period:1},
+       {date:'2021-06-13',days:1,period:1},{date:'2021-07-08',days:1,period:1},{date:'2021-09-24',days:1,period:1},
+       // ③ 2021年度
+       {date:'2021-11-19',days:1,period:2},
+       {date:'2021-12-03',days:0.5,period:2},{date:'2021-12-05',days:1,period:2},{date:'2021-12-06',days:1,period:2},
+       {date:'2022-01-02',days:1,period:2},{date:'2022-01-07',days:1,period:2},
+       {date:'2022-02-03',days:0.375,period:2},
+       {date:'2022-08-13',days:1,period:2},{date:'2022-09-17',days:1,period:2},
+       // ④ 2022年度
+       {date:'2023-02-08',days:1,period:3},{date:'2023-03-01',days:1,period:3},{date:'2023-04-03',days:1,period:3},
+       {date:'2023-05-03',days:0.125,period:3},
+       {date:'2023-06-03',days:1,period:3},{date:'2023-06-05',days:1,period:3},{date:'2023-06-14',days:1,period:3},
+       {date:'2023-07-14',days:1,period:3},{date:'2023-07-30',days:1,period:3},{date:'2023-07-31',days:1,period:3},
+       {date:'2023-08-01',days:1,period:3},{date:'2023-08-14',days:1,period:3},
+       {date:'2023-09-15',days:1,period:3},{date:'2023-09-25',days:1,period:3},
+       {date:'2023-10-02',days:1,period:3},{date:'2023-10-09',days:1,period:3},{date:'2023-10-16',days:0.6875,period:3},
+       // ⑤ 2023年度
+       {date:'2023-11-01',days:1,period:4},{date:'2023-11-21',days:1,period:4},
+       {date:'2023-12-06',days:1,period:4},{date:'2023-12-11',days:0.875,period:4},
+       {date:'2024-01-07',days:1,period:4},{date:'2024-01-08',days:1,period:4},
+       {date:'2024-06-03',days:1,period:4},{date:'2024-06-04',days:1,period:4},{date:'2024-06-05',days:1,period:4},{date:'2024-06-06',days:1,period:4},
+       {date:'2024-07-01',days:1,period:4},{date:'2024-07-02',days:1,period:4},
+       {date:'2024-08-05',days:1,period:4},{date:'2024-08-06',days:1,period:4},
+       {date:'2024-09-02',days:1,period:4},{date:'2024-09-09',days:1,period:4},{date:'2024-09-17',days:1,period:4},{date:'2024-09-24',days:0.0625,period:4},
+       {date:'2024-10-14',days:0.6875,period:4},
+       // ⑥ 2024年度
+       {date:'2024-11-11',days:1,period:5},{date:'2024-11-12',days:1,period:5},
+       {date:'2024-12-09',days:1,period:5},{date:'2024-12-10',days:0.5,period:5},
+       {date:'2025-01-08',days:1,period:5},{date:'2025-01-09',days:1,period:5},{date:'2025-01-10',days:1,period:5},{date:'2025-01-14',days:1,period:5},{date:'2025-01-15',days:0.25,period:5},{date:'2025-01-16',days:0.125,period:5},
+       {date:'2025-02-10',days:1,period:5},{date:'2025-02-17',days:1,period:5},
+       {date:'2025-03-17',days:1,period:5},
+       {date:'2025-04-09',days:1,period:5},{date:'2025-04-14',days:0.5,period:5},
+       {date:'2025-07-07',days:1,period:5},{date:'2025-07-08',days:1,period:5},
+       {date:'2025-10-20',days:0.6875,period:5},
+       // ⑦ 2025年度
+       {date:'2025-11-02',days:1,period:6},{date:'2025-11-21',days:1,period:6},
+       {date:'2026-01-19',days:0.5,period:6},
+       {date:'2026-02-09',days:1,period:6},{date:'2026-02-16',days:1,period:6},{date:'2026-02-17',days:0.5,period:6},
+       {date:'2026-03-17',days:1,period:6},
+       {date:'2026-05-11',days:1,period:6},{date:'2026-05-12',days:1,period:6},
+     ]}
+  ],
+  '放デイ ふぉー':[],
+  '放デイ フジラボ':[]
 };
 
-let curJ='もみのき',ST=ALL[curJ],curS=null,curP=0,flt='all',editId=null;
+let curJ='よつのは保育園',ST=ALL[curJ],curS=null,curP=0,flt='all',editId=null;
+
+const STORAGE_KEY='yuukyu_v1';
+function saveToStorage(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({ALL,CFG,curJ}));}catch(e){}
+}
+function loadFromStorage(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return;
+    const saved=JSON.parse(raw);
+    if(saved.ALL){
+      // HTMLに新しく追加されたスタッフ・事業所をマージ
+      Object.keys(ALL).forEach(j=>{
+        if(!saved.ALL[j]){saved.ALL[j]=ALL[j];}
+        else{ALL[j].forEach(hs=>{if(!saved.ALL[j].find(ss=>ss.id===hs.id))saved.ALL[j].push(hs);});}
+      });
+      ALL=saved.ALL;
+    }
+    if(saved.CFG)CFG=saved.CFG;
+    if(saved.curJ&&(CFG.jl.includes(saved.curJ)))curJ=saved.curJ;
+    ST=ALL[curJ];
+  }catch(e){}
+}
+loadFromStorage();
+ST=ALL[curJ];
 
 function du(s){return Math.ceil((new Date(s)-today)/86400000);}
 // 有効期限が早い期から優先消費して各期の実消費日数を返す
@@ -510,11 +599,11 @@ function calcPeriodConsumed(s){
     }
     for(let i=0;i<n;i++) consumed[i]=c[i];
 
-    // 繰越計算（expires切れなら0、そうでなければ残日数）
+    // 繰越計算（expires切れなら手入力carried、そうでなければ残日数）
     for(let i=1;i<n;i++){
       const prevExpired=new Date(s.periods[i-1].expires)<today;
       const prevRem=Math.max(0,avail[i-1]-consumed[i-1]);
-      avail[i]=s.periods[i].total+(prevExpired?0:prevRem);
+      avail[i]=s.periods[i].total+(prevExpired?(s.periods[i].carried||0):prevRem);
     }
   }
 
@@ -574,9 +663,41 @@ function getNearestExpiry(s){
 }
 
 function renderAlerts(){
-  const a=document.getElementById('alertArea'),crits=[];
-  ST.forEach(s=>{s.periods.forEach((p,i)=>{if(du(p.expires)<=31&&du(p.expires)>0&&gr(s,i)>0) crits.push({name:s.name,period:p.label,expires:p.expires,rem:gr(s,i),dl:du(p.expires)});});});
-  a.innerHTML=crits.map(c=>`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div><span style="font-weight:600">${c.name}</span>（${c.period}）の有給 <span style="font-weight:600">${c.rem}日</span> が <span style="font-weight:600;color:var(--cr)">${c.dl}日後（${fmtD(c.expires)}）</span> に失効します</div></div>`).join('');
+  const crits=[];
+  CFG.jl.forEach(j=>{
+    (ALL[j]||[]).forEach(s=>{
+      s.periods.forEach((p,i)=>{
+        const dl=du(p.expires),rem=gr(s,i);
+        if(dl<=31&&dl>0&&rem>0) crits.push({name:s.name,jigyosho:j,period:p.label,expires:p.expires,rem,dl});
+      });
+    });
+  });
+  crits.sort((a,b)=>a.dl-b.dl);
+  const ac=document.getElementById('alertCards');
+  if(ac){
+    if(!crits.length){ac.innerHTML='';return;}
+    ac.innerHTML=`
+      <div style="background:linear-gradient(135deg,#7F1D1D,#DC2626);border-radius:14px;padding:16px 20px;margin-bottom:16px;box-shadow:0 4px 16px rgba(220,38,38,0.25)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <i class="ti ti-alarm" aria-hidden="true" style="font-size:24px;color:#FCA5A5;flex-shrink:0"></i>
+          <span style="font-size:15px;font-weight:700;color:#fff">有効期限まで1か月以内 — ${crits.length}件</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          ${crits.map(c=>`
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:10px 14px;min-width:180px;flex:1">
+              <div style="font-size:11px;color:#FCA5A5;margin-bottom:3px">${c.jigyosho} · ${c.period}</div>
+              <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:5px">${c.name}</div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <span style="background:rgba(255,255,255,0.2);border-radius:6px;padding:2px 8px;font-size:13px;font-weight:700;color:#fff">${c.rem}日残</span>
+                <span style="font-size:13px;font-weight:700;color:#FCA5A5">⏰ あと${c.dl}日</span>
+              </div>
+              <div style="font-size:11px;color:#FECACA;margin-top:4px">期限：${fmtD(c.expires)}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+  const a=document.getElementById('alertArea');
+  if(a) a.innerHTML='';
 }
 
 function buildSel(){
@@ -638,6 +759,7 @@ function renderOverall(){
       <td><button class="bsm" onclick="openDetail('${s.id}')">詳細</button></td>`;
     tb.appendChild(tr);
   });
+  saveToStorage();
 }
 
 function renderList(){
@@ -810,7 +932,7 @@ function renderDetail(){
     const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
     const pdl=du(pd.expires),warn=pdl<=31&&pdl>0&&gr(s,i)>0;
     const pdExpiredDays=getExpired(s,i);
-    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''}`;
+    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
     btn.onclick=()=>{curP=i;renderDetail();};pt.appendChild(btn);
   });
   renderCal();renderLog();renderWage();
@@ -820,6 +942,7 @@ function renderDetail(){
   if(gdEl) gdEl.value=s.periods[curP].start||'';
   const gdDEl=document.getElementById('inpGrantDays');
   if(gdDEl) gdDEl.value=s.periods[curP].total||'';
+  saveToStorage();
 }
 
 function renderCal(){
@@ -960,7 +1083,7 @@ function renderCal(){
   document.getElementById('dCal').innerHTML=h;
 }
 
-function dayClick(ds,pi){const s=curS,ei=s.leaves.findIndex(l=>l.date===ds&&l.period===pi);if(ei>=0){if(confirm(`${ds} の有給を削除しますか？`)){s.leaves.splice(ei,1);renderDetail();}return;}const c=prompt(`${ds}\n日数を入力 (1 / 0.75 / 0.5 / 0.25)`,'1');if(c===null)return;const days=parseFloat(c);if(isNaN(days)||days<=0||days>1){alert('0より大きく1以下を入力してください');return;}s.leaves.push({date:ds,days,period:pi});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
+function dayClick(ds,pi){const s=curS,ei=s.leaves.findIndex(l=>l.date===ds&&l.period===pi);if(ei>=0){if(confirm(`${ds} の有給を削除しますか？`)){s.leaves.splice(ei,1);renderDetail();}return;}const c=prompt(`${ds}\n日数を入力 (例: 1 / 0.75 / 0.625 / 0.5 / 0.25 など)`,'1');if(c===null)return;const days=parseFloat(c);if(isNaN(days)||days<=0||days>1){alert('0より大きく1以下を入力してください');return;}s.leaves.push({date:ds,days,period:pi});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
 function addGrant(){
   const s=curS;
   const gd=document.getElementById('inpGrantDate').value;
@@ -973,6 +1096,37 @@ function addGrant(){
   const endD=new Date(gd);endD.setFullYear(endD.getFullYear()+1);endD.setDate(endD.getDate()-1);
   s.periods[curP].end=endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+'-'+String(endD.getDate()).padStart(2,'0');
   renderDetail();
+}
+function delPeriod(i){
+  const s=curS;
+  if(s.periods.length<=1){alert('最後の年度は削除できません');return;}
+  if(!confirm(`「${s.periods[i].label}」を削除しますか？\nこの期に登録された有給記録も削除されます。`))return;
+  s.leaves=s.leaves.filter(l=>l.period!==i).map(l=>({...l,period:l.period>i?l.period-1:l.period}));
+  s.periods.splice(i,1);
+  const nums=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+  s.periods.forEach((p,j)=>{const yr=p.start?new Date(p.start).getFullYear():'';p.label=(nums[j]||(j+1)+'')+' '+yr+'年度';});
+  curP=Math.min(curP,s.periods.length-1);
+  renderDetail();renderOverall();
+}
+function addPastPeriod(){
+  const s=curS;
+  const first=s.periods[0];
+  let newStart='',newEnd='',newExpires='',newTotal=first?first.total:0;
+  if(first&&first.start){
+    const d=new Date(first.start);
+    d.setFullYear(d.getFullYear()-1);
+    newStart=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    const endD=new Date(first.start);endD.setDate(endD.getDate()-1);
+    newEnd=endD.getFullYear()+'-'+String(endD.getMonth()+1).padStart(2,'0')+'-'+String(endD.getDate()).padStart(2,'0');
+    newExpires=calcExpires(newStart);
+  }
+  const nums=['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+  s.periods.unshift({label:'',start:newStart,end:newEnd,total:newTotal,carried:0,expires:newExpires});
+  s.periods.forEach((p,i)=>{const yr=p.start?new Date(p.start).getFullYear():'';p.label=(nums[i]||(i+1)+'')+' '+yr+'年度';});
+  s.leaves.forEach(l=>l.period++);
+  curP=0;
+  renderDetail();
+  renderOverall();
 }
 function addNewPeriod(){
   const s=curS;
@@ -1082,10 +1236,23 @@ function addJigyosho(){const inp=document.getElementById('newJigyosho'),name=inp
 function removeJ(i){const n=CFG.jl[i];if(!confirm(`「${n}」を削除しますか？`))return;CFG.jl.splice(i,1);delete ALL[n];if(curJ===n){curJ=CFG.jl[0];ST=ALL[curJ]||[];}renderJList();}
 function saveSet(){CFG.tl.seishain=document.getElementById('typeSei').value||'正社員';CFG.tl.part=document.getElementById('typePart').value||'パート';closeMdl('setMdl');buildSel();renderAlerts();renderOverall();renderList();if(curS)renderDetail();}
 
-function openStaffMdl(id){editId=id;document.getElementById('staffMdlTitle').textContent=id?'スタッフ編集':'スタッフ追加';const s=id?ST.find(s=>s.id===id):null;document.getElementById('btnDel').style.display=id?'':'none';document.getElementById('staffMdlBody').innerHTML=`<div class="nb"><i class="ti ti-info-circle" aria-hidden="true" style="margin-right:5px"></i>有効期限は各期の<strong>開始日から自動で2年後</strong>に設定されます</div><div class="frow"><label>氏名</label><input type="text" id="smName" value="${s?s.name:''}" placeholder="例：鈴木　真理" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>よみがな</label><input type="text" id="smKana" value="${s?s.kana:''}" placeholder="例：スズキ マリ" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>雇用種別</label><select id="smType" onchange="togWage()" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><option value="seishain"${s&&s.type==='seishain'?' selected':''}>${CFG.tl.seishain}</option><option value="part"${s&&s.type==='part'?' selected':''}>${CFG.tl.part}</option></select></div><div class="frow"><label>入社日</label><input type="date" id="smJoin" value="${s?s.join:''}" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div id="wageFields" style="${s&&s.type==='part'?'':'display:none'}"><div class="frow"><label>時給（円）</label><input type="number" id="smWage" value="${s?s.hourlyWage||1200:1200}" min="0" style="width:120px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>1日の時間</label><input type="number" id="smHours" value="${s?s.hoursPerDay||6:6}" min="1" max="24" step="0.5" style="width:100px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><span style="font-size:13px;color:var(--dim);margin-left:4px">時間</span></div></div><div style="border-top:2px dashed var(--border);padding-top:12px;margin-top:6px"><div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px">有給付与期</div><div id="periodList"></div><button class="bo" onclick="addPeriodRow(null)" style="font-size:12px;margin-top:6px"><i class="ti ti-plus" aria-hidden="true"></i> 期を追加</button></div>`;const ps=s?s.periods:[{label:'① 2025年度',start:'2025-04-01',end:'2026-03-31',total:10,carried:0}];ps.forEach(p=>addPeriodRow(p));document.getElementById('staffMdl').classList.add('open');}
+function openStaffMdl(id){editId=id;document.getElementById('staffMdlTitle').textContent=id?'スタッフ編集':'スタッフ追加';const s=id?ST.find(s=>s.id===id):null;document.getElementById('btnDel').style.display=id?'':'none';document.getElementById('staffMdlBody').innerHTML=`<div class="nb"><i class="ti ti-info-circle" aria-hidden="true" style="margin-right:5px"></i>有効期限は各期の<strong>開始日から自動で2年後</strong>に設定されます</div><div class="frow"><label>氏名</label><input type="text" id="smName" value="${s?s.name:''}" placeholder="例：鈴木　真理" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>よみがな</label><input type="text" id="smKana" value="${s?s.kana:''}" placeholder="例：スズキ マリ" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>雇用種別</label><select id="smType" onchange="togWage()" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><option value="seishain"${s&&s.type==='seishain'?' selected':''}>${CFG.tl.seishain}</option><option value="part"${s&&s.type==='part'?' selected':''}>${CFG.tl.part}</option></select></div><div class="frow"><label>入社日</label><input type="date" id="smJoin" value="${s?s.join:''}" oninput="autoJoin(this)" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div id="wageFields" style="${s&&s.type==='part'?'':'display:none'}"><div class="frow"><label>時給（円）</label><input type="number" id="smWage" value="${s?s.hourlyWage||1200:1200}" min="0" style="width:120px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>1日の時間</label><input type="number" id="smHours" value="${s?s.hoursPerDay||6:6}" min="1" max="24" step="0.5" style="width:100px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><span style="font-size:13px;color:var(--dim);margin-left:4px">時間</span></div></div><div style="border-top:2px dashed var(--border);padding-top:12px;margin-top:6px"><div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px">有給付与期</div><div id="periodList"></div><button class="bo" onclick="addPeriodRow(null)" style="font-size:12px;margin-top:6px"><i class="ti ti-plus" aria-hidden="true"></i> 期を追加</button></div>`;const ps=s?s.periods:[{label:'① 年度',start:'',end:'',total:10,carried:0}];ps.forEach(p=>addPeriodRow(p));document.getElementById('staffMdl').classList.add('open');}
 function togWage(){document.getElementById('wageFields').style.display=document.getElementById('smType').value==='part'?'':'none';}
 function addPeriodRow(p){const list=document.getElementById('periodList'),idx=list.children.length;const div=document.createElement('div');div.className='pr';div.dataset.period=idx;const expV=p&&p.start?addYrs(p.start,2):'';div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><input type="text" class="pLabel" value="${p?p.label:'期のラベル'}" style="font-size:12px;font-weight:600;border:none;background:transparent;color:var(--cn);width:130px"><button class="bsm" onclick="this.closest('[data-period]').remove()"><i class="ti ti-trash" aria-hidden="true"></i></button></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px"><div><span style="color:var(--dim);font-weight:500">開始</span><br><input type="date" class="pStart" value="${p?p.start:''}" oninput="autoExp(this)" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div><span style="color:var(--dim);font-weight:500">終了</span><br><input type="date" class="pEnd" value="${p?p.end:''}" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div><span style="color:var(--dim);font-weight:500">付与日数</span><br><input type="number" class="pTotal" value="${p?p.total:10}" min="0" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div><span style="color:var(--dim);font-weight:500">繰越</span><br><input type="number" class="pCarried" value="${p?p.carried:0}" min="0" style="font-size:12px;padding:4px 8px;border:1.5px solid var(--border2);border-radius:6px;background:#fff;color:var(--text);width:100%"></div><div style="grid-column:span 2" class="elbl"><i class="ti ti-lock" aria-hidden="true" style="font-size:12px;margin-right:3px"></i>有効期限（開始日+2年・自動）: <span class="pExpDisp" style="margin-left:4px;font-weight:600">${expV||'—'}</span><input type="hidden" class="pExp" value="${expV}"></div></div>`;list.appendChild(div);}
-function autoExp(inp){const row=inp.closest('[data-period]');if(!inp.value)return;const e=calcExpires(inp.value);row.querySelector('.pExp').value=e;row.querySelector('.pExpDisp').textContent=e;}
+function autoJoin(inp){
+  if(!inp.value)return;
+  const d=new Date(inp.value);
+  d.setMonth(d.getMonth()+6);
+  const startV=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const rows=document.querySelectorAll('#periodList [data-period]');
+  if(!rows.length)return;
+  const firstRow=rows[0];
+  const pStartInp=firstRow.querySelector('.pStart');
+  pStartInp.value=startV;
+  firstRow.querySelector('.pLabel').value=`① ${d.getFullYear()}年度`;
+  autoExp(pStartInp);
+}
+function autoExp(inp){const row=inp.closest('[data-period]');if(!inp.value)return;const e=calcExpires(inp.value);row.querySelector('.pEnd').value=e;row.querySelector('.pExp').value=e;row.querySelector('.pExpDisp').textContent=e;}
 function saveStaff(){const name=document.getElementById('smName').value.trim(),kana=document.getElementById('smKana').value.trim(),type=document.getElementById('smType').value,join=document.getElementById('smJoin').value;if(!name||!join){alert('氏名と入社日は必須です');return;}const periods=[...document.querySelectorAll('#periodList [data-period]')].map(d=>({label:d.querySelector('.pLabel').value,start:d.querySelector('.pStart').value,end:d.querySelector('.pEnd').value,total:parseFloat(d.querySelector('.pTotal').value)||0,carried:parseFloat(d.querySelector('.pCarried').value)||0,expires:d.querySelector('.pExp').value}));if(!periods.length){alert('有給付与期を1つ以上追加してください');return;}if(editId){const s=ST.find(s=>s.id===editId);s.name=name;s.kana=kana;s.type=type;s.join=join;s.periods=periods;if(type==='part'){s.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;s.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}if(curS&&curS.id===editId)curS=s;}else{const ns={id:'s'+Date.now(),name,kana,type,join,periods,leaves:[]};if(type==='part'){ns.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;ns.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}ST.push(ns);}closeMdl('staffMdl');renderAlerts();renderOverall();renderList();if(curS&&curS.id===editId)renderDetail();}
 function deleteStaff(){if(!confirm(`「${ST.find(s=>s.id===editId).name}」を削除しますか？`))return;ST.splice(ST.findIndex(s=>s.id===editId),1);closeMdl('staffMdl');showList();renderAlerts();renderOverall();renderList();}
 function closeMdl(id){document.getElementById(id).classList.remove('open');}
