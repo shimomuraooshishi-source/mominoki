@@ -323,6 +323,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
   </div>
 
   <div id="tab-overall" class="sec active">
+    <div id="alertCards"></div>
     <div class="pnl">
       <div class="ph"><i class="ti ti-users" aria-hidden="true"></i> スタッフ一覧</div>
       <div style="overflow-x:auto">
@@ -625,9 +626,41 @@ function getNearestExpiry(s){
 }
 
 function renderAlerts(){
-  const a=document.getElementById('alertArea'),crits=[];
-  ST.forEach(s=>{s.periods.forEach((p,i)=>{if(du(p.expires)<=31&&du(p.expires)>0&&gr(s,i)>0) crits.push({name:s.name,period:p.label,expires:p.expires,rem:gr(s,i),dl:du(p.expires)});});});
-  a.innerHTML=crits.map(c=>`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div><span style="font-weight:600">${c.name}</span>（${c.period}）の有給 <span style="font-weight:600">${c.rem}日</span> が <span style="font-weight:600;color:var(--cr)">${c.dl}日後（${fmtD(c.expires)}）</span> に失効します</div></div>`).join('');
+  const crits=[];
+  CFG.jl.forEach(j=>{
+    (ALL[j]||[]).forEach(s=>{
+      s.periods.forEach((p,i)=>{
+        const dl=du(p.expires),rem=gr(s,i);
+        if(dl<=31&&dl>0&&rem>0) crits.push({name:s.name,jigyosho:j,period:p.label,expires:p.expires,rem,dl});
+      });
+    });
+  });
+  crits.sort((a,b)=>a.dl-b.dl);
+  const ac=document.getElementById('alertCards');
+  if(ac){
+    if(!crits.length){ac.innerHTML='';return;}
+    ac.innerHTML=`
+      <div style="background:linear-gradient(135deg,#7F1D1D,#DC2626);border-radius:14px;padding:16px 20px;margin-bottom:16px;box-shadow:0 4px 16px rgba(220,38,38,0.25)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+          <i class="ti ti-alarm" aria-hidden="true" style="font-size:24px;color:#FCA5A5;flex-shrink:0"></i>
+          <span style="font-size:15px;font-weight:700;color:#fff">有効期限まで1か月以内 — ${crits.length}件</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          ${crits.map(c=>`
+            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:10px 14px;min-width:180px;flex:1">
+              <div style="font-size:11px;color:#FCA5A5;margin-bottom:3px">${c.jigyosho} · ${c.period}</div>
+              <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:5px">${c.name}</div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <span style="background:rgba(255,255,255,0.2);border-radius:6px;padding:2px 8px;font-size:13px;font-weight:700;color:#fff">${c.rem}日残</span>
+                <span style="font-size:13px;font-weight:700;color:#FCA5A5">⏰ あと${c.dl}日</span>
+              </div>
+              <div style="font-size:11px;color:#FECACA;margin-top:4px">期限：${fmtD(c.expires)}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
+  }
+  const a=document.getElementById('alertArea');
+  if(a) a.innerHTML='';
 }
 
 function buildSel(){
