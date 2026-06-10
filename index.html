@@ -506,6 +506,31 @@ let ALL={
 
 let curJ='よつのは保育園',ST=ALL[curJ],curS=null,curP=0,flt='all',editId=null;
 
+const STORAGE_KEY='yuukyu_v1';
+function saveToStorage(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify({ALL,CFG,curJ}));}catch(e){}
+}
+function loadFromStorage(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw)return;
+    const saved=JSON.parse(raw);
+    if(saved.ALL){
+      // HTMLに新しく追加されたスタッフ・事業所をマージ
+      Object.keys(ALL).forEach(j=>{
+        if(!saved.ALL[j]){saved.ALL[j]=ALL[j];}
+        else{ALL[j].forEach(hs=>{if(!saved.ALL[j].find(ss=>ss.id===hs.id))saved.ALL[j].push(hs);});}
+      });
+      ALL=saved.ALL;
+    }
+    if(saved.CFG)CFG=saved.CFG;
+    if(saved.curJ&&(CFG.jl.includes(saved.curJ)))curJ=saved.curJ;
+    ST=ALL[curJ];
+  }catch(e){}
+}
+loadFromStorage();
+ST=ALL[curJ];
+
 function du(s){return Math.ceil((new Date(s)-today)/86400000);}
 // 有効期限が早い期から優先消費して各期の実消費日数を返す
 function calcPeriodConsumed(s){
@@ -664,6 +689,7 @@ function renderOverall(){
       <td><button class="bsm" onclick="openDetail('${s.id}')">詳細</button></td>`;
     tb.appendChild(tr);
   });
+  saveToStorage();
 }
 
 function renderList(){
@@ -846,6 +872,7 @@ function renderDetail(){
   if(gdEl) gdEl.value=s.periods[curP].start||'';
   const gdDEl=document.getElementById('inpGrantDays');
   if(gdDEl) gdDEl.value=s.periods[curP].total||'';
+  saveToStorage();
 }
 
 function renderCal(){
