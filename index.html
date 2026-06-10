@@ -951,7 +951,7 @@ function renderCal(){
   const MN=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
   const grantDate=p.start||'';
   const startMo=p.start?new Date(new Date(p.start).getFullYear(),new Date(p.start).getMonth(),1):new Date(today.getFullYear(),today.getMonth(),1);
-  const endMo=new Date(startMo.getFullYear(),startMo.getMonth()+11,1);
+  const endMo=p.end?new Date(new Date(p.end).getFullYear(),new Date(p.end).getMonth(),1):new Date(startMo.getFullYear(),startMo.getMonth()+11,1);
   const expDate=p.expires?new Date(p.expires):null;
   let months=[],d=new Date(startMo);
   while(d<=endMo){months.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+1,1);}
@@ -1025,6 +1025,8 @@ function renderCal(){
     for(let i=0;i<fd;i++) h+=`<div class="dd emp">0</div>`;
     for(let day=1;day<=dim;day++){
       const ds=`${yr}-${String(mn+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const isOutOfRange=(p.start&&ds<p.start)||(p.end&&ds>p.end);
+      if(isOutOfRange){h+=`<div class="dd" style="background:#E5E7EB;color:#C4C4C4;cursor:default;border-radius:4px">${day}</div>`;continue;}
       const val=lm[ds];
       const isGrant=ds===grantDate;
       const expInfo=expiryMap[ds]||null;
@@ -1083,7 +1085,7 @@ function renderCal(){
   document.getElementById('dCal').innerHTML=h;
 }
 
-function dayClick(ds,pi){const s=curS,ei=s.leaves.findIndex(l=>l.date===ds&&l.period===pi);if(ei>=0){if(confirm(`${ds} の有給を削除しますか？`)){s.leaves.splice(ei,1);renderDetail();}return;}const c=prompt(`${ds}\n日数を入力 (例: 1 / 0.75 / 0.625 / 0.5 / 0.25 など)`,'1');if(c===null)return;const days=parseFloat(c);if(isNaN(days)||days<=0||days>1){alert('0より大きく1以下を入力してください');return;}s.leaves.push({date:ds,days,period:pi});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
+function dayClick(ds,pi){const s=curS,pd=s.periods[pi];if((pd.start&&ds<pd.start)||(pd.end&&ds>pd.end))return;const ei=s.leaves.findIndex(l=>l.date===ds&&l.period===pi);if(ei>=0){if(confirm(`${ds} の有給を削除しますか？`)){s.leaves.splice(ei,1);renderDetail();}return;}const c=prompt(`${ds}\n日数を入力 (例: 1 / 0.75 / 0.625 / 0.5 / 0.25 など)`,'1');if(c===null)return;const days=parseFloat(c);if(isNaN(days)||days<=0||days>1){alert('0より大きく1以下を入力してください');return;}s.leaves.push({date:ds,days,period:pi});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
 function addGrant(){
   const s=curS;
   const gd=document.getElementById('inpGrantDate').value;
