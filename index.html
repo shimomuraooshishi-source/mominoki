@@ -870,11 +870,22 @@ function renderDetail(){
             if(use>0){leaveFrom[li].push({periodIdx:i,days:use});avail2[i].consumed+=use;rem-=use;}
           }
         });
-        // 当期に割り当てられた有給（period===curP）の合計を表示
+        // 当期に割り当てられた有給（period===curP）の合計
         const ownLeaves=sorted2.filter(l=>l.period===curP);
         const ownTotal=ownLeaves.reduce((a,l)=>a+l.days,0);
-        if(ownTotal===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
-        // どのバケツから消化したか集計
+        // 当期付与から他期が消化した分（後期消化）
+        const laterByPeriod={};
+        sorted2.forEach((l,li)=>{
+          if(l.period===curP) return;
+          (leaveFrom[li]||[]).forEach(src=>{
+            if(src.periodIdx===curP){
+              laterByPeriod[l.period]=(laterByPeriod[l.period]||0)+src.days;
+            }
+          });
+        });
+        const laterTotal=Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+        if(ownTotal===0&&laterTotal===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
+        // 当期自身の消化：どのバケツから消化したか集計
         const byBucket={};
         ownLeaves.forEach(l=>{
           const li=sorted2.findIndex(x=>x.date===l.date&&x.period===l.period&&x.days===l.days);
@@ -883,16 +894,32 @@ function renderDetail(){
           });
         });
         let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">`;
-        Object.keys(byBucket).sort((a,b)=>a-b).forEach(key=>{
-          const ki=parseInt(key);
-          const fromLabel=s.periods[ki].label;
-          const isOther=ki!==curP;
-          html+=`<div style="font-size:13px;color:var(--text)${isOther?';background:var(--cal);border-left:3px solid #F59E0B;padding:2px 6px;border-radius:0 4px 4px 0':''}">
-            <span style="font-weight:600">${byBucket[key]}日</span>
-            <span style="font-size:11px;color:var(--dim)">（${fromLabel}付与から消化）</span>
-          </div>`;
-        });
-        html+=`<div style="font-size:14px;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:4px;margin-top:3px">計 ${ownTotal}日</div>`;
+        // 当期付与分の消化合計
+        if(ownTotal>0){
+          Object.keys(byBucket).sort((a,b)=>a-b).forEach(key=>{
+            const ki=parseInt(key);
+            const fromLabel=s.periods[ki].label;
+            const isOther=ki!==curP;
+            html+=`<div style="font-size:13px;color:var(--text)${isOther?';background:var(--cal);border-left:3px solid #F59E0B;padding:2px 6px;border-radius:0 4px 4px 0':''}">
+              <span style="font-weight:600">${byBucket[key]}日</span>
+              <span style="font-size:11px;color:var(--dim)">（${fromLabel}付与から消化）</span>
+            </div>`;
+          });
+          html+=`<div style="font-size:14px;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:4px;margin-top:3px">計 ${ownTotal}日</div>`;
+        }
+        // 後期が当期付与から消化した分
+        if(laterTotal>0){
+          html+=`<div style="font-size:12px;font-weight:600;color:var(--dim);margin-top:8px;padding-top:6px;border-top:1px dashed var(--border)">後期が当期付与から消化</div>`;
+          Object.keys(laterByPeriod).sort((a,b)=>a-b).forEach(key=>{
+            const ki=parseInt(key);
+            const periodLabel=s.periods[ki].label;
+            html+=`<div style="font-size:13px;color:var(--text);background:#FEF3C7;border-left:3px solid #F59E0B;padding:2px 6px;border-radius:0 4px 4px 0">
+              <span style="font-weight:600">${periodLabel}</span>
+              <span style="font-size:11px;color:var(--dim)"> ${laterByPeriod[key]}日消化</span>
+            </div>`;
+          });
+          html+=`<div style="font-size:12px;color:var(--dim);margin-top:2px">後期消化計 ${laterTotal}日</div>`;
+        }
         html+=`</div>`;
         return html;
       })()}
