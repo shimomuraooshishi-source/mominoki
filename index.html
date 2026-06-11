@@ -870,54 +870,29 @@ function renderDetail(){
             if(use>0){leaveFrom[li].push({periodIdx:i,days:use});avail2[i].consumed+=use;rem-=use;}
           }
         });
-        const fromThisBucket=[];
-        sorted2.forEach((l,li)=>{
+        // 当期に割り当てられた有給（period===curP）の合計を表示
+        const ownLeaves=sorted2.filter(l=>l.period===curP);
+        const ownTotal=ownLeaves.reduce((a,l)=>a+l.days,0);
+        if(ownTotal===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
+        // どのバケツから消化したか集計
+        const byBucket={};
+        ownLeaves.forEach(l=>{
+          const li=sorted2.findIndex(x=>x.date===l.date&&x.period===l.period&&x.days===l.days);
           (leaveFrom[li]||[]).forEach(src=>{
-            if(src.periodIdx===curP) fromThisBucket.push({...l,usedDays:src.days});
+            byBucket[src.periodIdx]=(byBucket[src.periodIdx]||0)+src.days;
           });
         });
-        const fromOtherBucket=[];
-        sorted2.forEach((l,li)=>{
-          if(l.period!==curP) return;
-          (leaveFrom[li]||[]).forEach(src=>{
-            if(src.periodIdx!==curP) fromOtherBucket.push({...l,usedDays:src.days,fromPeriodIdx:src.periodIdx});
-          });
-        });
-        if(fromThisBucket.length===0&&fromOtherBucket.length===0){
-          return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
-        }
         let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">`;
-        if(fromThisBucket.length>0){
-          const byPeriodLabel={};
-          fromThisBucket.forEach(l=>{
-            let periodLabel=s.periods[curP].label;
-            s.periods.forEach(pd=>{if(l.date>=pd.start&&l.date<=pd.end) periodLabel=pd.label;});
-            byPeriodLabel[periodLabel]=(byPeriodLabel[periodLabel]||0)+l.usedDays;
-          });
-          const tot=fromThisBucket.reduce((a,l)=>a+l.usedDays,0);
-          Object.keys(byPeriodLabel).forEach(label=>{
-            html+=`<div style="font-size:13px;color:var(--text)"><span style="font-weight:600">${label}</span> ${byPeriodLabel[label]}日消化</div>`;
-          });
-          html+=`<div style="font-size:14px;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:4px;margin-top:3px">計 ${tot}日</div>`;
-        }
-        if(fromOtherBucket.length>0){
-          const byPeriod={};
-          fromOtherBucket.forEach(l=>{
-            const key=l.fromPeriodIdx;
-            if(!byPeriod[key]) byPeriod[key]={days:0,fromPeriodIdx:l.fromPeriodIdx};
-            byPeriod[key].days+=l.usedDays;
-          });
-          Object.keys(byPeriod).sort().forEach(key=>{
-            const info=byPeriod[key];
-            const fromLabel=s.periods[info.fromPeriodIdx].label;
-            const l0=fromOtherBucket[0];
-            let periodLabel=s.periods[curP].label;
-            s.periods.forEach(pd=>{if(l0.date>=pd.start&&l0.date<=pd.end) periodLabel=pd.label;});
-            const tot2=info.days;
-            html+=`<div style="font-size:13px;color:var(--text);margin-top:4px"><span style="font-weight:600">${periodLabel}</span> ${tot2}日消化</div>`;
-            html+=`<div style="font-size:11px;color:var(--ca);background:var(--cal);border:1px solid #FDE68A;border-radius:4px;padding:2px 6px;margin-bottom:2px">${fromLabel}付与から消化</div>`;
-          });
-        }
+        Object.keys(byBucket).sort((a,b)=>a-b).forEach(key=>{
+          const ki=parseInt(key);
+          const fromLabel=s.periods[ki].label;
+          const isOther=ki!==curP;
+          html+=`<div style="font-size:13px;color:var(--text)${isOther?';background:var(--cal);border-left:3px solid #F59E0B;padding:2px 6px;border-radius:0 4px 4px 0':''}">
+            <span style="font-weight:600">${byBucket[key]}日</span>
+            <span style="font-size:11px;color:var(--dim)">（${fromLabel}付与から消化）</span>
+          </div>`;
+        });
+        html+=`<div style="font-size:14px;font-weight:700;color:var(--text);border-top:1px solid var(--border);padding-top:4px;margin-top:3px">計 ${ownTotal}日</div>`;
         html+=`</div>`;
         return html;
       })()}
