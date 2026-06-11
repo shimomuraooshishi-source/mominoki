@@ -482,29 +482,29 @@ let ALL={
   'よつのは保育園':[
     {id:'date_keiko',name:'伊達　啓子',kana:'ダテ ケイコ',type:'seishain',join:'2019-05-22',
      periods:[
-       {label:'① 2019年度',start:'2019-11-01',end:'2020-10-31',total:10,carried:0,expires:'2021-10-31'},
-       {label:'② 2020年度',start:'2020-11-01',end:'2021-10-31',total:11,carried:5,expires:'2022-10-31'},
-       {label:'③ 2021年度',start:'2021-11-01',end:'2022-10-31',total:12,carried:10,expires:'2023-10-31'},
-       {label:'④ 2022年度',start:'2022-11-01',end:'2023-10-31',total:14,carried:12,expires:'2024-10-31'},
-       {label:'⑤ 2023年度',start:'2023-11-01',end:'2024-10-31',total:16,carried:10,expires:'2025-10-31'},
-       {label:'⑥ 2024年度',start:'2024-11-01',end:'2025-10-31',total:18,carried:8.5625,expires:'2026-10-31'},
-       {label:'⑦ 2025年度',start:'2025-11-01',end:'2026-10-31',total:20,carried:0,expires:'2027-10-31'},
+       {label:'① 2019年度',start:'2019-11-22',end:'2020-11-21',total:10,carried:0,expires:'2021-11-21'},
+       {label:'② 2020年度',start:'2020-11-22',end:'2021-11-21',total:11,carried:5,expires:'2022-11-21'},
+       {label:'③ 2021年度',start:'2021-11-22',end:'2022-11-21',total:12,carried:10,expires:'2023-11-21'},
+       {label:'④ 2022年度',start:'2022-11-22',end:'2023-11-21',total:14,carried:12,expires:'2024-11-21'},
+       {label:'⑤ 2023年度',start:'2023-11-22',end:'2024-11-21',total:16,carried:10,expires:'2025-11-21'},
+       {label:'⑥ 2024年度',start:'2024-11-22',end:'2025-11-21',total:18,carried:8.5625,expires:'2026-11-21'},
+       {label:'⑦ 2025年度',start:'2025-11-22',end:'2026-11-21',total:20,carried:0,expires:'2027-11-21'},
      ],
      leaves:[
        // ① 2019年度
        {date:'2019-12-05',days:1,period:0},{date:'2019-12-11',days:1,period:0},{date:'2019-12-19',days:1,period:0},
        {date:'2020-05-08',days:1,period:0},{date:'2020-05-09',days:1,period:0},
-       // ② 2020年度
+       // ② 2020年度（11/19は③開始前のため②に計上）
        {date:'2020-12-13',days:1,period:1},{date:'2020-12-29',days:1,period:1},
        {date:'2021-03-14',days:0.5,period:1},{date:'2021-03-22',days:0.5,period:1},
        {date:'2021-06-13',days:1,period:1},{date:'2021-07-08',days:1,period:1},{date:'2021-09-24',days:1,period:1},
+       {date:'2021-11-19',days:1,period:1},
        // ③ 2021年度
-       {date:'2021-11-19',days:1,period:2},
        {date:'2021-12-03',days:0.5,period:2},{date:'2021-12-05',days:1,period:2},{date:'2021-12-06',days:1,period:2},
        {date:'2022-01-02',days:1,period:2},{date:'2022-01-07',days:1,period:2},
        {date:'2022-02-03',days:0.375,period:2},
        {date:'2022-08-13',days:1,period:2},{date:'2022-09-17',days:1,period:2},
-       // ④ 2022年度
+       // ④ 2022年度（11/1・11/21は⑤開始前のため④に計上）
        {date:'2023-02-08',days:1,period:3},{date:'2023-03-01',days:1,period:3},{date:'2023-04-03',days:1,period:3},
        {date:'2023-05-03',days:0.125,period:3},
        {date:'2023-06-03',days:1,period:3},{date:'2023-06-05',days:1,period:3},{date:'2023-06-14',days:1,period:3},
@@ -512,8 +512,8 @@ let ALL={
        {date:'2023-08-01',days:1,period:3},{date:'2023-08-14',days:1,period:3},
        {date:'2023-09-15',days:1,period:3},{date:'2023-09-25',days:1,period:3},
        {date:'2023-10-02',days:1,period:3},{date:'2023-10-09',days:1,period:3},{date:'2023-10-16',days:0.6875,period:3},
-       // ⑤ 2023年度
-       {date:'2023-11-01',days:1,period:4},{date:'2023-11-21',days:1,period:4},
+       {date:'2023-11-01',days:1,period:3},{date:'2023-11-21',days:1,period:3},
+       // ⑤ 2023年度（11/11・11/12は⑥開始前のため⑤に計上）
        {date:'2023-12-06',days:1,period:4},{date:'2023-12-11',days:0.875,period:4},
        {date:'2024-01-07',days:1,period:4},{date:'2024-01-08',days:1,period:4},
        {date:'2024-06-03',days:1,period:4},{date:'2024-06-04',days:1,period:4},{date:'2024-06-05',days:1,period:4},{date:'2024-06-06',days:1,period:4},
@@ -521,8 +521,8 @@ let ALL={
        {date:'2024-08-05',days:1,period:4},{date:'2024-08-06',days:1,period:4},
        {date:'2024-09-02',days:1,period:4},{date:'2024-09-09',days:1,period:4},{date:'2024-09-17',days:1,period:4},{date:'2024-09-24',days:0.0625,period:4},
        {date:'2024-10-14',days:0.6875,period:4},
-       // ⑥ 2024年度
-       {date:'2024-11-11',days:1,period:5},{date:'2024-11-12',days:1,period:5},
+       {date:'2024-11-11',days:1,period:4},{date:'2024-11-12',days:1,period:4},
+       // ⑥ 2024年度（11/2・11/21は⑦開始前のため⑥に計上）
        {date:'2024-12-09',days:1,period:5},{date:'2024-12-10',days:0.5,period:5},
        {date:'2025-01-08',days:1,period:5},{date:'2025-01-09',days:1,period:5},{date:'2025-01-10',days:1,period:5},{date:'2025-01-14',days:1,period:5},{date:'2025-01-15',days:0.25,period:5},{date:'2025-01-16',days:0.125,period:5},
        {date:'2025-02-10',days:1,period:5},{date:'2025-02-17',days:1,period:5},
@@ -530,8 +530,8 @@ let ALL={
        {date:'2025-04-09',days:1,period:5},{date:'2025-04-14',days:0.5,period:5},
        {date:'2025-07-07',days:1,period:5},{date:'2025-07-08',days:1,period:5},
        {date:'2025-10-20',days:0.6875,period:5},
+       {date:'2025-11-02',days:1,period:5},{date:'2025-11-21',days:1,period:5},
        // ⑦ 2025年度
-       {date:'2025-11-02',days:1,period:6},{date:'2025-11-21',days:1,period:6},
        {date:'2026-01-19',days:0.5,period:6},
        {date:'2026-02-09',days:1,period:6},{date:'2026-02-16',days:1,period:6},{date:'2026-02-17',days:0.5,period:6},
        {date:'2026-03-17',days:1,period:6},
