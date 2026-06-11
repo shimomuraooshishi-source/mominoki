@@ -887,7 +887,7 @@ function renderDetail(){
           const label=s.periods[ki].label;
           const isSelf=ki===curP;
           html+=`<div style="font-size:13px;display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--dim)">${label}${isSelf?'から消化':''}</span>
+            <span style="color:var(--dim)">${label}</span>
             <span style="font-weight:600;color:var(--text)">${fromBucket[key]}日</span>
           </div>`;
         });
