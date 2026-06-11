@@ -870,28 +870,64 @@ function renderDetail(){
             if(use>0){leaveFrom[li].push({periodIdx:i,days:use});avail2[i].consumed+=use;rem-=use;}
           }
         });
-        // 当期バケツから消化したすべての有給を期別に集計
-        const fromBucket={};
-        sorted2.forEach((l,li)=>{
+        // 当期自身の有給：どのバケツから消化したか集計
+        const ownLeaves=sorted2.filter(l=>l.period===curP);
+        const ownTotal=ownLeaves.reduce((a,l)=>a+l.days,0);
+        const ownByBucket={};
+        ownLeaves.forEach(l=>{
+          const li=sorted2.findIndex(x=>x.date===l.date&&x.period===l.period&&x.days===l.days);
           (leaveFrom[li]||[]).forEach(src=>{
-            if(src.periodIdx===curP){
-              fromBucket[l.period]=(fromBucket[l.period]||0)+src.days;
-            }
+            ownByBucket[src.periodIdx]=(ownByBucket[src.periodIdx]||0)+src.days;
           });
         });
-        const bucketTotal=Object.values(fromBucket).reduce((a,v)=>a+v,0);
-        if(bucketTotal===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
-        let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:3px">`;
-        Object.keys(fromBucket).sort((a,b)=>a-b).forEach(key=>{
-          const ki=parseInt(key);
-          const label=s.periods[ki].label;
-          const isSelf=ki===curP;
-          html+=`<div style="font-size:13px;display:flex;justify-content:space-between;align-items:center;">
-            <span style="color:var(--dim)">${label}</span>
-            <span style="font-weight:600;color:var(--text)">${fromBucket[key]}日</span>
-          </div>`;
+        // 後期が当期バケツから消化した分
+        const laterByPeriod={};
+        sorted2.forEach((l,li)=>{
+          if(l.period===curP) return;
+          (leaveFrom[li]||[]).forEach(src=>{
+            if(src.periodIdx===curP) laterByPeriod[l.period]=(laterByPeriod[l.period]||0)+src.days;
+          });
         });
-        html+=`<div style="font-size:13px;font-weight:600;color:var(--text);display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:4px;margin-top:3px"><span>消化合計</span><span>${bucketTotal}日</span></div>`;
+        const bucketTotal=Object.values(ownByBucket).filter((_,i)=>parseInt(Object.keys(ownByBucket)[i])===curP).reduce((a,v)=>a+v,0)
+          +Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+        if(ownTotal===0&&Object.keys(laterByPeriod).length===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
+        const curLabel=s.periods[curP].label;
+        let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:4px;font-size:13px">`;
+        // 当期自身の消化：前期バケツ分（暗い背景）→ 当期バケツ分
+        Object.keys(ownByBucket).sort((a,b)=>a-b).forEach(key=>{
+          const ki=parseInt(key);
+          const isOther=ki!==curP;
+          const fromLabel=s.periods[ki].label;
+          if(isOther){
+            html+=`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;background:var(--bg2,#F3F4F6);border-radius:4px;padding:3px 8px;">
+              <span style="color:var(--text)">${curLabel}<span style="font-size:11px;color:var(--dim)">（${fromLabel}から消化）</span></span>
+              <span style="font-weight:600;flex-shrink:0">${ownByBucket[key]}日</span>
+            </div>`;
+          } else {
+            html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;">
+              <span style="color:var(--dim)">${curLabel}</span>
+              <span style="font-weight:600">${ownByBucket[key]}日</span>
+            </div>`;
+          }
+        });
+        // 当期自身の合計
+        html+=`<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding:5px 8px 0;font-weight:600;color:var(--text)"><span>計</span><span>${ownTotal}日</span></div>`;
+        // 後期が当期バケツから消化
+        if(Object.keys(laterByPeriod).length>0){
+          html+=`<div style="margin-top:4px">`;
+          Object.keys(laterByPeriod).sort((a,b)=>a-b).forEach(key=>{
+            const ki=parseInt(key);
+            html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;">
+              <span style="color:var(--dim)">${s.periods[ki].label}</span>
+              <span style="font-weight:600">${laterByPeriod[key]}日</span>
+            </div>`;
+          });
+          html+=`</div>`;
+          const total=(Object.values(ownByBucket).reduce((a,v)=>a+v,0)-( ownByBucket[Object.keys(ownByBucket).find(k=>parseInt(k)<curP)]||0 ))+Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+          const selfBucket=ownByBucket[curP]||0;
+          const laterSum=Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+          html+=`<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding:5px 8px 0;font-weight:600;color:var(--text)"><span>消化合計</span><span>${selfBucket+laterSum}日</span></div>`;
+        }
         html+=`</div>`;
         return html;
       })()}
