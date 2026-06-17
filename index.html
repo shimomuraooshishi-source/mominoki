@@ -599,32 +599,7 @@ function calcPeriodConsumed(s){
     total:p.total, carried:avail[i]-p.total,
     consumed:consumed[i], avail:avail[i]
   }));
-}
-function calcPriority(s){
-  const n=s.periods.length,res=[];
-  let carryAvail=s.periods[0].carried||0;
-  for(let i=0;i<n;i++){
-    const p=s.periods[i];
-    const consumed=s.leaves.filter(l=>l.period===i).reduce((a,l)=>a+l.days,0);
-    const fromCarry=Math.min(consumed,carryAvail);
-    const fromGrant=Math.max(0,consumed-carryAvail);
-    const remCarry=Math.max(0,carryAvail-fromCarry);
-    const remGrant=Math.max(0,p.total-fromGrant);
-    const carryExpires=i>0?s.periods[i-1].expires:null;
-    const carryExpired=carryExpires?new Date(carryExpires)<today:false;
-    const lostCarry=carryExpired?remCarry:0;
-    const activeRem=remGrant+(carryExpired?0:remCarry);
-    res.push({i,carryAvail,grant:p.total,consumed,fromCarry,fromGrant,remCarry,remGrant,carryExpires,carryExpired,lostCarry,activeRem});
-    if(i+1<n){
-      const mc=s.periods[i+1].carried||0;
-      if(mc>0) carryAvail=mc;
-      else if(new Date(p.expires)<today) carryAvail=0;
-      else carryAvail=remCarry+remGrant;
-    }
-  }
-  return res;
-}
-function gc(s,i){
+}function gc(s,i){
   if(i===0) return s.periods[0].carried||0;
   const b=calcPeriodConsumed(s)[i];
   return b.carried;
@@ -819,7 +794,6 @@ function renderList(){
 
 function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('listView').style.display='none';document.getElementById('detailView').style.display='block';document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===1));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-personal').classList.add('active');renderDetail();}
 function showList(){curS=null;document.getElementById('listView').style.display='';document.getElementById('detailView').style.display='none';}
-function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forEach((el,idx)=>{const sel=idx===i;el.style.border=sel?'2px solid var(--cn)':'1px solid var(--border)';const hd=el.querySelector('.period-tbl-head');if(hd)hd.style.background=sel?'var(--cnl)':'var(--cgl)';const lb=el.querySelector('.period-tbl-label');if(lb)lb.style.color=sel?'var(--cn)':'var(--sub)';});renderCal();renderLog();const glEl=document.getElementById('grantPeriodLabel');if(glEl)glEl.textContent=curS.periods[curP].label;const gdEl=document.getElementById('inpGrantDate');if(gdEl)gdEl.value=curS.periods[curP].start||'';const gdDEl=document.getElementById('inpGrantDays');if(gdDEl)gdDEl.value=curS.periods[curP].total||'';}
 
 function renderDetail(){
   const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
@@ -844,25 +818,118 @@ function renderDetail(){
   else if(dl<=31&&rem>0) ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
   else if(dl<=90&&rem>0) ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
   else ea.innerHTML='';
-  const allB=calcPriority(s);
-  const fv=v=>Math.round(v*10000)/10000;
-  const pb=allB[curP];const p2=s.periods[curP];
-  const tdS='border:0.5px solid var(--border2);padding:6px 8px;text-align:center;vertical-align:middle';
-  const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
-  const carryCell=pb.carryAvail>0?`<div style="display:flex;align-items:baseline;justify-content:center;gap:5px"><span style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">${fv(pb.carryAvail)}日</span>${pb.remCarry>0?`<span style="font-size:12px;color:var(--cr)">${fv(pb.remCarry)}日</span>`:''}</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：${pb.carryExpires||'—'}</div>`:dash2;
-  const grantCell=`<div style="font-size:15px;font-weight:600">${p2.total}日</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：${p2.expires}</div>`;
-  const remCell=pb.activeRem>0?`<span style="font-size:14px;font-weight:700;color:${pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)'}">${fv(pb.activeRem)}日</span>`:`<span style="color:var(--dim)">—</span>`;
-  const lostCell=pb.lostCarry>0?`<span style="font-size:13px;font-weight:700;color:var(--cr)">${fv(pb.lostCarry)}日</span>`:`<span style="color:var(--dim)">—</span>`;
-  const carryCon=pb.fromCarry>0?`<div style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">${fv(pb.fromCarry)}日</div>`:dash2;
-  const grantCon=pb.fromGrant>0?`<div style="font-size:15px;font-weight:600">${fv(pb.fromGrant)}日</div>`:dash2;
-  const ptH=`<table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup><col style="width:32%"><col style="width:32%"><col style="width:18%"><col style="width:18%"></colgroup><tr>${['繰越','付与日数','有給残','失効日数'].map(h=>`<th style="background:var(--cgl);font-weight:400;color:var(--dim);font-size:11px;padding:5px 8px;border:0.5px solid var(--border2);text-align:center">${h}</th>`).join('')}</tr><tr><td style="${tdS}">${carryCell}</td><td style="${tdS}">${grantCell}</td><td rowspan="3" style="${tdS}">${remCell}</td><td rowspan="3" style="${tdS}">${lostCell}</td></tr><tr><td style="${tdS}"><span style="font-size:11px;color:var(--dim)">有給消化</span></td><td style="${tdS}"><span style="font-size:11px;color:var(--dim)">有給消化</span></td></tr><tr><td style="${tdS}">${carryCon}</td><td style="${tdS}">${grantCon}</td></tr></table>`;
-  const dsEl=document.getElementById('dStats');dsEl.style.cssText='display:block;margin-bottom:14px';dsEl.innerHTML=ptH;
+  const expiredStat=getExpired(s,curP);
+  document.getElementById('dStats').innerHTML=`
+    <div class="st sn">
+      <span class="slbl">付与日</span>
+      ${p.start?`<span style="font-size:13px;font-weight:700;color:var(--cn);display:block;line-height:1.5">${new Date(p.start).getFullYear()}年</span><span style="font-size:13px;font-weight:700;color:var(--cn)">${new Date(p.start).getMonth()+1}月${new Date(p.start).getDate()}日</span>`:`<span class="sv" style="color:var(--cn)">—</span>`}
+    </div>
+    <div class="st sn">
+      <span class="slbl">付与日数</span>
+      <span class="sv">${p.total}日</span>
+      <span style="font-size:10px;color:var(--dim);display:block;margin-top:3px">期限: ${p.expires||'—'}</span>
+    </div>
+    <div class="st sn">
+      <span class="slbl">繰越</span>
+      <span class="sv">${carried}日</span>
+    </div>
+    <div class="st ${rem<=2&&!isExpired?'sd':rem<=5&&!isExpired?'sw':'so'}" ${isExpired?'style="background:#F3F4F6"':''}>
+      <span class="slbl">有給残</span>
+      <span class="sv" style="color:${isExpired?'var(--cg)':rem<=2?'var(--cr)':rem<=5?'var(--ca)':'var(--ct)'}">${isExpired?0:rem}日</span>
+    </div>
+    <div class="st sn" style="grid-column:span 2">
+      <span class="slbl">有給消化</span>
+      ${(()=>{
+        const buckets=calcPeriodConsumed(s);
+        const sorted2=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
+        const avail2=s.periods.map((p2,i)=>({total:p2.total,carried:buckets[i].carried,consumed:0}));
+        const leaveFrom={};
+        sorted2.forEach((l,li)=>{
+          let rem=l.days;
+          const order=[...Array(s.periods.length).keys()]
+            .filter(i=>l.date>=s.periods[i].start&&l.date<=s.periods[i].expires)
+            .sort((a,bx)=>s.periods[a].expires.localeCompare(s.periods[bx].expires));
+          leaveFrom[li]=[];
+          for(const i of order){
+            if(rem<=0) break;
+            const av=Math.max(0,avail2[i].total+avail2[i].carried-avail2[i].consumed);
+            const use=Math.min(rem,av);
+            if(use>0){leaveFrom[li].push({periodIdx:i,days:use});avail2[i].consumed+=use;rem-=use;}
+          }
+        });
+        // 当期自身の有給：どのバケツから消化したか集計
+        const ownLeaves=sorted2.filter(l=>l.period===curP);
+        const ownTotal=ownLeaves.reduce((a,l)=>a+l.days,0);
+        const ownByBucket={};
+        ownLeaves.forEach(l=>{
+          const li=sorted2.findIndex(x=>x.date===l.date&&x.period===l.period&&x.days===l.days);
+          (leaveFrom[li]||[]).forEach(src=>{
+            ownByBucket[src.periodIdx]=(ownByBucket[src.periodIdx]||0)+src.days;
+          });
+        });
+        // 後期が当期バケツから消化した分
+        const laterByPeriod={};
+        sorted2.forEach((l,li)=>{
+          if(l.period===curP) return;
+          (leaveFrom[li]||[]).forEach(src=>{
+            if(src.periodIdx===curP) laterByPeriod[l.period]=(laterByPeriod[l.period]||0)+src.days;
+          });
+        });
+        const bucketTotal=Object.values(ownByBucket).filter((_,i)=>parseInt(Object.keys(ownByBucket)[i])===curP).reduce((a,v)=>a+v,0)
+          +Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+        if(ownTotal===0&&Object.keys(laterByPeriod).length===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
+        const curLabel=s.periods[curP].label;
+        let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:4px;font-size:13px">`;
+        // 当期自身の消化：前期バケツ分（暗い背景）→ 当期バケツ分
+        Object.keys(ownByBucket).sort((a,b)=>a-b).forEach(key=>{
+          const ki=parseInt(key);
+          const isOther=ki!==curP;
+          const fromLabel=s.periods[ki].label;
+          if(isOther){
+            html+=`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;background:var(--bg2,#F3F4F6);border-radius:4px;padding:3px 8px;">
+              <span style="color:var(--text)">${curLabel}<span style="font-size:11px;color:var(--dim)">（${fromLabel}から消化）</span></span>
+              <span style="font-weight:600;flex-shrink:0">${ownByBucket[key]}日</span>
+            </div>`;
+          } else {
+            html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;">
+              <span style="color:var(--dim)">${curLabel}</span>
+              <span style="font-weight:600">${ownByBucket[key]}日</span>
+            </div>`;
+          }
+        });
+        // 当期自身の合計
+        html+=`<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding:5px 8px 0;font-weight:600;color:var(--text)"><span>計</span><span>${ownTotal}日</span></div>`;
+        // 後期が当期バケツから消化
+        if(Object.keys(laterByPeriod).length>0){
+          html+=`<div style="margin-top:4px">`;
+          Object.keys(laterByPeriod).sort((a,b)=>a-b).forEach(key=>{
+            const ki=parseInt(key);
+            html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;">
+              <span style="color:var(--dim)">${s.periods[ki].label}</span>
+              <span style="font-weight:600">${laterByPeriod[key]}日</span>
+            </div>`;
+          });
+          html+=`</div>`;
+          const total=(Object.values(ownByBucket).reduce((a,v)=>a+v,0)-( ownByBucket[Object.keys(ownByBucket).find(k=>parseInt(k)<curP)]||0 ))+Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+          const selfBucket=ownByBucket[curP]||0;
+          const laterSum=Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
+          html+=`<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding:5px 8px 0;font-weight:600;color:var(--text)"><span>消化合計</span><span>${selfBucket+laterSum}日</span></div>`;
+        }
+        html+=`</div>`;
+        return html;
+      })()}
+    </div>
+    <div class="st ${expiredStat>0?'sg2':'sn'}">
+      <span class="slbl">失効${isExpired?'日数':'見込'}</span>
+      <span class="sv" style="color:${expiredStat>0?'var(--cr)':'var(--dim)'}">${expiredStat>0?expiredStat+'日':'—'}</span>
+      ${isExpired&&expiredStat>0?`<span style="font-size:10px;color:var(--dim);display:block;margin-top:2px">${p.expires}</span>`:''}
+    </div>`;
   const pt=document.getElementById('dPtabs');pt.innerHTML='';
   s.periods.forEach((pd,i)=>{
     const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
     const pdl=du(pd.expires),warn=pdl<=31&&pdl>0&&gr(s,i)>0;
     const pdExpiredDays=getExpired(s,i);
-    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>':''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
+    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
     btn.onclick=()=>{curP=i;renderDetail();};pt.appendChild(btn);
   });
   renderCal();renderLog();renderWage();
