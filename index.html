@@ -824,11 +824,7 @@ function renderDetail(){
   const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
   document.getElementById('dHeadName').textContent=s.name;
   const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=s.kana||'';
-  const av=document.getElementById('dAv');av.textContent=ini;av.className=s.type==='seishain'?'avs':'avp';
-  av.style.cssText='width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0';
   const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
-  const j=new Date(s.join);document.getElementById('dJoin').textContent=`入社 ${j.getFullYear()}年${j.getMonth()+1}月${j.getDate()}日`;
-  document.getElementById('dName').textContent=s.name;
   const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
   const carried=gc(s,curP),avail=p.total+carried;
   const isExpired=new Date(p.expires)<today,expiredDays=getExpired(s,curP);
