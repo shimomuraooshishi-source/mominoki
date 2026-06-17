@@ -845,24 +845,30 @@ function renderDetail(){
   else if(dl<=90&&rem>0) ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
   else ea.innerHTML='';
   const allB=calcPriority(s);
-  const fv=v=>Math.round(v*10000)/10000;
+  const fv=function(v){return Math.round(v*10000)/10000;};
   const pb=allB[curP];const p2=s.periods[curP];
   const tdS='border:0.5px solid var(--border2);padding:6px 8px;text-align:center;vertical-align:middle';
   const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
-  const carryCell=pb.carryAvail>0?`<div style="display:flex;align-items:baseline;justify-content:center;gap:5px"><span style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">${fv(pb.carryAvail)}日</span>${pb.remCarry>0?`<span style="font-size:12px;color:var(--cr)">${fv(pb.remCarry)}日</span>`:''}</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：${pb.carryExpires||'—'}</div>`:dash2;
-  const grantCell=`<div style="font-size:15px;font-weight:600">${p2.total}日</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：${p2.expires}</div>`;
-  const remCell=pb.activeRem>0?`<span style="font-size:14px;font-weight:700;color:${pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)'}">${fv(pb.activeRem)}日</span>`:`<span style="color:var(--dim)">—</span>`;
-  const lostCell=pb.lostCarry>0?`<span style="font-size:13px;font-weight:700;color:var(--cr)">${fv(pb.lostCarry)}日</span>`:`<span style="color:var(--dim)">—</span>`;
-  const carryCon=pb.fromCarry>0?`<div style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">${fv(pb.fromCarry)}日</div>`:dash2;
-  const grantCon=pb.fromGrant>0?`<div style="font-size:15px;font-weight:600">${fv(pb.fromGrant)}日</div>`:dash2;
-  const ptH=`<table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup><col style="width:32%"><col style="width:32%"><col style="width:18%"><col style="width:18%"></colgroup><tr>${['繰越','付与日数','有給残','失効日数'].map(h=>`<th style="background:var(--cgl);font-weight:400;color:var(--dim);font-size:11px;padding:5px 8px;border:0.5px solid var(--border2);text-align:center">${h}</th>`).join('')}</tr><tr><td style="${tdS}">${carryCell}</td><td style="${tdS}">${grantCell}</td><td rowspan="3" style="${tdS}">${remCell}</td><td rowspan="3" style="${tdS}">${lostCell}</td></tr><tr><td style="${tdS}"><span style="font-size:11px;color:var(--dim)">有給消化</span></td><td style="${tdS}"><span style="font-size:11px;color:var(--dim)">有給消化</span></td></tr><tr><td style="${tdS}">${carryCon}</td><td style="${tdS}">${grantCon}</td></tr></table>`;
-  const dsEl=document.getElementById('dStats');dsEl.style.cssText='display:block;margin-bottom:14px';dsEl.innerHTML=ptH;
+  var carryCell;
+  if(pb.carryAvail>0){
+    var remStr=pb.remCarry>0?'<span style="font-size:12px;color:var(--cr)">'+fv(pb.remCarry)+'日</span>':'';
+    carryCell='<div style="display:flex;align-items:baseline;justify-content:center;gap:5px"><span style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">'+fv(pb.carryAvail)+'日</span>'+remStr+'</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：'+(pb.carryExpires||'—')+'</div>';
+  }else{carryCell=dash2;}
+  var grantCell='<div style="font-size:15px;font-weight:600">'+p2.total+'日</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：'+p2.expires+'</div>';
+  var remColor=pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)';
+  var remCell=pb.activeRem>0?'<span style="font-size:14px;font-weight:700;color:'+remColor+'">'+fv(pb.activeRem)+'日</span>':'<span style="color:var(--dim)">—</span>';
+  var lostCell=pb.lostCarry>0?'<span style="font-size:13px;font-weight:700;color:var(--cr)">'+fv(pb.lostCarry)+'日</span>':'<span style="color:var(--dim)">—</span>';
+  var carryCon=pb.fromCarry>0?'<div style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">'+fv(pb.fromCarry)+'日</div>':dash2;
+  var grantCon=pb.fromGrant>0?'<div style="font-size:15px;font-weight:600">'+fv(pb.fromGrant)+'日</div>':dash2;
+  var thHtml=['','付与日数','有給残','失効日数'].map(function(h,hi){return '<th style="background:var(--cgl);font-weight:400;color:var(--dim);font-size:11px;padding:5px 8px;border:0.5px solid var(--border2);text-align:center">'+(hi===0?'繰越':h)+'</th>';}).join('');
+  var ptH='<table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup><col style="width:32%"><col style="width:32%"><col style="width:18%"><col style="width:18%"></colgroup><tr>'+thHtml+'</tr><tr><td style="'+tdS+'">'+carryCell+'</td><td style="'+tdS+'">'+grantCell+'</td><td rowspan="3" style="'+tdS+'">'+remCell+'</td><td rowspan="3" style="'+tdS+'">'+lostCell+'</td></tr><tr><td style="'+tdS+'"><span style="font-size:11px;color:var(--dim)">有給消化</span></td><td style="'+tdS+'"><span style="font-size:11px;color:var(--dim)">有給消化</span></td></tr><tr><td style="'+tdS+'">'+carryCon+'</td><td style="'+tdS+'">'+grantCon+'</td></tr></table>';
+  var dsEl=document.getElementById('dStats');dsEl.style.cssText='display:block;margin-bottom:14px';dsEl.innerHTML=ptH;
   const pt=document.getElementById('dPtabs');pt.innerHTML='';
   s.periods.forEach((pd,i)=>{
     const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
     const pdl=du(pd.expires),warn=pdl<=31&&pdl>0&&gr(s,i)>0;
     const pdExpiredDays=getExpired(s,i);
-    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>':''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
+    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
     btn.onclick=()=>{curP=i;renderDetail();};pt.appendChild(btn);
   });
   renderCal();renderLog();renderWage();

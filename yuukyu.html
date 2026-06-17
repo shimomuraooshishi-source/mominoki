@@ -862,7 +862,7 @@ function renderDetail(){
     const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
     const pdl=du(pd.expires),warn=pdl<=31&&pdl>0&&gr(s,i)>0;
     const pdExpiredDays=getExpired(s,i);
-    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>':''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
+    btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
     btn.onclick=()=>{curP=i;renderDetail();};pt.appendChild(btn);
   });
   renderCal();renderLog();renderWage();
