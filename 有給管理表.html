@@ -482,29 +482,29 @@ let ALL={
   'よつのは保育園':[
     {id:'date_keiko',name:'伊達　啓子',kana:'ダテ ケイコ',type:'seishain',join:'2019-05-22',
      periods:[
-       {label:'① 2019年度',start:'2019-11-22',end:'2020-11-21',total:10,carried:0,expires:'2021-11-21'},
-       {label:'② 2020年度',start:'2020-11-22',end:'2021-11-21',total:11,carried:5,expires:'2022-11-21'},
-       {label:'③ 2021年度',start:'2021-11-22',end:'2022-11-21',total:12,carried:10,expires:'2023-11-21'},
-       {label:'④ 2022年度',start:'2022-11-22',end:'2023-11-21',total:14,carried:12,expires:'2024-11-21'},
-       {label:'⑤ 2023年度',start:'2023-11-22',end:'2024-11-21',total:16,carried:10,expires:'2025-11-21'},
-       {label:'⑥ 2024年度',start:'2024-11-22',end:'2025-11-21',total:18,carried:8.5625,expires:'2026-11-21'},
-       {label:'⑦ 2025年度',start:'2025-11-22',end:'2026-11-21',total:20,carried:0,expires:'2027-11-21'},
+       {label:'① 2019年度',start:'2019-11-01',end:'2020-10-31',total:10,carried:0,expires:'2021-10-31'},
+       {label:'② 2020年度',start:'2020-11-01',end:'2021-10-31',total:11,carried:5,expires:'2022-10-31'},
+       {label:'③ 2021年度',start:'2021-11-01',end:'2022-10-31',total:12,carried:10,expires:'2023-10-31'},
+       {label:'④ 2022年度',start:'2022-11-01',end:'2023-10-31',total:14,carried:12,expires:'2024-10-31'},
+       {label:'⑤ 2023年度',start:'2023-11-01',end:'2024-10-31',total:16,carried:10,expires:'2025-10-31'},
+       {label:'⑥ 2024年度',start:'2024-11-01',end:'2025-10-31',total:18,carried:8.5625,expires:'2026-10-31'},
+       {label:'⑦ 2025年度',start:'2025-11-01',end:'2026-10-31',total:20,carried:0,expires:'2027-10-31'},
      ],
      leaves:[
        // ① 2019年度
        {date:'2019-12-05',days:1,period:0},{date:'2019-12-11',days:1,period:0},{date:'2019-12-19',days:1,period:0},
        {date:'2020-05-08',days:1,period:0},{date:'2020-05-09',days:1,period:0},
-       // ② 2020年度（11/19は③開始前のため②に計上）
+       // ② 2020年度
        {date:'2020-12-13',days:1,period:1},{date:'2020-12-29',days:1,period:1},
        {date:'2021-03-14',days:0.625,period:1},{date:'2021-03-22',days:0.375,period:1},
        {date:'2021-06-13',days:1,period:1},{date:'2021-07-08',days:1,period:1},{date:'2021-09-24',days:1,period:1},
-       {date:'2021-11-19',days:1,period:1},
-       // ③ 2021年度
+       // ③ 2021年度（11/19は③期間内）
+       {date:'2021-11-19',days:1,period:2},
        {date:'2021-12-03',days:0.5,period:2},{date:'2021-12-05',days:1,period:2},{date:'2021-12-06',days:1,period:2},
        {date:'2022-01-02',days:1,period:2},{date:'2022-01-07',days:1,period:2},
        {date:'2022-02-03',days:0.375,period:2},
        {date:'2022-08-13',days:1,period:2},{date:'2022-09-17',days:1,period:2},
-       // ④ 2022年度（11/1・11/21は⑤開始前のため④に計上）
+       // ④ 2022年度
        {date:'2023-02-08',days:1,period:3},{date:'2023-03-01',days:1,period:3},{date:'2023-04-03',days:1,period:3},
        {date:'2023-05-03',days:0.125,period:3},
        {date:'2023-06-03',days:1,period:3},{date:'2023-06-05',days:1,period:3},{date:'2023-06-14',days:1,period:3},
@@ -512,8 +512,8 @@ let ALL={
        {date:'2023-08-01',days:1,period:3},{date:'2023-08-14',days:1,period:3},
        {date:'2023-09-15',days:1,period:3},{date:'2023-09-25',days:1,period:3},
        {date:'2023-10-02',days:1,period:3},{date:'2023-10-09',days:1,period:3},{date:'2023-10-16',days:0.6875,period:3},
-       {date:'2023-11-01',days:1,period:3},{date:'2023-11-21',days:1,period:3},
-       // ⑤ 2023年度（11/11・11/12は⑥開始前のため⑤に計上）
+       // ⑤ 2023年度（11/1・11/21・11/11・11/12は⑤期間内）
+       {date:'2023-11-01',days:1,period:4},{date:'2023-11-21',days:1,period:4},
        {date:'2023-12-06',days:1,period:4},{date:'2023-12-11',days:0.875,period:4},
        {date:'2024-01-07',days:1,period:4},{date:'2024-01-08',days:1,period:4},
        {date:'2024-06-03',days:1,period:4},{date:'2024-06-04',days:1,period:4},{date:'2024-06-05',days:1,period:4},{date:'2024-06-06',days:1,period:4},
@@ -521,8 +521,8 @@ let ALL={
        {date:'2024-08-05',days:1,period:4},{date:'2024-08-06',days:1,period:4},
        {date:'2024-09-02',days:1,period:4},{date:'2024-09-09',days:1,period:4},{date:'2024-09-17',days:1,period:4},{date:'2024-09-24',days:0.0625,period:4},
        {date:'2024-10-14',days:0.6875,period:4},
-       {date:'2024-11-11',days:1,period:4},{date:'2024-11-12',days:1,period:4},
-       // ⑥ 2024年度（11/2・11/21は⑦開始前のため⑥に計上）
+       // ⑥ 2024年度（11/11・11/12は⑥期間内）
+       {date:'2024-11-11',days:1,period:5},{date:'2024-11-12',days:1,period:5},
        {date:'2024-12-09',days:1,period:5},{date:'2024-12-10',days:0.5,period:5},
        {date:'2025-01-08',days:1,period:5},{date:'2025-01-09',days:1,period:5},{date:'2025-01-10',days:1,period:5},{date:'2025-01-14',days:1,period:5},{date:'2025-01-15',days:0.25,period:5},{date:'2025-01-16',days:0.125,period:5},
        {date:'2025-02-10',days:1,period:5},{date:'2025-02-17',days:1,period:5},
@@ -530,8 +530,8 @@ let ALL={
        {date:'2025-04-09',days:1,period:5},{date:'2025-04-14',days:0.5,period:5},
        {date:'2025-07-07',days:1,period:5},{date:'2025-07-08',days:1,period:5},
        {date:'2025-10-20',days:0.6875,period:5},
-       {date:'2025-11-02',days:1,period:5},{date:'2025-11-21',days:1,period:5},
-       // ⑦ 2025年度
+       // ⑦ 2025年度（11/2・11/21は⑦期間内）
+       {date:'2025-11-02',days:1,period:6},{date:'2025-11-21',days:1,period:6},
        {date:'2026-01-19',days:0.5,period:6},
        {date:'2026-02-09',days:1,period:6},{date:'2026-02-16',days:1,period:6},{date:'2026-02-17',days:0.5,period:6},
        {date:'2026-03-17',days:1,period:6},
@@ -572,38 +572,25 @@ ST=ALL[curJ];
 function du(s){return Math.ceil((new Date(s)-today)/86400000);}
 // 有効期限が早い期から優先消費して各期の実消費日数を返す
 function calcPeriodConsumed(s){
-  const sorted=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
   const n=s.periods.length;
   const avail=new Array(n).fill(0);
   const consumed=new Array(n).fill(0);
 
-  // Step1: 付与日数のみで初期化（繰越なし）
+  // 消費: 各有給取得はperiodタグのバケツから消化（シンプル方式）
   for(let i=0;i<n;i++){
-    avail[i]=s.periods[i].total+(i===0?s.periods[0].carried||0:0);
+    consumed[i]=s.leaves.filter(l=>l.period===i).reduce((sum,l)=>sum+l.days,0);
   }
 
-  // Step2: 消費→繰越→再消費 を3回繰り返して収束させる
-  for(let pass=0;pass<3;pass++){
-    // 消費計算
-    const c=new Array(n).fill(0);
-    for(const l of sorted){
-      let rem=l.days;
-      const order=[...Array(n).keys()]
-        .filter(i=>l.date>=s.periods[i].start&&l.date<=s.periods[i].expires)
-        .sort((a,b)=>s.periods[a].expires.localeCompare(s.periods[b].expires));
-      for(const i of order){
-        if(rem<=0) break;
-        const use=Math.min(rem,Math.max(0,avail[i]-c[i]));
-        c[i]+=use; rem-=use;
-      }
-    }
-    for(let i=0;i<n;i++) consumed[i]=c[i];
-
-    // 繰越計算（expires切れなら手入力carried、そうでなければ残日数）
-    for(let i=1;i<n;i++){
-      const prevExpired=new Date(s.periods[i-1].expires)<today;
+  // 利用可能日数: period[0]は手入力carried、以降は期限切れなら手入力carried・未切れなら前期残を繰越
+  avail[0]=s.periods[0].total+(s.periods[0].carried||0);
+  for(let i=1;i<n;i++){
+    const prevExpired=new Date(s.periods[i-1].expires)<today;
+    const manualCarry=s.periods[i].carried||0;
+    if(prevExpired){
+      avail[i]=s.periods[i].total+manualCarry;
+    } else {
       const prevRem=Math.max(0,avail[i-1]-consumed[i-1]);
-      avail[i]=s.periods[i].total+(prevExpired?(s.periods[i].carried||0):prevRem);
+      avail[i]=s.periods[i].total+(manualCarry>0?manualCarry:prevRem);
     }
   }
 
@@ -612,7 +599,32 @@ function calcPeriodConsumed(s){
     total:p.total, carried:avail[i]-p.total,
     consumed:consumed[i], avail:avail[i]
   }));
-}function gc(s,i){
+}
+function calcPriority(s){
+  const n=s.periods.length,res=[];
+  let carryAvail=s.periods[0].carried||0;
+  for(let i=0;i<n;i++){
+    const p=s.periods[i];
+    const consumed=s.leaves.filter(l=>l.period===i).reduce((a,l)=>a+l.days,0);
+    const fromCarry=Math.min(consumed,carryAvail);
+    const fromGrant=Math.max(0,consumed-carryAvail);
+    const remCarry=Math.max(0,carryAvail-fromCarry);
+    const remGrant=Math.max(0,p.total-fromGrant);
+    const carryExpires=i>0?s.periods[i-1].expires:null;
+    const carryExpired=carryExpires?new Date(carryExpires)<today:false;
+    const lostCarry=carryExpired?remCarry:0;
+    const activeRem=remGrant+(carryExpired?0:remCarry);
+    res.push({i,carryAvail,grant:p.total,consumed,fromCarry,fromGrant,remCarry,remGrant,carryExpires,carryExpired,lostCarry,activeRem});
+    if(i+1<n){
+      const mc=s.periods[i+1].carried||0;
+      if(mc>0) carryAvail=mc;
+      else if(new Date(p.expires)<today) carryAvail=0;
+      else carryAvail=remCarry+remGrant;
+    }
+  }
+  return res;
+}
+function gc(s,i){
   if(i===0) return s.periods[0].carried||0;
   const b=calcPeriodConsumed(s)[i];
   return b.carried;
@@ -807,6 +819,7 @@ function renderList(){
 
 function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('listView').style.display='none';document.getElementById('detailView').style.display='block';document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===1));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-personal').classList.add('active');renderDetail();}
 function showList(){curS=null;document.getElementById('listView').style.display='';document.getElementById('detailView').style.display='none';}
+function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forEach((el,idx)=>{const sel=idx===i;el.style.border=sel?'2px solid var(--cn)':'1px solid var(--border)';const hd=el.querySelector('.period-tbl-head');if(hd)hd.style.background=sel?'var(--cnl)':'var(--cgl)';const lb=el.querySelector('.period-tbl-label');if(lb)lb.style.color=sel?'var(--cn)':'var(--sub)';});renderCal();renderLog();const glEl=document.getElementById('grantPeriodLabel');if(glEl)glEl.textContent=curS.periods[curP].label;const gdEl=document.getElementById('inpGrantDate');if(gdEl)gdEl.value=curS.periods[curP].start||'';const gdDEl=document.getElementById('inpGrantDays');if(gdDEl)gdDEl.value=curS.periods[curP].total||'';}
 
 function renderDetail(){
   const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
@@ -831,112 +844,19 @@ function renderDetail(){
   else if(dl<=31&&rem>0) ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
   else if(dl<=90&&rem>0) ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
   else ea.innerHTML='';
-  const expiredStat=getExpired(s,curP);
-  document.getElementById('dStats').innerHTML=`
-    <div class="st sn">
-      <span class="slbl">付与日</span>
-      ${p.start?`<span style="font-size:13px;font-weight:700;color:var(--cn);display:block;line-height:1.5">${new Date(p.start).getFullYear()}年</span><span style="font-size:13px;font-weight:700;color:var(--cn)">${new Date(p.start).getMonth()+1}月${new Date(p.start).getDate()}日</span>`:`<span class="sv" style="color:var(--cn)">—</span>`}
-    </div>
-    <div class="st sn">
-      <span class="slbl">付与日数</span>
-      <span class="sv">${p.total}日</span>
-      <span style="font-size:10px;color:var(--dim);display:block;margin-top:3px">期限: ${p.expires||'—'}</span>
-    </div>
-    <div class="st sn">
-      <span class="slbl">繰越</span>
-      <span class="sv">${carried}日</span>
-    </div>
-    <div class="st ${rem<=2&&!isExpired?'sd':rem<=5&&!isExpired?'sw':'so'}" ${isExpired?'style="background:#F3F4F6"':''}>
-      <span class="slbl">有給残</span>
-      <span class="sv" style="color:${isExpired?'var(--cg)':rem<=2?'var(--cr)':rem<=5?'var(--ca)':'var(--ct)'}">${isExpired?0:rem}日</span>
-    </div>
-    <div class="st sn" style="grid-column:span 2">
-      <span class="slbl">有給消化</span>
-      ${(()=>{
-        const buckets=calcPeriodConsumed(s);
-        const sorted2=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
-        const avail2=s.periods.map((p2,i)=>({total:p2.total,carried:buckets[i].carried,consumed:0}));
-        const leaveFrom={};
-        sorted2.forEach((l,li)=>{
-          let rem=l.days;
-          const order=[...Array(s.periods.length).keys()]
-            .filter(i=>l.date>=s.periods[i].start&&l.date<=s.periods[i].expires)
-            .sort((a,bx)=>s.periods[a].expires.localeCompare(s.periods[bx].expires));
-          leaveFrom[li]=[];
-          for(const i of order){
-            if(rem<=0) break;
-            const av=Math.max(0,avail2[i].total+avail2[i].carried-avail2[i].consumed);
-            const use=Math.min(rem,av);
-            if(use>0){leaveFrom[li].push({periodIdx:i,days:use});avail2[i].consumed+=use;rem-=use;}
-          }
-        });
-        // 当期自身の有給：どのバケツから消化したか集計
-        const ownLeaves=sorted2.filter(l=>l.period===curP);
-        const ownTotal=ownLeaves.reduce((a,l)=>a+l.days,0);
-        const ownByBucket={};
-        ownLeaves.forEach(l=>{
-          const li=sorted2.findIndex(x=>x.date===l.date&&x.period===l.period&&x.days===l.days);
-          (leaveFrom[li]||[]).forEach(src=>{
-            ownByBucket[src.periodIdx]=(ownByBucket[src.periodIdx]||0)+src.days;
-          });
-        });
-        // 後期が当期バケツから消化した分
-        const laterByPeriod={};
-        sorted2.forEach((l,li)=>{
-          if(l.period===curP) return;
-          (leaveFrom[li]||[]).forEach(src=>{
-            if(src.periodIdx===curP) laterByPeriod[l.period]=(laterByPeriod[l.period]||0)+src.days;
-          });
-        });
-        const bucketTotal=Object.values(ownByBucket).filter((_,i)=>parseInt(Object.keys(ownByBucket)[i])===curP).reduce((a,v)=>a+v,0)
-          +Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
-        if(ownTotal===0&&Object.keys(laterByPeriod).length===0) return `<span class="sv" style="display:block;margin-top:4px">0日</span>`;
-        const curLabel=s.periods[curP].label;
-        let html=`<div style="margin-top:6px;display:flex;flex-direction:column;gap:4px;font-size:13px">`;
-        // 当期自身の消化：前期バケツ分（暗い背景）→ 当期バケツ分
-        Object.keys(ownByBucket).sort((a,b)=>a-b).forEach(key=>{
-          const ki=parseInt(key);
-          const isOther=ki!==curP;
-          const fromLabel=s.periods[ki].label;
-          if(isOther){
-            html+=`<div style="display:flex;justify-content:space-between;align-items:baseline;gap:6px;background:var(--bg2,#F3F4F6);border-radius:4px;padding:3px 8px;">
-              <span style="color:var(--text)">${curLabel}<span style="font-size:11px;color:var(--dim)">（${fromLabel}から消化）</span></span>
-              <span style="font-weight:600;flex-shrink:0">${ownByBucket[key]}日</span>
-            </div>`;
-          } else {
-            html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;">
-              <span style="color:var(--dim)">${curLabel}</span>
-              <span style="font-weight:600">${ownByBucket[key]}日</span>
-            </div>`;
-          }
-        });
-        // 当期自身の合計
-        html+=`<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding:5px 8px 0;font-weight:600;color:var(--text)"><span>計</span><span>${ownTotal}日</span></div>`;
-        // 後期が当期バケツから消化
-        if(Object.keys(laterByPeriod).length>0){
-          html+=`<div style="margin-top:4px">`;
-          Object.keys(laterByPeriod).sort((a,b)=>a-b).forEach(key=>{
-            const ki=parseInt(key);
-            html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 8px;">
-              <span style="color:var(--dim)">${s.periods[ki].label}</span>
-              <span style="font-weight:600">${laterByPeriod[key]}日</span>
-            </div>`;
-          });
-          html+=`</div>`;
-          const total=(Object.values(ownByBucket).reduce((a,v)=>a+v,0)-( ownByBucket[Object.keys(ownByBucket).find(k=>parseInt(k)<curP)]||0 ))+Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
-          const selfBucket=ownByBucket[curP]||0;
-          const laterSum=Object.values(laterByPeriod).reduce((a,v)=>a+v,0);
-          html+=`<div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding:5px 8px 0;font-weight:600;color:var(--text)"><span>消化合計</span><span>${selfBucket+laterSum}日</span></div>`;
-        }
-        html+=`</div>`;
-        return html;
-      })()}
-    </div>
-    <div class="st ${expiredStat>0?'sg2':'sn'}">
-      <span class="slbl">失効${isExpired?'日数':'見込'}</span>
-      <span class="sv" style="color:${expiredStat>0?'var(--cr)':'var(--dim)'}">${expiredStat>0?expiredStat+'日':'—'}</span>
-      ${isExpired&&expiredStat>0?`<span style="font-size:10px;color:var(--dim);display:block;margin-top:2px">${p.expires}</span>`:''}
-    </div>`;
+  const allB=calcPriority(s);
+  const fv=v=>Math.round(v*10000)/10000;
+  const b=allB[curP];const p2=s.periods[curP];
+  const tdS='border:0.5px solid var(--border2);padding:6px 8px;text-align:center;vertical-align:middle';
+  const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
+  const carryCell=b.carryAvail>0?`<div style="display:flex;align-items:baseline;justify-content:center;gap:5px"><span style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">${fv(b.carryAvail)}日</span>${b.remCarry>0?`<span style="font-size:12px;color:var(--cr)">${fv(b.remCarry)}日</span>`:''}</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：${b.carryExpires||'—'}</div>`:dash2;
+  const grantCell=`<div style="font-size:15px;font-weight:600">${p2.total}日</div><div style="font-size:10px;color:var(--dim);margin-top:3px">期限：${p2.expires}</div>`;
+  const remCell=b.activeRem>0?`<span style="font-size:14px;font-weight:700;color:${b.activeRem<=2?'var(--cr)':b.activeRem<=5?'var(--ca)':'var(--ct)'}">${fv(b.activeRem)}日</span>`:`<span style="color:var(--dim)">—</span>`;
+  const lostCell=b.lostCarry>0?`<span style="font-size:13px;font-weight:700;color:var(--cr)">${fv(b.lostCarry)}日</span>`:`<span style="color:var(--dim)">—</span>`;
+  const carryCon=b.fromCarry>0?`<div style="font-size:15px;font-weight:600;text-decoration:line-through;opacity:.35;color:var(--dim)">${fv(b.fromCarry)}日</div>`:dash2;
+  const grantCon=b.fromGrant>0?`<div style="font-size:15px;font-weight:600">${fv(b.fromGrant)}日</div>`:dash2;
+  const ptH=`<table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup><col style="width:32%"><col style="width:32%"><col style="width:18%"><col style="width:18%"></colgroup><tr>${['繰越','付与日数','有給残','失効日数'].map(h=>`<th style="background:var(--cgl);font-weight:400;color:var(--dim);font-size:11px;padding:5px 8px;border:0.5px solid var(--border2);text-align:center">${h}</th>`).join('')}</tr><tr><td style="${tdS}">${carryCell}</td><td style="${tdS}">${grantCell}</td><td rowspan="3" style="${tdS}">${remCell}</td><td rowspan="3" style="${tdS}">${lostCell}</td></tr><tr><td style="${tdS}"><span style="font-size:11px;color:var(--dim)">有給消化</span></td><td style="${tdS}"><span style="font-size:11px;color:var(--dim)">有給消化</span></td></tr><tr><td style="${tdS}">${carryCon}</td><td style="${tdS}">${grantCon}</td></tr></table>`;
+  const dsEl=document.getElementById('dStats');dsEl.style.cssText='display:block;margin-bottom:14px';dsEl.innerHTML=ptH;
   const pt=document.getElementById('dPtabs');pt.innerHTML='';
   s.periods.forEach((pd,i)=>{
     const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
@@ -1174,41 +1094,27 @@ function renderLog(){
   const pl=s.leaves.map((l,i)=>({...l,idx:i})).filter(l=>l.period===curP);
   if(!pl.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:14px">記録がありません</td></tr>';return;}
   const buckets=calcPeriodConsumed(s);
-  const sorted=[...s.leaves].sort((a,b)=>a.date.localeCompare(b.date));
-  const tempBuckets=s.periods.map((p,i)=>({
-    i, start:p.start, end:p.end, expires:p.expires,
-    total:p.total, carried:i===0?(p.carried||0):0, consumed:0
-  }));
-  for(let i=1;i<tempBuckets.length;i++){
-    const prev=tempBuckets[i-1];
-    const prevRem=prev.total+prev.carried-prev.consumed;
-    tempBuckets[i].carried=new Date(prev.expires)<today?0:Math.max(0,prevRem);
-  }
-  const leaveSource={};
-  for(const l of sorted){
-    let rem=l.days;
-    const sources=[];
-    const eligible=tempBuckets
-      .filter(b=>l.date>=b.start&&l.date<=b.expires)
-      .sort((a,b)=>a.expires.localeCompare(b.expires));
-    for(const b of eligible){
-      if(rem<=0) break;
-      const avail=Math.max(0,b.total+b.carried-b.consumed);
-      const use=Math.min(rem,avail);
-      if(use>0){sources.push({label:s.periods[b.i].label,days:use});b.consumed+=use;rem-=use;}
-    }
-    leaveSource[l.date+'_'+l.days]=sources;
-  }
+  const carryIn=Math.max(0,buckets[curP].avail-s.periods[curP].total);
+  const prevLabel=curP>0?s.periods[curP-1].label:null;
   let cumul=0;
   pl.forEach(l=>{
-    cumul+=l.days;const d=new Date(l.date),tr=document.createElement('tr');
-    const key=l.date+'_'+l.days;
-    const sources=leaveSource[key]||[];
-    const sourceLabel=sources.length>0
-      ?sources.map(src=>`<span style="font-size:11px;font-weight:500;background:${src.label===s.periods[curP].label?'var(--cnl)':'var(--cal)'};color:${src.label===s.periods[curP].label?'var(--cn)':'var(--ca)'};padding:2px 7px;border-radius:10px;white-space:nowrap">${src.label}から${src.days}日</span>`).join(' ')
-      :`<span style="font-size:11px;color:var(--dim)">${s.periods[l.period].label}</span>`;
+    const before=cumul;
+    cumul+=l.days;
+    const d=new Date(l.date),tr=document.createElement('tr');
+    const fromCarry=Math.max(0,Math.min(l.days,carryIn-before));
+    const fromNew=Math.round((l.days-fromCarry)*1000)/1000;
+    const isCarry=fromCarry>0;
+    let sourceLabel='';
+    if(isCarry&&fromNew>0){
+      sourceLabel=`<span style="font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #FCD34D">🔄 繰越から${Math.round(fromCarry*1000)/1000}日</span> <span style="font-size:11px;font-weight:600;background:var(--cnl);color:var(--cn);padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #A8C4DC">本年度から${fromNew}日</span>`;
+    } else if(isCarry){
+      sourceLabel=`<span style="font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #FCD34D">🔄 繰越から${Math.round(fromCarry*1000)/1000}日</span>`;
+    } else {
+      sourceLabel=`<span style="font-size:11px;color:var(--dim)">本年度分</span>`;
+    }
+    if(isCarry) tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
     tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
-      <td style="font-weight:600;color:var(--text)">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
+      <td style="font-weight:600;color:var(--text)${isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
       <td><span style="font-size:14px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span></td>
       <td>${sourceLabel}</td>
       <td><span style="font-size:13px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
