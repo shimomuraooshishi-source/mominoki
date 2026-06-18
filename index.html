@@ -893,19 +893,7 @@ function renderCal(){
   while(d<=endMo){months.push(new Date(d));d=new Date(d.getFullYear(),d.getMonth()+1,1);}
   const dl=du(p.expires),isExp=expDate&&expDate<today;
   const carried=gc(s,curP),rem=gr(s,curP),used=gu(s,curP);
-  const barBg=isExp?'#F3F4F6':dl<=31?'var(--crl)':dl<=90?'var(--cal)':'var(--ctl)';
-  const barBd=isExp?'#D1D5DB':dl<=31?'#FECACA':dl<=90?'#FDE68A':'#A7F3D0';
-  const barCol=isExp?'var(--cg)':dl<=31?'var(--cr)':dl<=90?'var(--ca)':'var(--ct)';
-  const expiredDaysBar=getExpired(s,curP);
-  const usedInPeriod=isExp?p.total-expiredDaysBar:s.leaves.filter(l=>l.date>=p.start&&l.date<=p.expires).reduce((a,l)=>a+l.days,0);
-  const barMsg=isExp
-    ?`有効期限 <strong>${p.expires}</strong> 切れ。&nbsp; 付与日数 <strong>${p.total}日</strong> ー 期限内消化 <strong>${usedInPeriod}日</strong> ＝ <strong style="color:var(--cr)">${expiredDaysBar}日失効</strong>`
-    :`有効期限 <strong>${p.expires||'—'}</strong> までに、付与日数 <strong>${p.total}日</strong> を消化してください。`;
-  let h=`<div style="font-size:12px;padding:10px 14px;background:${barBg};border:1px solid ${barBd};border-left:4px solid ${barBd};border-radius:10px;margin-bottom:12px;color:${barCol};display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-    <i class="ti ti-info-circle" aria-hidden="true" style="font-size:15px;flex-shrink:0"></i>
-    <span>${barMsg}</span>
-    <span style="margin-left:auto;font-size:11px;font-weight:600">${isExp?'失効済':'残'+dl+'日'}</span>
-  </div>`;
+  let h=``;
   const calEnd=new Date(endMo.getFullYear(),endMo.getMonth()+1,0);
   const allExpiredInfos=[];
   s.periods.forEach((pd,i)=>{
