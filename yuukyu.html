@@ -861,7 +861,7 @@ function renderDetail(){
     ea.innerHTML='';
     if(ha)ha.innerHTML='';
   }
-  const tdS='border:1px solid var(--border);padding:10px 12px;text-align:center;vertical-align:middle';
+  const tdS='border:1px solid var(--border);padding:10px 12px;text-align:center;vertical-align:middle;background:#F8FAFC';
   const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
   const remStr=pb.remCarry>0?'<span style="font-size:13px;color:var(--cr);font-weight:600">'+fv(pb.remCarry)+'日</span>':'';
   const carryCell=pb.carryAvail>0?'<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.carryAvail)+'日</span>'+remStr+'</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+(pb.carryExpires||'—')+'</div>':dash2;
