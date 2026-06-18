@@ -256,8 +256,8 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 /* ── LOG TABLE ── */
 .lt{width:100%;font-size:13px;border-collapse:collapse}
 .lt th{
-  text-align:left;padding:8px 12px;font-weight:600;font-size:11px;
-  letter-spacing:.5px;text-transform:uppercase;
+  text-align:left;padding:8px 12px;font-weight:600;font-size:13px;
+  letter-spacing:.3px;text-transform:uppercase;
   background:var(--cnl);color:var(--cn);border-bottom:2px solid #A8C4DC;
 }
 .lt td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
@@ -369,38 +369,38 @@ input[type="text"],input[type="number"],input[type="date"],select{
           <div class="sr" id="dStats"></div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;align-items:center" id="dPtabs"></div>
           <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="bo" onclick="addPastPeriod()" style="font-size:12px;padding:5px 14px;border-color:#FCD34D;color:var(--ca)">
+            <button class="bo" onclick="addPastPeriod()" style="font-size:14px;padding:6px 16px;border-color:#FCD34D;color:var(--ca)">
               <i class="ti ti-chevron-left" aria-hidden="true"></i> 過去の年度を追加
             </button>
-            <button class="bo" onclick="addNewPeriod()" style="font-size:12px;padding:5px 14px;border-color:#A7F3D0;color:var(--ct)">
+            <button class="bo" onclick="addNewPeriod()" style="font-size:14px;padding:6px 16px;border-color:#A7F3D0;color:var(--ct)">
               <i class="ti ti-plus" aria-hidden="true"></i> 新しい年度を追加
             </button>
           </div>
           <div id="dCal"></div>
           <hr class="sep">
-          <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-gift" aria-hidden="true" style="margin-right:5px"></i>付与日・付与日数を入力</div>
+          <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-gift" aria-hidden="true" style="margin-right:5px"></i>付与日・付与日数を入力</div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--cnl);border-radius:10px;border:1px solid #A8C4DC">
-            <label style="font-size:13px;color:var(--dim);font-weight:500">付与日</label>
-            <input type="date" id="inpGrantDate" style="font-size:13px;padding:6px 10px;border:1.5px solid #A8C4DC;border-radius:8px;background:#fff;color:var(--text)">
-            <label style="font-size:13px;color:var(--dim);font-weight:500">付与日数</label>
-            <input type="number" id="inpGrantDays" min="0.5" step="0.5" value="" placeholder="日数" style="width:80px;font-size:13px;padding:6px 10px;border:1.5px solid #A8C4DC;border-radius:8px;background:#fff;color:var(--text)">
-            <span style="font-size:13px;color:var(--dim)">日</span>
+            <label style="font-size:15px;color:var(--dim);font-weight:500">付与日</label>
+            <input type="date" id="inpGrantDate" style="font-size:15px;padding:6px 10px;border:1.5px solid #A8C4DC;border-radius:8px;background:#fff;color:var(--text)">
+            <label style="font-size:15px;color:var(--dim);font-weight:500">付与日数</label>
+            <input type="number" id="inpGrantDays" min="0.5" step="0.5" value="" placeholder="日数" style="width:90px;font-size:15px;padding:6px 10px;border:1.5px solid #A8C4DC;border-radius:8px;background:#fff;color:var(--text)">
+            <span style="font-size:15px;color:var(--dim)">日</span>
             <button class="badd" onclick="addGrant()" style="background:linear-gradient(135deg,#059669,#10B981)"><i class="ti ti-check" aria-hidden="true" style="font-size:13px;vertical-align:-1px;margin-right:3px"></i>反映</button>
-            <span style="font-size:11px;color:var(--dim)">※ 現在選択中の期「<span id="grantPeriodLabel"></span>」に反映されます</span>
+            <span style="font-size:13px;color:var(--dim)">※ 現在選択中の期「<span id="grantPeriodLabel"></span>」に反映されます</span>
           </div>
           <hr class="sep">
-          <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-calendar-plus" aria-hidden="true" style="margin-right:5px"></i>有給を追加</div>
+          <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-calendar-plus" aria-hidden="true" style="margin-right:5px"></i>有給を追加</div>
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <label style="font-size:13px;color:var(--dim);font-weight:500">日付</label>
-            <input type="date" id="inpDate" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
-            <label style="font-size:13px;color:var(--dim);font-weight:500">日数</label>
-            <input type="number" id="inpDays" value="1" min="0.001" max="1" step="0.001" style="width:90px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)" placeholder="例:0.625">
-            <span style="font-size:13px;color:var(--dim)">日</span>
+            <label style="font-size:15px;color:var(--dim);font-weight:500">日付</label>
+            <input type="date" id="inpDate" style="font-size:15px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
+            <label style="font-size:15px;color:var(--dim);font-weight:500">日数</label>
+            <input type="number" id="inpDays" value="1" min="0.001" max="1" step="0.001" style="width:100px;font-size:15px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)" placeholder="例:0.625">
+            <span style="font-size:15px;color:var(--dim)">日</span>
             <button class="badd" onclick="addLeave()">追加</button>
           </div>
           <div id="wageArea"></div>
           <hr class="sep">
-          <div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
+          <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
           <table class="lt">
             <thead><tr><th style="width:32px"></th><th>日付</th><th>日数</th><th>期</th><th>累計</th><th></th></tr></thead>
             <tbody id="logBody"></tbody>
@@ -1012,7 +1012,7 @@ function renderCal(){
     h+=`</div>`;
   }
 
-  h+=`<div style="display:flex;gap:14px;margin-top:10px;font-size:11px;color:var(--dim);align-items:center;flex-wrap:wrap">
+  h+=`<div style="display:flex;gap:14px;margin-top:10px;font-size:13px;color:var(--dim);align-items:center;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;background:#FEF9C3;border:1.5px solid #FDE047;border-radius:3px"></div>付与日</div>
     <div style="display:flex;align-items:center;gap:5px"><div style="width:12px;height:12px;background:var(--cr);border-radius:3px"></div>有効期限（失効）</div>
     <div style="display:flex;align-items:center;gap:5px"><div class="dot-full"></div>1日取得</div>
