@@ -792,7 +792,7 @@ function renderList(){
     d.onclick=()=>openDetail(s.id);
     const ini=s.name.replace(/[\s　]/g,'').slice(-2);
     d.innerHTML=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--dim);margin-bottom:3px">${toHira(s.kana)||''}</div><div style="font-weight:700;font-size:18px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.name}</div><div style="font-size:14px;color:var(--dim);margin-top:3px">${tl(s.type)}</div></div>
+      <div style="flex:1;min-width:0"><div style="font-size:13px;color:var(--dim);margin-bottom:3px">${toHira(s.kana)||''}</div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-weight:700;font-size:18px;color:var(--text)">${s.name}</div><span class="bdg ${s.type==='seishain'?'bs':'bp'}" style="font-size:13px">${tl(s.type)}</span></div></div>
       ${ic?'<i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:20px;color:var(--crm);flex-shrink:0"></i>':''}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
