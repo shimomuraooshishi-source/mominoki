@@ -846,8 +846,8 @@ function renderDetail(){
   const tdS='border:1px solid var(--border);padding:10px 12px;text-align:center;vertical-align:middle';
   const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
   const remStr=pb.remCarry>0?'<span style="font-size:13px;color:var(--cr);font-weight:600">'+fv(pb.remCarry)+'日</span>':'';
-  const carryCell=pb.carryAvail>0?'<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:16px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.carryAvail)+'日</span>'+remStr+'</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+(pb.carryExpires||'—')+'</div>':dash2;
-  const grantCell='<div style="font-size:16px;font-weight:700;color:var(--text)">'+p2.total+'日</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+p2.expires+'</div>';
+  const carryCell=pb.carryAvail>0?'<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.carryAvail)+'日</span>'+remStr+'</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+(pb.carryExpires||'—')+'</div>':dash2;
+  const grantCell='<div style="font-size:18px;font-weight:700;color:var(--text)">'+p2.total+'日</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+p2.expires+'</div>';
   const remColor=pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)';
   const remCell=pb.activeRem>0?'<span style="font-size:20px;font-weight:700;color:'+remColor+'">'+fv(pb.activeRem)+'日</span>':'<span style="color:var(--dim)">—</span>';
   const lostCell=pb.lostCarry>0?'<span style="font-size:16px;font-weight:700;color:var(--cr)">'+fv(pb.lostCarry)+'日</span>':'<span style="color:var(--dim)">—</span>';
