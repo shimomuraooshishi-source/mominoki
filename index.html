@@ -853,7 +853,7 @@ function renderDetail(){
   var grantCell='<div style="font-size:18px;font-weight:700;color:var(--text)">'+p2.total+'日</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+p2.expires+'</div>';
   var remColor=pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)';
   var remCell=pb.activeRem>0?'<span style="font-size:20px;font-weight:700;color:'+remColor+'">'+fv(pb.activeRem)+'日</span>':'<span style="color:var(--dim)">—</span>';
-  var lostCell=pb.lostCarry>0?'<span style="font-size:16px;font-weight:700;color:var(--cr)">'+fv(pb.lostCarry)+'日</span>':'<span style="color:var(--dim)">—</span>';
+  var lostCell=pb.lostCarry>0?'<span style="font-size:18px;font-weight:700;color:var(--cr)">'+fv(pb.lostCarry)+'日</span>':'<span style="color:var(--dim)">—</span>';
   var carryCon=pb.fromCarry>0?'<div style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.fromCarry)+'日</div>':dash2;
   var grantCon=pb.fromGrant>0?'<div style="font-size:18px;font-weight:700;color:var(--text)">'+fv(pb.fromGrant)+'日</div>':dash2;
   var thS='background:var(--cnl);font-weight:600;color:var(--cn);font-size:12px;padding:8px 10px;border:1px solid var(--border);text-align:center;letter-spacing:.3px';
