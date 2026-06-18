@@ -586,7 +586,8 @@ function calcPeriodConsumed(s){
   // 利用可能日数: period[0]は手入力carried、以降は期限切れなら手入力carried・未切れなら前期残を繰越
   avail[0]=s.periods[0].total+(s.periods[0].carried||0);
   for(let i=1;i<n;i++){
-    const prevExpired=new Date(s.periods[i-1].expires)<today;
+    const curStart=s.periods[i].start;
+    const prevExpired=curStart?new Date(s.periods[i-1].expires)<new Date(curStart):new Date(s.periods[i-1].expires)<today;
     const manualCarry=s.periods[i].carried||0;
     if(prevExpired){
       avail[i]=s.periods[i].total+manualCarry;
@@ -613,14 +614,14 @@ function calcPriority(s){
     const remCarry=Math.max(0,carryAvail-fromCarry);
     const remGrant=Math.max(0,p.total-fromGrant);
     const carryExpires=i>0?s.periods[i-1].expires:null;
-    const carryExpired=carryExpires?new Date(carryExpires)<today:false;
+    const carryExpired=carryExpires?(p.start?new Date(carryExpires)<new Date(p.start):new Date(carryExpires)<today):false;
     const lostCarry=carryExpired?remCarry:0;
     const activeRem=remGrant+(carryExpired?0:remCarry);
     res.push({i,carryAvail,grant:p.total,consumed,fromCarry,fromGrant,remCarry,remGrant,carryExpires,carryExpired,lostCarry,activeRem});
     if(i+1<n){
       const mc=s.periods[i+1].carried||0;
       if(mc>0) carryAvail=mc;
-      else if(new Date(p.expires)<today) carryAvail=0;
+      else if(new Date(p.expires)<(s.periods[i+1].start?new Date(s.periods[i+1].start):today)) carryAvail=0;
       else carryAvail=remCarry+remGrant;
     }
   }
@@ -643,8 +644,10 @@ function gr(s,i){
 function getExpired(s,i){
   const p=s.periods[i];
   if(new Date(p.expires)>=today) return 0;
-  const b=calcPeriodConsumed(s)[i];
-  return Math.max(0,p.total-b.consumed);
+  const bs=calcPeriodConsumed(s);const b=bs[i];
+  const remaining=Math.max(0,b.avail-b.consumed);
+  if(i+1<s.periods.length&&s.periods[i+1].start&&new Date(p.expires)>=new Date(s.periods[i+1].start)) return 0;
+  return remaining;
 }
 function tl(t){return CFG.tl[t]||t;}
 function fmtD(s){const d=new Date(s);return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';}
