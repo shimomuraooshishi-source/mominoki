@@ -361,7 +361,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
     <div id="detailView" style="display:none">
       <button class="bback" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
       <div class="pnl">
-        <div class="ph"><i class="ti ti-user-circle" aria-hidden="true" style="font-size:26px;flex-shrink:0"></i><span style="display:flex;flex-direction:column;gap:3px"><span style="font-size:13px;color:#4A7BAB;font-weight:400" id="dHeadKana"></span><span style="display:flex;align-items:center;gap:8px"><span id="dHeadName"></span><span class="bdg" id="dBadge"></span></span><span style="font-size:13px;color:var(--dim);font-weight:400" id="dHeadJoin"></span></span></div>
+        <div class="ph"><i class="ti ti-user-circle" aria-hidden="true" style="font-size:26px;flex-shrink:0"></i><span style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:13px;color:#4A7BAB;font-weight:400" id="dHeadKana"></span><span style="display:flex;align-items:center;gap:8px"><span id="dHeadName"></span><span class="bdg" id="dBadge"></span></span><span style="font-size:13px;color:var(--dim);font-weight:400" id="dHeadJoin"></span></span><span id="dHeadAlert" style="flex-shrink:0;align-self:center"></span></div>
         <div class="pb">
           <div id="dExpAlert"></div>
           <div id="dAv" style="display:none"></div>
@@ -841,9 +841,10 @@ function renderDetail(){
       付与日数 <strong>${p.total}日</strong> ー 期限内消化 <strong>${usedIn}日</strong> ＝ <strong style="color:var(--cr)">${expiredDays}日が失効</strong>
     </div></div>`;
   }
-  else if(dl<=31&&rem>0) ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
+  else if(dl<=31&&rem>0){ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;}
   else if(dl<=90&&rem>0) ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
   else ea.innerHTML='';
+  const ha=document.getElementById('dHeadAlert');if(ha)ha.innerHTML=dl<=31&&rem>0?`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:4px"></i>有給失効まで${dl}日</span>`:(isExpired&&expiredDays>0?`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-ban" style="font-size:12px;margin-right:4px"></i>${expiredDays}日失効</span>`:'');
   const allB=calcPriority(s);
   const fv=v=>Math.round(v*10000)/10000;
   const pb=allB[curP];const p2=s.periods[curP];
