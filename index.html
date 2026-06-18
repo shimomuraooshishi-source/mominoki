@@ -351,9 +351,21 @@ input[type="text"],input[type="number"],input[type="date"],select{
   </div>
 
   <div id="detailView" style="display:none">
-      <button class="bback" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="bback" style="margin-bottom:0" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
+        <div style="width:1px;height:32px;background:var(--border)"></div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-size:13px;color:#4A7BAB;font-weight:400" id="dHeadKana"></span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="dHeadName"></span>
+            <span class="bdg" id="dBadge"></span>
+            <span id="dHeadAlert"></span>
+          </div>
+        </div>
+        <div style="width:1px;height:32px;background:var(--border)"></div>
+        <span style="font-size:13px;color:var(--dim);font-weight:400" id="dHeadJoin"></span>
+      </div>
       <div class="pnl">
-        <div class="ph"><i class="ti ti-user-circle" aria-hidden="true" style="font-size:26px;flex-shrink:0"></i><span style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:13px;color:#4A7BAB;font-weight:400" id="dHeadKana"></span><span style="display:flex;align-items:center;gap:8px"><span id="dHeadName"></span><span class="bdg" id="dBadge"></span></span><span style="font-size:13px;color:var(--dim);font-weight:400" id="dHeadJoin"></span></span><span id="dHeadAlert" style="flex-shrink:0;align-self:center"></span></div>
         <div class="pb">
           <div id="dAv" style="display:none"></div>
           <div id="dName" style="display:none"></div>
