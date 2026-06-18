@@ -1009,10 +1009,10 @@ function renderCal(){
     h+=`<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">`;
     expInfoList.sort((a,b)=>a[0].localeCompare(b[0])).forEach(([dt,infos])=>{
       infos.forEach(info=>{
-        const hasExp=info.expiredDays>0;
-        h+=`<div style="font-size:13px;padding:8px 12px;background:${hasExp?'var(--crl)':'#F5F3FF'};border:1px solid ${hasExp?'#FECACA':'#DDD6FE'};border-left:4px solid ${hasExp?'var(--cr)':'#7C3AED'};border-radius:8px;color:${hasExp?'#7F1D1D':'#4C1D95'};display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        if(info.expiredDays<=0) return;
+        h+=`<div style="font-size:13px;padding:8px 12px;background:var(--crl);border:1px solid #FECACA;border-left:4px solid var(--cr);border-radius:8px;color:#7F1D1D;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <i class="ti ti-calendar-x" aria-hidden="true" style="font-size:16px;flex-shrink:0"></i>
-          <span><strong>${dt}</strong>（${info.label}）有効期限 ${hasExp?`→ <strong style="color:var(--cr)">${info.expiredDays}日失効</strong>`:'→ 失効なし'}</span>
+          <span><strong>${dt}</strong>（${info.label}）→ <strong style="color:var(--cr)">${info.expiredDays}日失効</strong></span>
         </div>`;
       });
     });
