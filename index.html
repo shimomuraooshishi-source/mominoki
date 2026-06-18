@@ -768,7 +768,7 @@ function renderOverall(){
       <td><div style="text-align:center"><span style="font-size:13px;color:var(--dim);display:block">${toHira(s.kana).replace(/[\s　]+/g,'　　')}</span><span style="font-weight:700;color:var(--text);font-size:18px">${s.name}</span></div></td>
       <td><span class="bdg ${s.type==='seishain'?'bs':'bp'}">${tl(s.type)}</span></td>
       <td style="text-align:center"><span style="font-size:15px;font-weight:600;color:var(--text)">${joinDateFmt}</span></td>
-      <td style="text-align:center"><span style="font-size:18px;font-weight:700;color:var(--text)">${totalRem}日</span></td>
+      <td style="text-align:center"><span style="font-size:15px;font-weight:600;color:var(--text)">${totalRem}日</span></td>
       <td style="text-align:center">${expiryOnlyCell}</td>
       <td style="text-align:center">${daysLeftCell}</td>
       <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:15px;font-weight:600;color:var(--text)">${willExpire}日</span>` : '<span style="font-size:15px;color:var(--dim)">—</span>'}</td>
