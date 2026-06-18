@@ -325,8 +325,8 @@ input[type="text"],input[type="number"],input[type="date"],select{
   <div id="mainView">
     <div id="alertCards"></div>
     <div class="pnl">
-      <div class="ph"><i class="ti ti-users" aria-hidden="true"></i> スタッフ一覧</div>
-      <div class="fr" style="margin-bottom:14px">
+      <div class="ph" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <span style="display:flex;align-items:center;gap:6px;margin-right:6px"><i class="ti ti-users" aria-hidden="true"></i> スタッフ一覧</span>
         <button class="fb active" onclick="setFlt('all',this)">全員</button>
         <button class="fb" onclick="setFlt('seishain',this)">正社員</button>
         <button class="fb" onclick="setFlt('part',this)">パート</button>
