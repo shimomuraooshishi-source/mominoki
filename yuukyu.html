@@ -321,15 +321,17 @@ input[type="text"],input[type="number"],input[type="date"],select{
 
 <div class="body">
   <div id="alertArea"></div>
-  <div class="tw">
-    <button class="tab active" onclick="swTab('overall')"><i class="ti ti-layout-list" aria-hidden="true" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>全体一覧</button>
-    <button class="tab" onclick="swTab('personal')"><i class="ti ti-user" aria-hidden="true" style="font-size:14px;vertical-align:-1px;margin-right:4px"></i>個人詳細</button>
-  </div>
 
-  <div id="tab-overall" class="sec active">
+  <div id="mainView">
     <div id="alertCards"></div>
     <div class="pnl">
       <div class="ph"><i class="ti ti-users" aria-hidden="true"></i> スタッフ一覧</div>
+      <div class="fr" style="margin-bottom:14px">
+        <button class="fb active" onclick="setFlt('all',this)">全員</button>
+        <button class="fb" onclick="setFlt('seishain',this)">正社員</button>
+        <button class="fb" onclick="setFlt('part',this)">パート</button>
+        <button class="bo" onclick="openStaffMdl(null)" style="margin-left:auto;font-size:15px"><i class="ti ti-plus" aria-hidden="true"></i> スタッフ追加</button>
+      </div>
       <div style="overflow-x:auto">
         <table class="ot" style="min-width:620px">
           <thead><tr>
@@ -348,17 +350,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
     </div>
   </div>
 
-  <div id="tab-personal" class="sec">
-    <div id="listView">
-      <div class="fr">
-        <button class="fb active" onclick="setFlt('all',this)">全員</button>
-        <button class="fb" onclick="setFlt('seishain',this)">正社員</button>
-        <button class="fb" onclick="setFlt('part',this)">パート</button>
-        <button class="bo" onclick="openStaffMdl(null)" style="margin-left:auto;font-size:15px"><i class="ti ti-plus" aria-hidden="true"></i> スタッフ追加</button>
-      </div>
-      <div class="sg" id="staffGrid"></div>
-    </div>
-    <div id="detailView" style="display:none">
+  <div id="detailView" style="display:none">
       <button class="bback" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
       <div class="pnl">
         <div class="ph"><i class="ti ti-user-circle" aria-hidden="true" style="font-size:26px;flex-shrink:0"></i><span style="display:flex;flex-direction:column;gap:3px;flex:1"><span style="font-size:13px;color:#4A7BAB;font-weight:400" id="dHeadKana"></span><span style="display:flex;align-items:center;gap:8px"><span id="dHeadName"></span><span class="bdg" id="dBadge"></span></span><span style="font-size:13px;color:var(--dim);font-weight:400" id="dHeadJoin"></span></span><span id="dHeadAlert" style="flex-shrink:0;align-self:center"></span></div>
@@ -408,7 +400,6 @@ input[type="text"],input[type="number"],input[type="date"],select{
           </table>
         </div>
       </div>
-    </div>
   </div>
 </div>
 
@@ -724,18 +715,18 @@ function buildSel(){
   s.innerHTML=CFG.jl.map(j=>`<option value="${j}"${j===curJ?' selected':''}>${j}</option>`).join('');
   document.getElementById('osub').textContent=curJ;
 }
-function onJC(){curJ=document.getElementById('selJ').value;if(!ALL[curJ])ALL[curJ]=[];ST=ALL[curJ];document.getElementById('osub').textContent=curJ;curS=null;document.getElementById('listView').style.display='';document.getElementById('detailView').style.display='none';renderAlerts();renderOverall();renderList();}
-function swTab(t){document.querySelectorAll('.tab').forEach((x,i)=>x.classList.toggle('active',['overall','personal'][i]===t));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-'+t).classList.add('active');if(t==='overall')renderOverall();if(t==='personal')renderList();}
-function setFlt(f,b){flt=f;document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderList();}
+function onJC(){curJ=document.getElementById('selJ').value;if(!ALL[curJ])ALL[curJ]=[];ST=ALL[curJ];document.getElementById('osub').textContent=curJ;curS=null;document.getElementById('mainView').style.display='';document.getElementById('detailView').style.display='none';renderAlerts();renderOverall();}
+function setFlt(f,b){flt=f;document.querySelectorAll('.fb').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderOverall();}
 
 function renderOverall(){
   const tb = document.getElementById('overallBody');
   tb.innerHTML = '';
-  if(!ST.length){
-    tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--dim);padding:24px">スタッフがいません</td></tr>';
+  const fi = ST.filter(s => flt === 'all' || s.type === flt);
+  if(!fi.length){
+    tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--dim);padding:24px">該当するスタッフがいません</td></tr>';
     return;
   }
-  ST.forEach(s => {
+  fi.forEach(s => {
     const buckets = calcPeriodConsumed(s);
     let totalRem = 0;
     for(let i = s.periods.length-1; i >= 0; i--){
@@ -772,7 +763,7 @@ function renderOverall(){
       <td style="text-align:center">${expiryOnlyCell}</td>
       <td style="text-align:center">${daysLeftCell}</td>
       <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:15px;font-weight:600;color:var(--text)">${willExpire}日</span>` : '<span style="font-size:15px;color:var(--dim)">—</span>'}</td>
-      <td><button class="bsm" onclick="openDetail('${s.id}')">詳細</button></td>`;
+      <td style="white-space:nowrap"><button class="bsm" onclick="openDetail('${s.id}')">詳細</button> <button class="bdel" onclick="if(confirm('「${s.name}」を削除しますか？')){ST.splice(ST.findIndex(x=>x.id==='${s.id}'),1);saveToStorage();renderAlerts();renderOverall();}"><i class="ti ti-trash" aria-hidden="true"></i></button></td>`;
     tb.appendChild(tr);
   });
   saveToStorage();
@@ -820,8 +811,8 @@ function renderList(){
   });
 }
 
-function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('listView').style.display='none';document.getElementById('detailView').style.display='block';document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===1));document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));document.getElementById('tab-personal').classList.add('active');renderDetail();}
-function showList(){curS=null;document.getElementById('listView').style.display='';document.getElementById('detailView').style.display='none';}
+function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('mainView').style.display='none';document.getElementById('detailView').style.display='block';renderDetail();}
+function showList(){curS=null;document.getElementById('mainView').style.display='';document.getElementById('detailView').style.display='none';}
 function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forEach((el,idx)=>{const sel=idx===i;el.style.border=sel?'2px solid var(--cn)':'1px solid var(--border)';const hd=el.querySelector('.period-tbl-head');if(hd)hd.style.background=sel?'var(--cnl)':'var(--cgl)';const lb=el.querySelector('.period-tbl-label');if(lb)lb.style.color=sel?'var(--cn)':'var(--sub)';});renderCal();renderLog();const glEl=document.getElementById('grantPeriodLabel');if(glEl)glEl.textContent=curS.periods[curP].label;const gdEl=document.getElementById('inpGrantDate');if(gdEl)gdEl.value=curS.periods[curP].start||'';const gdDEl=document.getElementById('inpGrantDays');if(gdDEl)gdDEl.value=curS.periods[curP].total||'';}
 
 function renderDetail(){
@@ -834,7 +825,7 @@ function renderDetail(){
   const carried=gc(s,curP),avail=p.total+carried;
   const isExpired=new Date(p.expires)<today,expiredDays=getExpired(s,curP);
   const allB=calcPriority(s);
-  const fv=v=>Math.round(v*10000)/10000;
+  const fv=function(v){return Math.round(v*10000)/10000;};
   const pb=allB[curP];const p2=s.periods[curP];
   const carryDl=pb.carryExpires?du(pb.carryExpires):999;
   const isLatest=curP===s.periods.length-1;
@@ -862,18 +853,21 @@ function renderDetail(){
   }
   const tdS='border:1px solid var(--border);padding:10px 12px;text-align:center;vertical-align:middle;background:#F8FAFC';
   const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
-  const remStr=pb.remCarry>0?'<span style="font-size:13px;color:var(--cr);font-weight:600">'+fv(pb.remCarry)+'日</span>':'';
-  const carryCell=pb.carryAvail>0?'<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.carryAvail)+'日</span>'+remStr+'</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+(pb.carryExpires||'—')+'</div>':dash2;
-  const grantCell='<div style="font-size:18px;font-weight:700;color:var(--text)">'+p2.total+'日</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+p2.expires+'</div>';
-  const remColor=pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)';
-  const remCell=pb.activeRem>0?'<span style="font-size:20px;font-weight:700;color:'+remColor+'">'+fv(pb.activeRem)+'日</span>':'<span style="color:var(--dim)">—</span>';
-  const lostCell=pb.lostCarry>0?'<span style="font-size:18px;font-weight:700;color:var(--cr)">'+fv(pb.lostCarry)+'日</span>':'<span style="color:var(--dim)">—</span>';
-  const carryCon=pb.fromCarry>0?'<div style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.fromCarry)+'日</div>':dash2;
-  const grantCon=pb.fromGrant>0?'<div style="font-size:18px;font-weight:700;color:var(--text)">'+fv(pb.fromGrant)+'日</div>':dash2;
-  const thS='background:var(--cnl);font-weight:600;color:var(--cn);font-size:14px;padding:8px 10px;border:1px solid var(--border);text-align:center;letter-spacing:.3px';
-  const thHtml='<th style="'+thS+'">繰越</th><th style="'+thS+'">付与日数</th><th style="'+thS+'">有給残</th><th style="'+thS+'">失効日数</th>';
-  const ptH='<div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:0"><table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup><col style="width:30%"><col style="width:30%"><col style="width:20%"><col style="width:20%"></colgroup><tr>'+thHtml+'</tr><tr><td style="'+tdS+'">'+carryCell+'</td><td style="'+tdS+'">'+grantCell+'</td><td rowspan="3" style="'+tdS+'">'+remCell+'</td><td rowspan="3" style="'+tdS+'">'+lostCell+'</td></tr><tr><td style="'+tdS+';background:var(--cnl)"><span style="font-size:14px;color:var(--cn);font-weight:600">有給消化</span></td><td style="'+tdS+';background:var(--cnl)"><span style="font-size:14px;color:var(--cn);font-weight:600">有給消化</span></td></tr><tr><td style="'+tdS+'">'+carryCon+'</td><td style="'+tdS+'">'+grantCon+'</td></tr></table></div>';
-  const dsEl=document.getElementById('dStats');dsEl.style.cssText='display:block;margin-bottom:16px';dsEl.innerHTML=ptH;
+  var carryCell;
+  if(pb.carryAvail>0){
+    var remStr=pb.remCarry>0?'<span style="font-size:13px;color:var(--cr);font-weight:600">'+fv(pb.remCarry)+'日</span>':'';
+    carryCell='<div style="display:flex;align-items:baseline;justify-content:center;gap:6px"><span style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.carryAvail)+'日</span>'+remStr+'</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+(pb.carryExpires||'—')+'</div>';
+  }else{carryCell=dash2;}
+  var grantCell='<div style="font-size:18px;font-weight:700;color:var(--text)">'+p2.total+'日</div><div style="font-size:11px;color:var(--dim);margin-top:4px">期限：'+p2.expires+'</div>';
+  var remColor=pb.activeRem<=2?'var(--cr)':pb.activeRem<=5?'var(--ca)':'var(--ct)';
+  var remCell=pb.activeRem>0?'<span style="font-size:20px;font-weight:700;color:'+remColor+'">'+fv(pb.activeRem)+'日</span>':'<span style="color:var(--dim)">—</span>';
+  var lostCell=pb.lostCarry>0?'<span style="font-size:18px;font-weight:700;color:var(--cr)">'+fv(pb.lostCarry)+'日</span>':'<span style="color:var(--dim)">—</span>';
+  var carryCon=pb.fromCarry>0?'<div style="font-size:18px;font-weight:700;text-decoration:line-through;color:var(--text)">'+fv(pb.fromCarry)+'日</div>':dash2;
+  var grantCon=pb.fromGrant>0?'<div style="font-size:18px;font-weight:700;color:var(--text)">'+fv(pb.fromGrant)+'日</div>':dash2;
+  var thS='background:var(--cnl);font-weight:600;color:var(--cn);font-size:14px;padding:8px 10px;border:1px solid var(--border);text-align:center;letter-spacing:.3px';
+  var thHtml='<th style="'+thS+'">繰越</th><th style="'+thS+'">付与日数</th><th style="'+thS+'">有給残</th><th style="'+thS+'">失効日数</th>';
+  var ptH='<div style="border-radius:10px;overflow:hidden;border:1px solid var(--border);margin-bottom:0"><table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup><col style="width:30%"><col style="width:30%"><col style="width:20%"><col style="width:20%"></colgroup><tr>'+thHtml+'</tr><tr><td style="'+tdS+'">'+carryCell+'</td><td style="'+tdS+'">'+grantCell+'</td><td rowspan="3" style="'+tdS+'">'+remCell+'</td><td rowspan="3" style="'+tdS+'">'+lostCell+'</td></tr><tr><td style="'+tdS+';background:var(--cnl)"><span style="font-size:14px;color:var(--cn);font-weight:600">有給消化</span></td><td style="'+tdS+';background:var(--cnl)"><span style="font-size:14px;color:var(--cn);font-weight:600">有給消化</span></td></tr><tr><td style="'+tdS+'">'+carryCon+'</td><td style="'+tdS+'">'+grantCon+'</td></tr></table></div>';
+  var dsEl=document.getElementById('dStats');dsEl.style.cssText='display:block;margin-bottom:16px';dsEl.innerHTML=ptH;
   const pt=document.getElementById('dPtabs');pt.innerHTML='';
   s.periods.forEach((pd,i)=>{
     const btn=document.createElement('button');btn.className='ptab'+(i===curP?' active':'');
@@ -1160,7 +1154,7 @@ function renderJList(){const el=document.getElementById('jigyoshoList');el.inner
 function renameJ(inp){const i=parseInt(inp.dataset.idx),o=CFG.jl[i],n=inp.value.trim();if(!n){inp.value=o;return;}if(n===o)return;CFG.jl[i]=n;if(ALL[o]){ALL[n]=ALL[o];delete ALL[o];}if(curJ===o)curJ=n;}
 function addJigyosho(){const inp=document.getElementById('newJigyosho'),name=inp.value.trim();if(!name)return;if(CFG.jl.includes(name)){alert('同じ名前の事業所が既に存在します');return;}CFG.jl.push(name);ALL[name]=[];inp.value='';renderJList();}
 function removeJ(i){const n=CFG.jl[i];if(!confirm(`「${n}」を削除しますか？`))return;CFG.jl.splice(i,1);delete ALL[n];if(curJ===n){curJ=CFG.jl[0];ST=ALL[curJ]||[];}renderJList();}
-function saveSet(){CFG.tl.seishain=document.getElementById('typeSei').value||'正社員';CFG.tl.part=document.getElementById('typePart').value||'パート';closeMdl('setMdl');buildSel();renderAlerts();renderOverall();renderList();if(curS)renderDetail();}
+function saveSet(){CFG.tl.seishain=document.getElementById('typeSei').value||'正社員';CFG.tl.part=document.getElementById('typePart').value||'パート';closeMdl('setMdl');buildSel();renderAlerts();renderOverall();if(curS)renderDetail();}
 
 function openStaffMdl(id){editId=id;document.getElementById('staffMdlTitle').textContent=id?'スタッフ編集':'スタッフ追加';const s=id?ST.find(s=>s.id===id):null;document.getElementById('btnDel').style.display=id?'':'none';document.getElementById('staffMdlBody').innerHTML=`<div class="nb"><i class="ti ti-info-circle" aria-hidden="true" style="margin-right:5px"></i>有効期限は各期の<strong>開始日から自動で2年後</strong>に設定されます</div><div class="frow"><label>氏名</label><input type="text" id="smName" value="${s?s.name:''}" placeholder="例：鈴木　真理" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>よみがな</label><input type="text" id="smKana" value="${s?s.kana:''}" placeholder="例：スズキ マリ" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>雇用種別</label><select id="smType" onchange="togWage()" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><option value="seishain"${s&&s.type==='seishain'?' selected':''}>${CFG.tl.seishain}</option><option value="part"${s&&s.type==='part'?' selected':''}>${CFG.tl.part}</option></select></div><div class="frow"><label>入社日</label><input type="date" id="smJoin" value="${s?s.join:''}" oninput="autoJoin(this)" style="font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div id="wageFields" style="${s&&s.type==='part'?'':'display:none'}"><div class="frow"><label>時給（円）</label><input type="number" id="smWage" value="${s?s.hourlyWage||1200:1200}" min="0" style="width:120px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"></div><div class="frow"><label>1日の時間</label><input type="number" id="smHours" value="${s?s.hoursPerDay||6:6}" min="1" max="24" step="0.5" style="width:100px;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><span style="font-size:13px;color:var(--dim);margin-left:4px">時間</span></div></div><div style="border-top:2px dashed var(--border);padding-top:12px;margin-top:6px"><div style="font-size:13px;font-weight:600;color:var(--cn);margin-bottom:10px">有給付与期</div><div id="periodList"></div><button class="bo" onclick="addPeriodRow(null)" style="font-size:12px;margin-top:6px"><i class="ti ti-plus" aria-hidden="true"></i> 期を追加</button></div>`;const ps=s?s.periods:[{label:'① 年度',start:'',end:'',total:10,carried:0}];ps.forEach(p=>addPeriodRow(p));document.getElementById('staffMdl').classList.add('open');}
 function togWage(){document.getElementById('wageFields').style.display=document.getElementById('smType').value==='part'?'':'none';}
@@ -1179,9 +1173,9 @@ function autoJoin(inp){
   autoExp(pStartInp);
 }
 function autoExp(inp){const row=inp.closest('[data-period]');if(!inp.value)return;const e=calcExpires(inp.value);row.querySelector('.pEnd').value=e;row.querySelector('.pExp').value=e;row.querySelector('.pExpDisp').textContent=e;}
-function saveStaff(){const name=document.getElementById('smName').value.trim(),kana=document.getElementById('smKana').value.trim(),type=document.getElementById('smType').value,join=document.getElementById('smJoin').value;if(!name||!join){alert('氏名と入社日は必須です');return;}const periods=[...document.querySelectorAll('#periodList [data-period]')].map(d=>({label:d.querySelector('.pLabel').value,start:d.querySelector('.pStart').value,end:d.querySelector('.pEnd').value,total:parseFloat(d.querySelector('.pTotal').value)||0,carried:parseFloat(d.querySelector('.pCarried').value)||0,expires:d.querySelector('.pExp').value}));if(!periods.length){alert('有給付与期を1つ以上追加してください');return;}if(editId){const s=ST.find(s=>s.id===editId);s.name=name;s.kana=kana;s.type=type;s.join=join;s.periods=periods;if(type==='part'){s.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;s.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}if(curS&&curS.id===editId)curS=s;}else{const ns={id:'s'+Date.now(),name,kana,type,join,periods,leaves:[]};if(type==='part'){ns.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;ns.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}ST.push(ns);}closeMdl('staffMdl');renderAlerts();renderOverall();renderList();if(curS&&curS.id===editId)renderDetail();}
-function deleteStaff(){if(!confirm(`「${ST.find(s=>s.id===editId).name}」を削除しますか？`))return;ST.splice(ST.findIndex(s=>s.id===editId),1);closeMdl('staffMdl');showList();renderAlerts();renderOverall();renderList();}
+function saveStaff(){const name=document.getElementById('smName').value.trim(),kana=document.getElementById('smKana').value.trim(),type=document.getElementById('smType').value,join=document.getElementById('smJoin').value;if(!name||!join){alert('氏名と入社日は必須です');return;}const periods=[...document.querySelectorAll('#periodList [data-period]')].map(d=>({label:d.querySelector('.pLabel').value,start:d.querySelector('.pStart').value,end:d.querySelector('.pEnd').value,total:parseFloat(d.querySelector('.pTotal').value)||0,carried:parseFloat(d.querySelector('.pCarried').value)||0,expires:d.querySelector('.pExp').value}));if(!periods.length){alert('有給付与期を1つ以上追加してください');return;}if(editId){const s=ST.find(s=>s.id===editId);s.name=name;s.kana=kana;s.type=type;s.join=join;s.periods=periods;if(type==='part'){s.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;s.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}if(curS&&curS.id===editId)curS=s;}else{const ns={id:'s'+Date.now(),name,kana,type,join,periods,leaves:[]};if(type==='part'){ns.hourlyWage=parseFloat(document.getElementById('smWage').value)||1200;ns.hoursPerDay=parseFloat(document.getElementById('smHours').value)||6;}ST.push(ns);}closeMdl('staffMdl');renderAlerts();renderOverall();if(curS&&curS.id===editId)renderDetail();}
+function deleteStaff(){if(!confirm(`「${ST.find(s=>s.id===editId).name}」を削除しますか？`))return;ST.splice(ST.findIndex(s=>s.id===editId),1);closeMdl('staffMdl');showList();renderAlerts();renderOverall();}
 function closeMdl(id){document.getElementById(id).classList.remove('open');}
 
-buildSel();renderAlerts();renderOverall();renderList();
+buildSel();renderAlerts();renderOverall();
 </script>
