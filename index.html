@@ -836,20 +836,29 @@ function renderDetail(){
   const fv=function(v){return Math.round(v*10000)/10000;};
   const pb=allB[curP];const p2=s.periods[curP];
   const carryDl=pb.carryExpires?du(pb.carryExpires):999;
+  const isLatest=curP===s.periods.length-1;
   const ea=document.getElementById('dExpAlert');
-  if(isExpired&&expiredDays>0){
+  const ha=document.getElementById('dHeadAlert');
+  if(!isLatest){
+    ea.innerHTML='';
+    if(ha)ha.innerHTML='';
+  } else if(isExpired&&expiredDays>0){
     const usedIn=s.leaves.filter(l=>l.date>=p.start&&l.date<=p.expires).reduce((a,l)=>a+l.days,0);
-    ea.innerHTML=`<div class="gbar"><i class="ti ti-ban" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>
-      <strong>${fmtD(p.expires)}</strong> に有効期限切れ。&nbsp;
-      付与日数 <strong>${p.total}日</strong> ー 期限内消化 <strong>${usedIn}日</strong> ＝ <strong style="color:var(--cr)">${expiredDays}日が失効</strong>
-    </div></div>`;
+    ea.innerHTML=`<div class="gbar"><i class="ti ti-ban" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div><strong>${fmtD(p.expires)}</strong> に有効期限切れ。&nbsp;付与日数 <strong>${p.total}日</strong> ー 期限内消化 <strong>${usedIn}日</strong> ＝ <strong style="color:var(--cr)">${expiredDays}日が失効</strong></div></div>`;
+    if(ha)ha.innerHTML=`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-ban" style="font-size:12px;margin-right:4px"></i>${expiredDays}日失効</span>`;
+  } else if(carryDl<=31&&pb.remCarry>0){
+    ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>繰越分の有給が <span style="font-weight:600;color:var(--cr)">${carryDl}日後（${fmtD(pb.carryExpires)}）</span> に失効。未消化 <span style="font-weight:600">${fv(pb.remCarry)}日</span> あります。</div></div>`;
+    if(ha)ha.innerHTML=`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:4px"></i>有給失効まで${carryDl}日</span>`;
+  } else if(dl<=31&&rem>0){
+    ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
+    if(ha)ha.innerHTML=`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:4px"></i>有給失効まで${dl}日</span>`;
+  } else if(dl<=90&&rem>0){
+    ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
+    if(ha)ha.innerHTML='';
+  } else {
+    ea.innerHTML='';
+    if(ha)ha.innerHTML='';
   }
-  else if(carryDl<=31&&pb.remCarry>0){ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>繰越分の有給が <span style="font-weight:600;color:var(--cr)">${carryDl}日後（${fmtD(pb.carryExpires)}）</span> に失効。未消化 <span style="font-weight:600">${fv(pb.remCarry)}日</span> あります。</div></div>`;}
-  else if(dl<=31&&rem>0){ea.innerHTML=`<div class="abar"><i class="ti ti-alert-triangle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>この期の有給は <span style="font-weight:600;color:var(--cr)">${dl}日後（${fmtD(p.expires)}）</span> に失効。未消化 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;}
-  else if(dl<=90&&rem>0) ea.innerHTML=`<div class="ibar"><i class="ti ti-info-circle" aria-hidden="true" style="font-size:18px;flex-shrink:0"></i><div>有効期限まで <span style="font-weight:600">${dl}日</span>（${fmtD(p.expires)}）。残 <span style="font-weight:600">${rem}日</span> あります。</div></div>`;
-  else ea.innerHTML='';
-  const alertDl=carryDl<=31&&pb.remCarry>0?carryDl:(dl<=31&&rem>0?dl:null);
-  const ha=document.getElementById('dHeadAlert');if(ha)ha.innerHTML=alertDl!==null?`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-alert-triangle" style="font-size:12px;margin-right:4px"></i>有給失効まで${alertDl}日</span>`:(isExpired&&expiredDays>0?`<span style="background:#FEE2E2;color:var(--cr);font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;white-space:nowrap"><i class="ti ti-ban" style="font-size:12px;margin-right:4px"></i>${expiredDays}日失効</span>`:'');
   const tdS='border:1px solid var(--border);padding:10px 12px;text-align:center;vertical-align:middle';
   const dash2='<span style="color:var(--dim);opacity:.4;font-size:13px">—</span>';
   var carryCell;
