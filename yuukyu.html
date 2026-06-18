@@ -797,19 +797,19 @@ function renderList(){
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px">
       <div style="background:var(--ctl);border-radius:8px;padding:7px;text-align:center">
-        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--ct);margin-bottom:3px">合計</div>
+        <div style="font-size:13px;font-weight:600;letter-spacing:.4px;color:var(--ct);margin-bottom:3px">合計</div>
         <div style="font-size:18px;font-weight:700;color:var(--ct)">${totalGiven}日</div>
       </div>
       <div style="background:#F9FAFB;border-radius:8px;padding:7px;text-align:center">
-        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:var(--dim);margin-bottom:3px">消化</div>
+        <div style="font-size:13px;font-weight:600;letter-spacing:.4px;color:var(--dim);margin-bottom:3px">消化</div>
         <div style="font-size:18px;font-weight:700;color:var(--sub)">${totalUsed}日</div>
       </div>
       <div style="background:${totalExpired>0?'#F3F4F6':'#F9FAFB'};border-radius:8px;padding:7px;text-align:center">
-        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:${totalExpired>0?'#6B7280':'var(--dim)'};margin-bottom:3px">失効</div>
+        <div style="font-size:13px;font-weight:600;letter-spacing:.4px;color:${totalExpired>0?'#6B7280':'var(--dim)'};margin-bottom:3px">失効</div>
         <div style="font-size:18px;font-weight:700;color:${totalExpired>0?'#6B7280':'var(--dim)'}">${totalExpired>0?totalExpired+'日':'—'}</div>
       </div>
       <div style="background:${totalRem<=2?'var(--crl)':totalRem<=5?'var(--cal)':'var(--ctl)'};border-radius:8px;padding:7px;text-align:center">
-        <div style="font-size:9px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:${totalRem<=2?'var(--cr)':totalRem<=5?'var(--ca)':'var(--ct)'};margin-bottom:3px">残</div>
+        <div style="font-size:13px;font-weight:600;letter-spacing:.4px;color:${totalRem<=2?'var(--cr)':totalRem<=5?'var(--ca)':'var(--ct)'};margin-bottom:3px">残</div>
         <div style="font-size:18px;font-weight:700;color:${totalRem<=2?'var(--cr)':totalRem<=5?'var(--ca)':'var(--ct)'}">${totalRem}日</div>
       </div>
     </div>
