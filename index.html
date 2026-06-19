@@ -697,21 +697,32 @@ function renderAlerts(){
   if(ac){
     if(!crits.length){ac.innerHTML='';return;}
     ac.innerHTML=`
-      <div style="background:linear-gradient(135deg,#7F1D1D,#DC2626);border-radius:14px;padding:16px 20px;margin-bottom:16px;box-shadow:0 4px 16px rgba(220,38,38,0.25)">
+      <div style="background:#EF4444;border-radius:14px;padding:16px 20px;margin-bottom:16px;box-shadow:0 4px 16px rgba(220,38,38,0.2)">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <i class="ti ti-alarm" aria-hidden="true" style="font-size:24px;color:#FCA5A5;flex-shrink:0"></i>
-          <span style="font-size:15px;font-weight:700;color:#fff">有効期限まで1か月以内 — ${crits.length}件</span>
+          <i class="ti ti-alarm" aria-hidden="true" style="font-size:26px;color:#FEE2E2;flex-shrink:0"></i>
+          <span style="font-size:18px;font-weight:700;color:#fff">有効期限まで1か月以内 — ${crits.length}件</span>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:10px">
           ${crits.map(c=>`
-            <div style="background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:10px;padding:10px 14px;min-width:180px;flex:1">
-              <div style="font-size:11px;color:#FCA5A5;margin-bottom:3px">${c.jigyosho} · ${c.period}</div>
-              <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:5px">${c.name}</div>
-              <div style="display:flex;gap:10px;align-items:center">
-                <span style="background:rgba(255,255,255,0.2);border-radius:6px;padding:2px 8px;font-size:13px;font-weight:700;color:#fff">${c.rem}日残</span>
-                <span style="font-size:13px;font-weight:700;color:#FCA5A5">⏰ あと${c.dl}日</span>
+            <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:10px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+              <div>
+                <div style="font-size:13px;color:#FEE2E2;margin-bottom:4px">${c.jigyosho} · ${c.period}</div>
+                <div style="font-size:20px;font-weight:700;color:#fff">${c.name}</div>
               </div>
-              <div style="font-size:11px;color:#FECACA;margin-top:4px">期限：${fmtD(c.expires)}</div>
+              <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+                <div style="text-align:center">
+                  <div style="font-size:12px;color:#FEE2E2;margin-bottom:2px">残日数</div>
+                  <span style="font-size:22px;font-weight:700;color:#fff">${c.rem}日</span>
+                </div>
+                <div style="text-align:center">
+                  <div style="font-size:12px;color:#FEE2E2;margin-bottom:2px">失効まで</div>
+                  <span style="font-size:22px;font-weight:700;color:#fff">${c.dl}日</span>
+                </div>
+                <div style="text-align:center">
+                  <div style="font-size:12px;color:#FEE2E2;margin-bottom:2px">期限</div>
+                  <span style="font-size:16px;font-weight:600;color:#fff">${fmtD(c.expires)}</span>
+                </div>
+              </div>
             </div>`).join('')}
         </div>
       </div>`;
