@@ -366,8 +366,8 @@ input[type="text"],input[type="number"],input[type="date"],select{
           <span id="dHeadAlert"></span>
         </div>
         <div style="text-align:right;white-space:nowrap;flex-shrink:0">
-          <div style="font-size:11px;color:var(--dim);margin-bottom:2px">直近付与日</div>
-          <div style="font-size:14px;font-weight:600;color:var(--cn)" id="dHeadGrant">—</div>
+          <div style="font-size:13px;color:var(--dim);margin-bottom:4px">付与日</div>
+          <div style="font-size:18px;font-weight:700;color:var(--cn)" id="dHeadGrant">—</div>
         </div>
       </div>
       <div class="pnl">
@@ -843,7 +843,7 @@ function renderList(){
 
 function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('mainView').style.display='none';document.getElementById('detailView').style.display='block';renderDetail();}
 function showList(){curS=null;document.getElementById('mainView').style.display='';document.getElementById('detailView').style.display='none';}
-function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forEach((el,idx)=>{const sel=idx===i;el.style.border=sel?'2px solid var(--cn)':'1px solid var(--border)';const hd=el.querySelector('.period-tbl-head');if(hd)hd.style.background=sel?'var(--cnl)':'var(--cgl)';const lb=el.querySelector('.period-tbl-label');if(lb)lb.style.color=sel?'var(--cn)':'var(--sub)';});renderCal();renderLog();const glEl=document.getElementById('grantPeriodLabel');if(glEl)glEl.textContent=curS.periods[curP].label;const gdEl=document.getElementById('inpGrantDate');if(gdEl)gdEl.value=curS.periods[curP].start||'';const gdDEl=document.getElementById('inpGrantDays');if(gdDEl)gdDEl.value=curS.periods[curP].total||'';}
+function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forEach((el,idx)=>{const sel=idx===i;el.style.border=sel?'2px solid var(--cn)':'1px solid var(--border)';const hd=el.querySelector('.period-tbl-head');if(hd)hd.style.background=sel?'var(--cnl)':'var(--cgl)';const lb=el.querySelector('.period-tbl-label');if(lb)lb.style.color=sel?'var(--cn)':'var(--sub)';});renderCal();renderLog();const glEl=document.getElementById('grantPeriodLabel');if(glEl)glEl.textContent=curS.periods[curP].label;const gdEl=document.getElementById('inpGrantDate');if(gdEl)gdEl.value=curS.periods[curP].start||'';const gdDEl=document.getElementById('inpGrantDays');if(gdDEl)gdDEl.value=curS.periods[curP].total||'';const grantEl=document.getElementById('dHeadGrant');const cp=curS.periods[curP];if(grantEl&&cp&&cp.start){const gd=new Date(cp.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}}
 
 function renderDetail(){
   const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
@@ -851,7 +851,7 @@ function renderDetail(){
   const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=s.kana||'';
   const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
   const j=new Date(s.join);const joinEl=document.getElementById('dHeadJoin');if(joinEl)joinEl.textContent='入社 '+j.getFullYear()+'年'+(j.getMonth()+1)+'月'+j.getDate()+'日';
-  const latestP=s.periods[s.periods.length-1];const grantEl=document.getElementById('dHeadGrant');if(grantEl&&latestP&&latestP.start){const gd=new Date(latestP.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}
+  const grantEl=document.getElementById('dHeadGrant');if(grantEl&&p&&p.start){const gd=new Date(p.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}
   const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
   const carried=gc(s,curP),avail=p.total+carried;
   const isExpired=new Date(p.expires)<today,expiredDays=getExpired(s,curP);
