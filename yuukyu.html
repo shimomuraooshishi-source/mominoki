@@ -851,8 +851,8 @@ function renderDetail(){
   const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=s.kana||'';
   const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
   const j=new Date(s.join);const joinEl=document.getElementById('dHeadJoin');if(joinEl)joinEl.textContent='入社 '+j.getFullYear()+'年'+(j.getMonth()+1)+'月'+j.getDate()+'日';
-  const grantEl=document.getElementById('dHeadGrant');if(grantEl&&p&&p.start){const gd=new Date(p.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}
   const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
+  const grantEl=document.getElementById('dHeadGrant');if(grantEl&&p&&p.start){const gd=new Date(p.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}
   const carried=gc(s,curP),avail=p.total+carried;
   const isExpired=new Date(p.expires)<today,expiredDays=getExpired(s,curP);
   const allB=calcPriority(s);
