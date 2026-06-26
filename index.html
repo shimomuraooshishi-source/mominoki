@@ -354,12 +354,14 @@ input[type="text"],input[type="number"],input[type="date"],select{
   <div id="detailView" style="display:none">
       <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:24px;margin-bottom:12px">
         <button class="bback" style="margin-bottom:0;flex-shrink:0" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
-        <div style="display:flex;align-items:center;gap:16px;flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:24px;flex:1;min-width:0">
           <div>
             <div style="font-size:11px;color:var(--dim);margin-bottom:1px" id="dHeadKana"></div>
             <div style="font-size:22px;font-weight:700;color:var(--text)" id="dHeadName"></div>
-            <div style="font-size:13px;color:var(--dim);margin-top:3px" id="dHeadJoin"></div>
-            <div style="margin-top:5px"><span class="bdg" id="dBadge" style="font-size:14px;padding:3px 12px"></span></div>
+          </div>
+          <div>
+            <div style="font-size:13px;color:var(--dim);margin-bottom:5px" id="dHeadJoin"></div>
+            <span class="bdg" id="dBadge" style="font-size:14px;padding:3px 12px"></span>
           </div>
           <span id="dHeadAlert"></span>
         </div>
