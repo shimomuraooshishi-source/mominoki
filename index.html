@@ -848,7 +848,7 @@ function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forE
 function renderDetail(){
   const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
   document.getElementById('dHeadName').textContent=s.name;
-  const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=s.kana||'';
+  const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=toHira(s.kana||'');
   const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
   const j=new Date(s.join);const joinEl=document.getElementById('dHeadJoin');if(joinEl)joinEl.textContent='入社 '+j.getFullYear()+'年'+(j.getMonth()+1)+'月'+j.getDate()+'日';
   const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
