@@ -352,17 +352,21 @@ input[type="text"],input[type="number"],input[type="date"],select{
   </div>
 
   <div id="detailView" style="display:none">
-      <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:32px;margin-bottom:12px">
-        <button class="bback" style="margin-bottom:0" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
-        <div style="display:flex;align-items:flex-end;gap:20px;flex:1;min-width:0">
-          <div style="display:inline-block;text-align:center">
+      <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:24px;margin-bottom:12px">
+        <button class="bback" style="margin-bottom:0;flex-shrink:0" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
+        <div style="display:flex;align-items:center;gap:16px;flex:1;min-width:0">
+          <div>
             <div style="font-size:11px;color:var(--dim);margin-bottom:1px" id="dHeadKana"></div>
-            <span style="font-size:22px;font-weight:700;color:var(--text)" id="dHeadName"></span>
+            <div style="font-size:22px;font-weight:700;color:var(--text)" id="dHeadName"></div>
+            <div style="font-size:13px;color:var(--dim);margin-top:3px" id="dHeadJoin"></div>
+            <div style="margin-top:5px"><span class="bdg" id="dBadge" style="font-size:14px;padding:3px 12px"></span></div>
           </div>
-          <span class="bdg" id="dBadge" style="font-size:15px;padding:4px 14px;margin-bottom:2px"></span>
           <span id="dHeadAlert"></span>
         </div>
-        <span style="font-size:13px;color:var(--dim);white-space:nowrap;margin-left:auto" id="dHeadJoin"></span>
+        <div style="text-align:right;white-space:nowrap;flex-shrink:0">
+          <div style="font-size:11px;color:var(--dim);margin-bottom:2px">直近付与日</div>
+          <div style="font-size:14px;font-weight:600;color:var(--cn)" id="dHeadGrant">—</div>
+        </div>
       </div>
       <div class="pnl">
         <div class="pb">
@@ -845,6 +849,7 @@ function renderDetail(){
   const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=s.kana||'';
   const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
   const j=new Date(s.join);const joinEl=document.getElementById('dHeadJoin');if(joinEl)joinEl.textContent='入社 '+j.getFullYear()+'年'+(j.getMonth()+1)+'月'+j.getDate()+'日';
+  const latestP=s.periods[s.periods.length-1];const grantEl=document.getElementById('dHeadGrant');if(grantEl&&latestP&&latestP.start){const gd=new Date(latestP.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}
   const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
   const carried=gc(s,curP),avail=p.total+carried;
   const isExpired=new Date(p.expires)<today,expiredDays=getExpired(s,curP);
