@@ -355,10 +355,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
       <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:24px;margin-bottom:12px">
         <button class="bback" style="margin-bottom:0;flex-shrink:0" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
         <div style="display:flex;align-items:center;gap:24px;flex:1;min-width:0">
-          <div>
-            <div style="font-size:11px;color:var(--dim);margin-bottom:1px" id="dHeadKana"></div>
-            <div style="font-size:22px;font-weight:700;color:var(--text)" id="dHeadName"></div>
-          </div>
+          <div id="dHeadNameBlock" style="display:flex;gap:16px;align-items:flex-end"></div>
           <div>
             <div style="font-size:13px;color:var(--dim);margin-bottom:5px" id="dHeadJoin"></div>
             <span class="bdg" id="dBadge" style="font-size:14px;padding:3px 12px"></span>
@@ -847,8 +844,12 @@ function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forE
 
 function renderDetail(){
   const s=curS,ini=s.name.replace(/[\s　]/g,'').slice(-2);
-  document.getElementById('dHeadName').textContent=s.name;
-  const kanaEl=document.getElementById('dHeadKana');if(kanaEl) kanaEl.textContent=toHira(s.kana||'');
+  const nb=document.getElementById('dHeadNameBlock');
+  if(nb){
+    const names=(s.name||'').split(/[\s　]+/);
+    const kanas=toHira(s.kana||'').split(/[\s　]+/);
+    nb.innerHTML=names.map((n,i)=>`<div style="text-align:center"><div style="font-size:11px;color:var(--dim);margin-bottom:1px">${kanas[i]||''}</div><div style="font-size:22px;font-weight:700;color:var(--text)">${n}</div></div>`).join('');
+  }
   const b=document.getElementById('dBadge');b.className='bdg '+(s.type==='seishain'?'bs':'bp');b.textContent=tl(s.type);
   const j=new Date(s.join);const joinEl=document.getElementById('dHeadJoin');if(joinEl)joinEl.textContent='入社 '+j.getFullYear()+'年'+(j.getMonth()+1)+'月'+j.getDate()+'日';
   const p=s.periods[curP],dl=du(p.expires),rem=gr(s,curP),used=gu(s,curP);
