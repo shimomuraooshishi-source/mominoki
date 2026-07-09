@@ -760,7 +760,7 @@ function renderOverall(){
     let minDaysLeft = Infinity;
     s.periods.forEach((p, i) => {
       const dl = du(p.expires);
-      const rem = gr(s, i);
+      const rem = allB[i].activeRem;
       if(dl > 0 && rem > 0 && dl < minDaysLeft){
         minDaysLeft = dl;
         nextExpiryPeriod = { expires: p.expires, rem, dl };
