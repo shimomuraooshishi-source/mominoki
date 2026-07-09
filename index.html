@@ -626,8 +626,9 @@ function calcPriority(s){
     res.push({i,carryAvail,grant:p.total,consumed,fromCarry,fromGrant,remCarry,remGrant,carryExpires,carryExpired,lostCarry,activeRem});
     if(i+1<n){
       const mc=s.periods[i+1].carried||0;
-      if(mc>0) carryAvail=mc;
-      else if(new Date(p.expires)<(s.periods[i+1].start?new Date(s.periods[i+1].start):today)) carryAvail=0;
+      const nextStart=s.periods[i+1].start?new Date(s.periods[i+1].start):today;
+      const prevExpiredAtNext=new Date(p.expires)<nextStart;
+      if(prevExpiredAtNext) carryAvail=mc>0?mc:0;
       else carryAvail=(carryExpired?0:remCarry)+remGrant;
     }
   }
