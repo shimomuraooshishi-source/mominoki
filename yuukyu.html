@@ -758,14 +758,19 @@ function renderOverall(){
     let totalRem = Math.round(latestB.activeRem * 10000) / 10000;
     let nextExpiryPeriod = null;
     let minDaysLeft = Infinity;
-    s.periods.forEach((p, i) => {
-      const dl = du(p.expires);
-      const rem = allB[i].activeRem;
-      if(dl > 0 && rem > 0 && dl < minDaysLeft){
-        minDaysLeft = dl;
-        nextExpiryPeriod = { expires: p.expires, rem, dl };
+    allB.forEach((b, i) => {
+      if(b.carryExpires && !b.carryExpired && b.remCarry > 0){
+        const dl = du(b.carryExpires);
+        if(dl > 0 && dl < minDaysLeft){
+          minDaysLeft = dl;
+          nextExpiryPeriod = { expires: b.carryExpires, rem: b.remCarry, dl };
+        }
       }
     });
+    if(!nextExpiryPeriod && latestB.remGrant > 0){
+      const dl = du(s.periods[s.periods.length-1].expires);
+      if(dl > 0) nextExpiryPeriod = { expires: s.periods[s.periods.length-1].expires, rem: latestB.remGrant, dl };
+    }
     const joinDateFmt = s.join ? fmtSlash(s.join) : '—';
     let daysLeftCell = '<span style="color:var(--dim)">—</span>';
     let expiryOnlyCell = '<span style="color:var(--dim)">—</span>';
