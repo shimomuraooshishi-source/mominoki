@@ -341,8 +341,8 @@ input[type="text"],input[type="number"],input[type="date"],select{
             <th style="text-align:center">入社日</th>
             <th style="text-align:center">有給残日数</th>
             <th style="text-align:center">有効期限</th>
-            <th style="text-align:center">あと何日</th>
             <th style="text-align:center">失効見込</th>
+            <th style="text-align:center">あと何日</th>
             <th></th>
           </tr></thead>
           <tbody id="overallBody"></tbody>
@@ -784,8 +784,8 @@ function renderOverall(){
       <td style="text-align:center"><span style="font-size:18px;font-weight:600;color:var(--text)">${joinDateFmt}</span></td>
       <td style="text-align:center"><span style="font-size:20px;font-weight:700;color:var(--text)">${totalRem}日</span></td>
       <td style="text-align:center">${expiryOnlyCell}</td>
-      <td style="text-align:center">${daysLeftCell}</td>
       <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:18px;font-weight:600;color:var(--text)">${willExpire}日</span>` : '<span style="font-size:18px;color:var(--dim)">—</span>'}</td>
+      <td style="text-align:center">${daysLeftCell}</td>
       <td style="text-align:right"><button class="bdel" onclick="event.stopPropagation();if(confirm('「${s.name}」を削除しますか？')){ST.splice(ST.findIndex(x=>x.id==='${s.id}'),1);saveToStorage();renderAlerts();renderOverall();}"><i class="ti ti-trash" aria-hidden="true"></i></button></td>`;
     tb.appendChild(tr);
   });
