@@ -752,14 +752,9 @@ function renderOverall(){
     return;
   }
   fi.forEach(s => {
-    const buckets = calcPeriodConsumed(s);
-    let totalRem = 0;
-    for(let i = s.periods.length-1; i >= 0; i--){
-      if(du(s.periods[i].expires) > 0){
-        totalRem = Math.max(0, buckets[i].avail - buckets[i].consumed);
-        break;
-      }
-    }
+    const allB = calcPriority(s);
+    const latestB = allB[s.periods.length - 1];
+    let totalRem = Math.round(latestB.activeRem * 10000) / 10000;
     let nextExpiryPeriod = null;
     let minDaysLeft = Infinity;
     s.periods.forEach((p, i) => {
