@@ -337,7 +337,6 @@ input[type="text"],input[type="number"],input[type="date"],select{
         <table class="ot" style="min-width:620px">
           <thead><tr>
             <th>氏名</th>
-            <th>区分</th>
             <th style="text-align:center">入社日</th>
             <th style="text-align:center">有給残日数</th>
             <th style="text-align:center">有効期限</th>
@@ -785,8 +784,7 @@ function renderOverall(){
     tr.onclick=function(e){if(!e.target.closest('.bdel'))openDetail(s.id);};
     tr.innerHTML = `
       <td><div style="text-align:center"><span style="font-size:13px;color:var(--dim);display:block">${toHira(s.kana).replace(/[\s　]+/g,'　　')}</span><span style="font-weight:700;color:var(--text);font-size:18px">${s.name}</span></div></td>
-      <td><span class="bdg ${s.type==='seishain'?'bs':'bp'}">${tl(s.type)}</span></td>
-      <td style="text-align:center"><span style="font-size:16px;color:var(--dim)">${joinDateFmt}</span></td>
+      <td style="text-align:center"><div style="font-size:13px;color:var(--dim);margin-bottom:6px">${s.join?s.join.replace(/-/g,'/'):'—'}</div><span class="bdg ${s.type==='seishain'?'bs':'bp'}" style="font-size:14px;padding:5px 14px;letter-spacing:0.3em">${tl(s.type)}</span></td>
       <td style="text-align:center"><span style="font-size:24px;font-weight:700;color:#1D4ED8">${totalRem}<span style="font-size:15px">日</span></span></td>
       <td style="text-align:center">${expiryOnlyCell}</td>
       <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:18px;font-weight:700;color:#0284C7">${willExpire}日</span>` : '<span style="color:var(--dim)">—</span>'}</td>
