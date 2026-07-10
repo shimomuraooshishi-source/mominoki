@@ -776,7 +776,7 @@ function renderOverall(){
     let expiryOnlyCell = '<span style="color:var(--dim)">—</span>';
     if(nextExpiryPeriod){
       const icon = nextExpiryPeriod.dl <= 31 ? '<i class="ti ti-alert-triangle" style="font-size:16px;margin-right:3px;vertical-align:-3px;color:var(--cr)" aria-hidden="true"></i>' : '';
-      expiryOnlyCell = `<span style="font-size:15px;font-weight:600;color:#0F766E">${fmtSlash(nextExpiryPeriod.expires)}</span>`;
+      expiryOnlyCell = `<span style="font-size:16px;font-weight:600;color:#0284C7">${fmtSlash(nextExpiryPeriod.expires)}</span>`;
       daysLeftCell = `<span style="font-size:18px;font-weight:600;color:var(--text)">${icon}${nextExpiryPeriod.dl}日</span>`;
     }
     const willExpire = nextExpiryPeriod ? nextExpiryPeriod.rem : 0;
@@ -789,7 +789,7 @@ function renderOverall(){
       <td style="text-align:center"><span style="font-size:16px;color:var(--dim)">${joinDateFmt}</span></td>
       <td style="text-align:center"><span style="font-size:24px;font-weight:700;color:#1D4ED8">${totalRem}<span style="font-size:15px">日</span></span></td>
       <td style="text-align:center">${expiryOnlyCell}</td>
-      <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:15px;font-weight:700;color:#0F766E">${willExpire}日</span>` : '<span style="color:var(--dim)">—</span>'}</td>
+      <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:16px;font-weight:700;color:#0284C7">${willExpire}日</span>` : '<span style="color:var(--dim)">—</span>'}</td>
       <td style="text-align:center"><span style="font-size:16px;color:var(--dim)">${daysLeftCell}</span></td>
       <td style="text-align:right"><button class="bdel" onclick="event.stopPropagation();if(confirm('「${s.name}」を削除しますか？')){ST.splice(ST.findIndex(x=>x.id==='${s.id}'),1);saveToStorage();renderAlerts();renderOverall();}"><i class="ti ti-trash" aria-hidden="true"></i></button></td>`;
     tb.appendChild(tr);
