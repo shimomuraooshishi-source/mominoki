@@ -339,9 +339,9 @@ input[type="text"],input[type="number"],input[type="date"],select{
             <th>氏名</th>
             <th>区分</th>
             <th style="text-align:center">入社日</th>
-            <th style="text-align:center">有給残日数</th>
-            <th style="text-align:center">有効期限</th>
-            <th style="text-align:center">失効見込</th>
+            <th style="text-align:center;background:#F0FDF4;color:#15803D">有給残日数</th>
+            <th style="text-align:center;background:#FEFCE8;color:#92400E">有効期限</th>
+            <th style="text-align:center;background:#FEFCE8;color:#92400E">失効見込</th>
             <th style="text-align:center">あと何日</th>
             <th></th>
           </tr></thead>
@@ -776,7 +776,7 @@ function renderOverall(){
     let expiryOnlyCell = '<span style="color:var(--dim)">—</span>';
     if(nextExpiryPeriod){
       const icon = nextExpiryPeriod.dl <= 31 ? '<i class="ti ti-alert-triangle" style="font-size:16px;margin-right:3px;vertical-align:-3px;color:var(--cr)" aria-hidden="true"></i>' : '';
-      expiryOnlyCell = `<span style="font-size:18px;font-weight:600;color:var(--text)">${fmtSlash(nextExpiryPeriod.expires)}</span>`;
+      expiryOnlyCell = `<span style="font-size:18px;font-weight:600;color:#B45309">${fmtSlash(nextExpiryPeriod.expires)}</span>`;
       daysLeftCell = `<span style="font-size:18px;font-weight:600;color:var(--text)">${icon}${nextExpiryPeriod.dl}日</span>`;
     }
     const willExpire = nextExpiryPeriod ? nextExpiryPeriod.rem : 0;
@@ -786,11 +786,11 @@ function renderOverall(){
     tr.innerHTML = `
       <td><div style="text-align:center"><span style="font-size:13px;color:var(--dim);display:block">${toHira(s.kana).replace(/[\s　]+/g,'　　')}</span><span style="font-weight:700;color:var(--text);font-size:18px">${s.name}</span></div></td>
       <td><span class="bdg ${s.type==='seishain'?'bs':'bp'}">${tl(s.type)}</span></td>
-      <td style="text-align:center"><span style="font-size:18px;font-weight:600;color:var(--text)">${joinDateFmt}</span></td>
-      <td style="text-align:center"><span style="font-size:20px;font-weight:700;color:var(--text)">${totalRem}日</span></td>
-      <td style="text-align:center">${expiryOnlyCell}</td>
-      <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:18px;font-weight:600;color:var(--text)">${willExpire}日</span>` : '<span style="font-size:18px;color:var(--dim)">—</span>'}</td>
-      <td style="text-align:center">${daysLeftCell}</td>
+      <td style="text-align:center"><span style="font-size:16px;color:var(--dim)">${joinDateFmt}</span></td>
+      <td style="text-align:center;background:#F0FDF4"><span style="font-size:22px;font-weight:700;color:#15803D">${totalRem}日</span></td>
+      <td style="text-align:center;background:#FEFCE8">${expiryOnlyCell}</td>
+      <td style="text-align:center;background:#FEFCE8">${willExpire > 0 ? `<span style="font-size:20px;font-weight:700;color:#B45309">${willExpire}日</span>` : '<span style="font-size:18px;color:var(--dim)">—</span>'}</td>
+      <td style="text-align:center"><span style="font-size:16px;color:var(--dim)">${daysLeftCell}</span></td>
       <td style="text-align:right"><button class="bdel" onclick="event.stopPropagation();if(confirm('「${s.name}」を削除しますか？')){ST.splice(ST.findIndex(x=>x.id==='${s.id}'),1);saveToStorage();renderAlerts();renderOverall();}"><i class="ti ti-trash" aria-hidden="true"></i></button></td>`;
     tb.appendChild(tr);
   });
