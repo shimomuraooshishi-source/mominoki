@@ -256,7 +256,7 @@ body{font-family:'Noto Sans JP','Inter',sans-serif;background:var(--bg);color:va
 .dd .dv{font-size:11px;display:block;line-height:1}
 
 /* ── LOG TABLE ── */
-.lt{width:100%;font-size:13px;border-collapse:collapse}
+.lt{width:100%;font-size:15px;border-collapse:collapse}
 .lt th{
   text-align:left;padding:8px 12px;font-weight:600;font-size:13px;
   letter-spacing:.3px;text-transform:uppercase;
@@ -1145,15 +1145,15 @@ function renderLog(){
     if(isCarry) tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
     tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
       <td style="font-weight:600;color:var(--text)${isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
-      <td><span style="font-size:14px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span></td>
+      <td><span style="font-size:16px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span></td>
       <td>${sourceLabel}</td>
-      <td><span style="font-size:13px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
+      <td><span style="font-size:15px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
       <td><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
     tb.appendChild(tr);
   });
   const tot=pl.reduce((a,l)=>a+l.days,0);
   const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
-  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:12px">合計</td><td colspan="2"><span style="font-size:15px;font-weight:700;color:var(--cn)">${tot}日</span></td><td colspan="2"></td>`;
+  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:14px">合計</td><td colspan="2"><span style="font-size:16px;font-weight:700;color:var(--cn)">${tot}日</span></td><td colspan="2"></td>`;
   tb.appendChild(tfr);
 }
 
@@ -1162,20 +1162,20 @@ function renderWage(){
   if(s.type!=='part'){a.innerHTML='';return;}
   const wage=s.hourlyWage||1200,hours=s.hoursPerDay||6;
   a.innerHTML=`<hr class="sep"><div class="wb">
-    <div style="font-size:13px;font-weight:700;color:var(--ca);margin-bottom:12px"><i class="ti ti-currency-yen" aria-hidden="true" style="margin-right:5px"></i>有給賃金計算（${tl('part')}）</div>
+    <div style="font-size:15px;font-weight:700;color:var(--ca);margin-bottom:12px"><i class="ti ti-currency-yen" aria-hidden="true" style="margin-right:5px"></i>有給賃金計算（${tl('part')}）</div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
-      <label style="font-size:13px;color:var(--dim);font-weight:500;min-width:80px">時給（円）</label>
-      <input type="number" id="wWage" value="${wage}" min="0" oninput="updWage()" style="width:100px;font-size:13px;padding:6px 10px;border:1.5px solid #FDE68A;border-radius:8px;background:#fff;color:var(--text)">
+      <label style="font-size:15px;color:var(--dim);font-weight:500;min-width:90px">時給（円）</label>
+      <input type="number" id="wWage" value="${wage}" min="0" oninput="updWage()" style="width:110px;font-size:15px;padding:6px 10px;border:1.5px solid #FDE68A;border-radius:8px;background:#fff;color:var(--text)">
     </div>
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-      <label style="font-size:13px;color:var(--dim);font-weight:500;min-width:80px">1日の時間数</label>
-      <input type="number" id="wHours" value="${hours}" min="1" max="24" step="0.5" oninput="updWage()" style="width:80px;font-size:13px;padding:6px 10px;border:1.5px solid #FDE68A;border-radius:8px;background:#fff;color:var(--text)">
-      <span style="font-size:13px;color:var(--dim)">時間</span>
+      <label style="font-size:15px;color:var(--dim);font-weight:500;min-width:90px">1日の時間数</label>
+      <input type="number" id="wHours" value="${hours}" min="1" max="24" step="0.5" oninput="updWage()" style="width:90px;font-size:15px;padding:6px 10px;border:1.5px solid #FDE68A;border-radius:8px;background:#fff;color:var(--text)">
+      <span style="font-size:15px;color:var(--dim)">時間</span>
     </div>
-    <div id="wageResult" style="margin-top:8px;padding:12px;background:#fff;border-radius:8px;border:1px solid #FDE68A;font-size:13px"></div>
+    <div id="wageResult" style="margin-top:8px;padding:12px;background:#fff;border-radius:8px;border:1px solid #FDE68A;font-size:15px"></div>
   </div>`;updWage();
 }
-function updWage(){const s=curS,wage=parseFloat(document.getElementById('wWage').value)||0,hours=parseFloat(document.getElementById('wHours').value)||0;s.hourlyWage=wage;s.hoursPerDay=hours;const used=s.leaves.filter(l=>l.period===curP).reduce((a,l)=>a+l.days,0);const pd=wage*hours,tot=pd*used;document.getElementById('wageResult').innerHTML=`<table style="width:100%;font-size:13px"><tr><td style="color:var(--dim);padding:3px 0">1日あたり賃金</td><td style="text-align:right;font-weight:600;color:var(--sub)">¥${pd.toLocaleString()}</td></tr><tr><td style="color:var(--dim);padding:3px 0">本期取得日数</td><td style="text-align:right;font-weight:600;color:var(--sub)">${used}日</td></tr><tr style="border-top:2px solid #FDE68A"><td style="font-weight:600;padding-top:8px;color:var(--ca)">有給合計金額</td><td style="text-align:right;font-size:18px;font-weight:700;color:var(--ca);padding-top:8px">¥${tot.toLocaleString()}</td></tr></table>`;}
+function updWage(){const s=curS,wage=parseFloat(document.getElementById('wWage').value)||0,hours=parseFloat(document.getElementById('wHours').value)||0;s.hourlyWage=wage;s.hoursPerDay=hours;const used=s.leaves.filter(l=>l.period===curP).reduce((a,l)=>a+l.days,0);const pd=wage*hours,tot=pd*used;document.getElementById('wageResult').innerHTML=`<table style="width:100%;font-size:15px"><tr><td style="color:var(--dim);padding:3px 0">1日あたり賃金</td><td style="text-align:right;font-weight:600;color:var(--sub)">¥${pd.toLocaleString()}</td></tr><tr><td style="color:var(--dim);padding:3px 0">本期取得日数</td><td style="text-align:right;font-weight:600;color:var(--sub)">${used}日</td></tr><tr style="border-top:2px solid #FDE68A"><td style="font-weight:600;padding-top:8px;color:var(--ca)">有給合計金額</td><td style="text-align:right;font-size:20px;font-weight:700;color:var(--ca);padding-top:8px">¥${tot.toLocaleString()}</td></tr></table>`;}
 
 function openSet(){document.getElementById('typeSei').value=CFG.tl.seishain;document.getElementById('typePart').value=CFG.tl.part;renderJList();document.getElementById('setMdl').classList.add('open');}
 function renderJList(){const el=document.getElementById('jigyoshoList');el.innerHTML='';CFG.jl.forEach((j,i)=>{const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px';row.innerHTML=`<input type="text" value="${j}" data-idx="${i}" onchange="renameJ(this)" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><button class="bsm" onclick="removeJ(${i})" ${CFG.jl.length<=1?'disabled':''}><i class="ti ti-trash" aria-hidden="true"></i></button>`;el.appendChild(row);});}
