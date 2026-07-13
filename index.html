@@ -756,16 +756,10 @@ function renderOverall(){
     const latestB = allB[s.periods.length - 1];
     let totalRem = Math.round(latestB.activeRem * 10000) / 10000;
     let nextExpiryPeriod = null;
-    let minDaysLeft = Infinity;
-    allB.forEach((b, i) => {
-      if(b.carryExpires && !b.carryExpired && b.remCarry > 0){
-        const dl = du(b.carryExpires);
-        if(dl > 0 && dl < minDaysLeft){
-          minDaysLeft = dl;
-          nextExpiryPeriod = { expires: b.carryExpires, rem: b.remCarry, dl };
-        }
-      }
-    });
+    if(latestB.remCarry > 0 && !latestB.carryExpired && latestB.carryExpires){
+      const dl = du(latestB.carryExpires);
+      if(dl > 0) nextExpiryPeriod = { expires: latestB.carryExpires, rem: latestB.remCarry, dl };
+    }
     if(!nextExpiryPeriod && latestB.remGrant > 0){
       const dl = du(s.periods[s.periods.length-1].expires);
       if(dl > 0) nextExpiryPeriod = { expires: s.periods[s.periods.length-1].expires, rem: latestB.remGrant, dl };
