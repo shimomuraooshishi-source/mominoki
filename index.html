@@ -977,7 +977,7 @@ function renderCal(){
     expiryMap[pd.expires].push({label:pd.label,expiredDays:expDays,isExpired:new Date(pd.expires)<today});
   });
 
-  h+=`<div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px">`;
+  h+=`<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px">`;
   months.forEach(mo=>{
     const yr=mo.getFullYear(),mn=mo.getMonth(),dim=new Date(yr,mn+1,0).getDate(),fd=new Date(yr,mn,1).getDay();
     h+=`<div class="cm"><div class="cmn">${yr}年${MN[mn]}</div><div class="cgr">`;
