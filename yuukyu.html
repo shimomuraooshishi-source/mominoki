@@ -397,9 +397,11 @@ input[type="text"],input[type="number"],input[type="date"],select{
           </div>
           <hr class="sep">
           <div id="leaveEntryArea"></div>
-          <div id="wageArea"></div>
           <hr class="sep">
-          <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="font-size:15px;font-weight:600;color:var(--cn)"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
+            <div id="wageArea"></div>
+          </div>
           <table class="lt">
             <thead><tr id="logHead"></tr></thead>
             <tbody id="logBody"></tbody>
