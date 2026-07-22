@@ -1297,7 +1297,7 @@ function renderWage(){
       </div>${pastRows}
     </div>`:''}
     <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding:16px 20px;background:var(--cgl);border:1px solid var(--border);border-radius:10px">
-      <span style="font-size:15px;color:var(--dim)">年度合計 ${totalDays}日${hasFixed?' （'+fmtMin(totalMin)+'）':''}</span>
+      <span style="font-size:18px;font-weight:600;color:var(--sub)">年度合計&emsp;${totalDays}日${hasFixed?'&ensp;（'+fmtMin(totalMin)+'）':''}</span>
       <span style="font-size:24px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums">${hasFixed?'¥'+totalWage.toLocaleString():'—'}</span>
     </div>
   </div>`;
