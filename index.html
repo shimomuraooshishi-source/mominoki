@@ -395,15 +395,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
             <span style="font-size:13px;color:var(--dim)">※ 現在選択中の期「<span id="grantPeriodLabel"></span>」に反映されます</span>
           </div>
           <hr class="sep">
-          <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-calendar-plus" aria-hidden="true" style="margin-right:5px"></i>有給を追加</div>
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <label style="font-size:15px;color:var(--dim);font-weight:500">日付</label>
-            <input type="date" id="inpDate" style="font-size:15px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">
-            <label style="font-size:15px;color:var(--dim);font-weight:500">日数</label>
-            <input type="number" id="inpDays" value="1" min="0.001" max="1" step="0.001" style="width:100px;font-size:15px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)" placeholder="例:0.625">
-            <span style="font-size:15px;color:var(--dim)">日</span>
-            <button class="badd" onclick="addLeave()">追加</button>
-          </div>
+          <div id="leaveEntryArea"></div>
           <div id="wageArea"></div>
           <hr class="sep">
           <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
@@ -455,6 +447,7 @@ document.getElementById('tlbl').textContent=today.getFullYear()+'年'+(today.get
 
 function addYrs(ds,n){const d=new Date(ds);d.setFullYear(d.getFullYear()+n);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 // 付与日から2年後の1日前（有効期限）
+function daysToText(dec,hpd){if(!hpd||hpd==='variable'||isNaN(hpd))return'';const totalMin=Math.round(dec*hpd*60);const d=Math.floor(totalMin/(hpd*60));const remMin=totalMin-d*hpd*60;const h=Math.floor(remMin/60);const m=remMin%60;let s='';if(d>0)s+=d+'日';if(h>0)s+=h+'時間';if(m>0)s+=m+'分';return s||'0日';}
 function calcExpires(ds){const d=new Date(ds);d.setFullYear(d.getFullYear()+2);d.setDate(d.getDate()-1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 
 let CFG={tl:{seishain:'正社員',part:'パート'},jl:['よつのは保育園','放デイ ふぉー','放デイ フジラボ','もみのき','第二事業所','第三事業所']};
@@ -779,7 +772,7 @@ function renderOverall(){
     tr.innerHTML = `
       <td style="text-align:center"><div style="display:inline-flex;gap:12px;justify-content:center">${(()=>{const ns=(s.name||'').split(/[\s　]+/);const ks=toHira(s.kana||'').split(/[\s　]+/);return ns.map((n,i)=>`<div style="text-align:center"><div style="font-size:11px;color:var(--dim);margin-bottom:1px">${ks[i]||''}</div><div style="font-size:18px;font-weight:700;color:var(--text)">${n}</div></div>`).join('');})()}</div></td>
       <td style="text-align:center"><div style="font-size:13px;color:var(--dim);margin-bottom:6px">${s.join?s.join.replace(/-/g,'/'):'—'}</div><span class="bdg ${s.type==='seishain'?'bs':'bp'}" style="font-size:16px;padding:5px 20px;letter-spacing:0.5em">${tl(s.type)}</span></td>
-      <td style="text-align:center"><span style="font-size:24px;font-weight:700;color:#1D4ED8">${totalRem}<span style="font-size:15px">日</span></span></td>
+      <td style="text-align:center"><span style="font-size:24px;font-weight:700;color:#1D4ED8">${totalRem}<span style="font-size:15px">日</span></span>${(()=>{const hpd=s.hoursPerDay;if(!hpd||hpd==='variable')return'';const t=daysToText(totalRem,hpd);return t?`<br><span style="font-size:15px;color:var(--sub);font-weight:600">（${t}）</span>`:'';})()}</td>
       <td style="text-align:center">${expiryOnlyCell}</td>
       <td style="text-align:center">${willExpire > 0 ? `<span style="font-size:18px;font-weight:700;color:#0284C7">${willExpire}日</span>` : '<span style="color:var(--dim)">—</span>'}</td>
       <td style="text-align:center"><span style="font-size:16px;color:var(--dim)">${daysLeftCell}</span></td>
@@ -907,7 +900,7 @@ function renderDetail(){
     btn.innerHTML=`${pd.label}${warn?' <span style="color:var(--crm)">⚠</span>':''}${pdExpiredDays>0?` <span style="color:var(--cr);font-size:11px;font-weight:600">${pdExpiredDays}日失効</span>`:''} <span class="pdel" onclick="event.stopPropagation();delPeriod(${i})" title="この年度を削除" style="margin-left:4px;color:var(--cr);font-size:12px;opacity:0.6;cursor:pointer" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.6">✕</span>`;
     btn.onclick=()=>{curP=i;renderDetail();};pt.appendChild(btn);
   });
-  renderCal();renderLog();renderWage();
+  renderCal();renderLog();renderWage();renderLeaveEntry();
   const glEl=document.getElementById('grantPeriodLabel');
   if(glEl) glEl.textContent=s.periods[curP].label;
   const gdEl=document.getElementById('inpGrantDate');
@@ -1116,6 +1109,77 @@ function addNewPeriod(){
   renderDetail();
   renderOverall();
 }
+function renderLeaveEntry(){
+  const s=curS,el=document.getElementById('leaveEntryArea');if(!el)return;
+  const hpd=s.hoursPerDay;
+  const isPart=s.type==='part';
+  const hasFixed=typeof hpd==='number'&&hpd>0;
+  const defaultHpd=hasFixed?hpd:(isPart?6:8);
+  const inpSt='font-size:15px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)';
+  let h=`<div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-calendar-plus" aria-hidden="true" style="margin-right:5px"></i>有給を追加</div>`;
+  h+=`<div style="display:flex;gap:8px;margin-bottom:12px">
+    <button id="btnLeave1day" class="badd" onclick="setLeaveMode('day')" style="font-size:14px;padding:5px 16px">1日取得</button>
+    <button id="btnLeaveTime" onclick="setLeaveMode('time')" style="font-size:14px;padding:5px 16px;background:#fff;border:1.5px solid var(--border2);border-radius:8px;color:var(--text);cursor:pointer">時間単位</button>
+  </div>`;
+  h+=`<div id="leaveMode_day" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <label style="font-size:15px;color:var(--dim);font-weight:500">日付</label>
+    <input type="date" id="inpDate" style="${inpSt}">
+    <label style="font-size:15px;color:var(--dim);font-weight:500">日数</label>
+    <input type="number" id="inpDays" value="1" min="0.001" max="1" step="0.001" style="width:100px;${inpSt}" placeholder="例:0.625">
+    <span style="font-size:15px;color:var(--dim)">日</span>
+    <button class="badd" onclick="addLeave()">追加</button>
+  </div>`;
+  const hoursOpts=[4,4.5,5,5.5,6,6.5,7,7.5,8].map(v=>`<option value="${v}"${defaultHpd===v?' selected':''}>${v}時間</option>`).join('');
+  h+=`<div id="leaveMode_time" style="display:none;flex-wrap:wrap;align-items:center;gap:10px">
+    <label style="font-size:15px;color:var(--dim);font-weight:500">日付</label>
+    <input type="date" id="inpTimeDate" style="${inpSt}">
+    <label style="font-size:15px;color:var(--dim);font-weight:500">取得時間</label>
+    <input type="number" id="inpTimeH" value="1" min="0" max="23" step="1" oninput="updTimeConv()" style="width:70px;${inpSt}">
+    <span style="font-size:15px;color:var(--dim)">時間</span>
+    <input type="number" id="inpTimeM" value="0" min="0" max="59" step="30" oninput="updTimeConv()" style="width:70px;${inpSt}">
+    <span style="font-size:15px;color:var(--dim)">分</span>
+    <label style="font-size:15px;color:var(--dim);font-weight:500">所定時間</label>
+    <select id="inpTimePd" onchange="updTimeConv()" style="font-size:15px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)">${hoursOpts}</select>
+    <span id="timeConvDisp" style="font-size:14px;color:var(--sub);font-weight:600"></span>
+    <button class="badd" onclick="addLeaveTime()">追加</button>
+  </div>`;
+  el.innerHTML=h;
+  setLeaveMode('day');
+}
+function setLeaveMode(mode){
+  const d=document.getElementById('leaveMode_day');
+  const t=document.getElementById('leaveMode_time');
+  const b1=document.getElementById('btnLeave1day');
+  const b2=document.getElementById('btnLeaveTime');
+  if(!d||!t)return;
+  if(mode==='day'){d.style.display='flex';t.style.display='none';if(b1){b1.style.background='';b1.style.color='';}if(b2){b2.style.background='#fff';b2.style.color='var(--text)';}}
+  else{d.style.display='none';t.style.display='flex';updTimeConv();if(b2){b2.classList.add('badd');b2.style.background='';b2.style.color='';}if(b1){b1.className='badd';b1.style.cssText='font-size:14px;padding:5px 16px;background:#fff;border:1.5px solid var(--border2);border-radius:8px;color:var(--text);cursor:pointer';}}
+}
+function updTimeConv(){
+  const h=parseInt(document.getElementById('inpTimeH')?.value)||0;
+  const m=parseInt(document.getElementById('inpTimeM')?.value)||0;
+  const pd=parseFloat(document.getElementById('inpTimePd')?.value)||0;
+  const disp=document.getElementById('timeConvDisp');
+  if(!disp||!pd)return;
+  const totalMin=h*60+m;
+  const days=Math.round(totalMin/pd/60*10000)/10000;
+  disp.textContent=`＝ ${days}日`;
+}
+function addLeaveTime(){
+  const s=curS;
+  const dv=document.getElementById('inpTimeDate').value;
+  const h=parseInt(document.getElementById('inpTimeH').value)||0;
+  const m=parseInt(document.getElementById('inpTimeM').value)||0;
+  const pd=parseFloat(document.getElementById('inpTimePd').value)||0;
+  if(!dv){alert('日付を選択してください');return;}
+  if(!pd){alert('所定時間を選択してください');return;}
+  const days=Math.round((h*60+m)/pd/60*10000)/10000;
+  if(days<=0){alert('0より大きい時間を入力してください');return;}
+  if(days>1){if(!confirm(`${days}日分（${h}時間${m}分 ÷ 所定${pd}時間）は1日を超えています。続けますか？`))return;}
+  s.leaves.push({date:dv,days,period:curP,timeUnit:true,timeH:h,timeM:m});
+  s.leaves.sort((a,b)=>a.date.localeCompare(b.date));
+  renderDetail();
+}
 function addLeave(){const s=curS,dv=document.getElementById('inpDate').value,days=parseFloat(document.getElementById('inpDays').value);if(!dv){alert('日付を選択してください');return;}s.leaves.push({date:dv,days,period:curP});s.leaves.sort((a,b)=>a.date.localeCompare(b.date));renderDetail();}
 function delLeave(i){curS.leaves.splice(i,1);renderDetail();}
 
@@ -1145,7 +1209,7 @@ function renderLog(){
     if(isCarry) tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
     tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
       <td style="font-size:17px;font-weight:600;color:var(--text)${isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
-      <td><span style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span></td>
+      <td><span style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span>${l.timeUnit?`<span style="font-size:12px;background:#EDE9FE;color:#5B21B6;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:600">${l.timeH}時間${l.timeM?l.timeM+'分':''}</span>`:''}</td>
       <td>${sourceLabel}</td>
       <td><span style="font-size:17px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
       <td><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
