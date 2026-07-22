@@ -1262,17 +1262,32 @@ function renderLog(){
     tb.appendChild(tfr);
   } else {
     let cumul=0;
+    const monthMapS={};
     pl.forEach(l=>{
-      const before=cumul;cumul+=l.days;
-      const src=mkSource(l,before);
-      const d=new Date(l.date);
-      const tr=document.createElement('tr');
-      if(src.isCarry)tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
-      tr.innerHTML=`<td style="${tdL};font-size:15px${src.isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td><td style="${tdC};font-weight:600;font-size:15px">${l.days}日</td><td style="${tdC}">${mkTimeCell(l)}</td><td style="${tdC}">${src.html}</td><td style="${tdC}"><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
-      tb.appendChild(tr);
+      const mo=l.date.slice(0,7);
+      if(!monthMapS[mo])monthMapS[mo]={days:0,items:[]};
+      monthMapS[mo].days=Math.round((monthMapS[mo].days+l.days)*10000)/10000;
+      monthMapS[mo].items.push({l,before:cumul});
+      cumul+=l.days;
+    });
+    Object.keys(monthMapS).sort().forEach(mo=>{
+      const md=monthMapS[mo];
+      const[y,m]=mo.split('-');
+      const moLabel=y+'年'+parseInt(m)+'月';
+      const mtr=document.createElement('tr');
+      mtr.innerHTML=`<td style="${moStyle};text-align:left"><span style="font-size:17px;font-weight:600;color:#1e40af">${moLabel}</span></td><td style="${moStyle}"><span style="font-size:17px;font-weight:600;color:#1e40af">${md.days}日</span></td><td style="${moStyle}"></td><td style="${moStyle}"></td><td style="${moStyle}"></td>`;
+      tb.appendChild(mtr);
+      md.items.forEach(({l,before})=>{
+        const src=mkSource(l,before);
+        const d=new Date(l.date);
+        const tr=document.createElement('tr');
+        if(src.isCarry)tr.style.cssText='background:rgba(251,191,36,0.04)';
+        tr.innerHTML=`<td style="${tdL};font-size:15px">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td><td style="${tdC};font-weight:600;font-size:15px">${l.days}日</td><td style="${tdC}">${mkTimeCell(l)}</td><td style="${tdC}">${src.html}</td><td style="${tdC}"><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
+        tb.appendChild(tr);
+      });
     });
     const tot=pl.reduce((a,l)=>a+l.days,0);
-    const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
+    const tfr=document.createElement('tr');
     const totText=daysToText(tot,hpd);
     tfr.innerHTML=`<td colspan="5" style="padding:14px 16px;background:#EFF6FF"><span style="font-size:13px;color:#1e40af">合計日数</span>&ensp;<span style="font-size:18px;font-weight:600;color:#1e40af">${tot}日</span>${totText&&totText!=='0日'?`&ensp;<span style="font-size:13px;font-weight:500;background:#fff;color:#1e40af;padding:4px 12px;border-radius:20px;border:0.5px solid #BFDBFE">${totText}</span>`:''}</td>`;
     tb.appendChild(tfr);
