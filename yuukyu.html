@@ -1217,7 +1217,8 @@ function renderLog(){
   });
   const tot=pl.reduce((a,l)=>a+l.days,0);
   const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
-  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:14px">合計</td><td colspan="2"><span style="font-size:16px;font-weight:700;color:var(--cn)">${tot}日</span></td><td colspan="2"></td>`;
+  const totText=daysToText(tot,s.hoursPerDay);
+  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:14px">合計</td><td colspan="2"><span style="font-size:16px;font-weight:700;color:var(--cn)">${tot}日</span>${totText&&totText!=='0日'?`<span style="font-size:14px;color:var(--cn);margin-left:8px">（${totText}）</span>`:''}</td><td colspan="2"></td>`;
   tb.appendChild(tfr);
 }
 
