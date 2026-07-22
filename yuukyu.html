@@ -1210,7 +1210,7 @@ function renderLog(){
     if(isCarry) tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
     tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
       <td style="font-size:17px;font-weight:600;color:var(--text)${isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
-      <td><span style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span>${(()=>{const hpd=s.hoursPerDay;if(!hpd||hpd==='variable')return'';const t=daysToText(l.days,hpd);return t&&t!=='0日'?`<span style="font-size:14px;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:10px;margin-left:8px;font-weight:600;vertical-align:top">${t}</span>`:'';})()}</td>
+      <td>${(()=>{const hpd=s.hoursPerDay;if(!hpd||hpd==='variable')return`<span style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span>`;const t=daysToText(l.days,hpd);return t&&t!=='0日'?`<span style="font-size:14px;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:10px;font-weight:600">${t}</span>`:`<span style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span>`;})()}</td>
       <td>${sourceLabel}</td>
       <td><span style="font-size:17px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
       <td><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
