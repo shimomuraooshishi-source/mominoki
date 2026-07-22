@@ -1238,7 +1238,8 @@ function renderWage(){
     else if(hasFixed){monthMap[mo].minutes+=Math.round(l.days*hpd*60);}
   });
   const months=Object.keys(monthMap).sort();
-  const featMo=months.includes(todayMo)?todayMo:(months[months.length-1]||null);
+  const featMo=todayMo;
+  if(!monthMap[featMo])monthMap[featMo]={days:0,minutes:0};
   const pastMos=months.filter(m=>m!==featMo);
   function fmtMo(mo){const[y,m]=mo.split('-');return y+'年'+parseInt(m)+'月';}
   function fmtMin(min){const h=Math.floor(min/60),m=min%60;return h>0?(m>0?h+'時間'+m+'分':h+'時間'):(m>0?m+'分':'0分');}
