@@ -401,7 +401,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
           <hr class="sep">
           <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
           <table class="lt">
-            <thead><tr><th style="width:32px"></th><th>日付</th><th>日数</th><th>期</th><th>累計</th><th></th></tr></thead>
+            <thead><tr><th style="width:32px"></th><th>日付</th><th>取得日数</th><th>時間取得</th><th>期</th><th>累計</th><th></th></tr></thead>
             <tbody id="logBody"></tbody>
           </table>
         </div>
@@ -1208,9 +1208,11 @@ function renderLog(){
       sourceLabel=`<span style="font-size:14px;color:var(--dim)">本年度分</span>`;
     }
     if(isCarry) tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
+    const timeCell=(()=>{const hpd=s.hoursPerDay;if(!hpd||hpd==='variable')return'';if(l.days===1)return'';const t=daysToText(l.days,hpd);return t&&t!=='0日'?`<span style="font-size:15px;font-weight:600;color:#065F46">${t}</span>`:'';})();
     tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
       <td style="font-size:17px;font-weight:600;color:var(--text)${isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
-      <td style="vertical-align:middle"><div style="display:flex;align-items:flex-start;gap:8px"><span style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</span>${(()=>{const hpd=s.hoursPerDay;if(!hpd||hpd==='variable')return'';if(l.days===1)return'';const t=daysToText(l.days,hpd);return t&&t!=='0日'?`<span style="font-size:14px;background:#D1FAE5;color:#065F46;padding:3px 10px;border-radius:10px;font-weight:600">${t}</span>`:'';})()}</div></td>
+      <td style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</td>
+      <td>${timeCell}</td>
       <td>${sourceLabel}</td>
       <td><span style="font-size:17px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
       <td><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
@@ -1219,7 +1221,7 @@ function renderLog(){
   const tot=pl.reduce((a,l)=>a+l.days,0);
   const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
   const totText=daysToText(tot,s.hoursPerDay);
-  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:14px">合計</td><td colspan="2"><span style="font-size:16px;font-weight:700;color:var(--cn)">${tot}日</span>${totText&&totText!=='0日'?`<span style="font-size:14px;color:var(--cn);margin-left:8px">（${totText}）</span>`:''}</td><td colspan="2"></td>`;
+  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:14px">合計</td><td style="font-size:16px;font-weight:700;color:var(--cn)">${tot}日</td><td style="font-size:14px;font-weight:600;color:var(--cn)">${totText&&totText!=='0日'?totText:''}</td><td colspan="3"></td>`;
   tb.appendChild(tfr);
 }
 
