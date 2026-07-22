@@ -316,7 +316,8 @@ input[type="text"],input[type="number"],input[type="date"],select{
   <div class="tbr">
     <select id="selJ" onchange="onJC()"></select>
     <span style="font-size:16px;color:rgba(255,255,255,.75)" id="tlbl"></span>
-    <button class="bset" onclick="openSet()"><i class="ti ti-settings" aria-hidden="true" style="font-size:14px"></i> 設定</button>
+    <button id="btnSet" class="bset" onclick="openSet()"><i class="ti ti-settings" aria-hidden="true" style="font-size:14px"></i> 設定</button>
+    <button id="btnEdit" class="bset" onclick="openStaffMdl(curS.id)" style="display:none"><i class="ti ti-edit" aria-hidden="true" style="font-size:14px"></i> 編集</button>
   </div>
 </div>
 
@@ -353,7 +354,6 @@ input[type="text"],input[type="number"],input[type="date"],select{
   <div id="detailView" style="display:none">
       <div style="background:#fff;border-radius:10px;border:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:24px;margin-bottom:12px">
         <button class="bback" style="margin-bottom:0;flex-shrink:0" onclick="showList()"><i class="ti ti-arrow-left" aria-hidden="true"></i> 一覧に戻る</button>
-        <button class="bo" style="margin-bottom:0;flex-shrink:0;font-size:14px" onclick="openStaffMdl(curS.id)"><i class="ti ti-edit" aria-hidden="true"></i> 編集</button>
         <div style="display:flex;align-items:center;gap:24px;flex:1;min-width:0">
           <div id="dHeadNameBlock" style="display:flex;gap:16px;align-items:flex-end"></div>
           <div style="background:#FEFCE8;border:1.5px solid #FACC15;border-radius:12px;padding:10px 18px;text-align:center;white-space:nowrap;flex-shrink:0">
@@ -825,8 +825,8 @@ function renderList(){
   });
 }
 
-function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('mainView').style.display='none';document.getElementById('detailView').style.display='block';renderDetail();}
-function showList(){curS=null;document.getElementById('mainView').style.display='';document.getElementById('detailView').style.display='none';}
+function openDetail(id){curS=ST.find(s=>s.id===id);curP=curS.periods.length-1;document.getElementById('mainView').style.display='none';document.getElementById('detailView').style.display='block';document.getElementById('btnSet').style.display='none';document.getElementById('btnEdit').style.display='';renderDetail();}
+function showList(){curS=null;document.getElementById('mainView').style.display='';document.getElementById('detailView').style.display='none';document.getElementById('btnSet').style.display='';document.getElementById('btnEdit').style.display='none';}
 function selPeriod(i){curP=i;document.querySelectorAll('.period-tbl-block').forEach((el,idx)=>{const sel=idx===i;el.style.border=sel?'2px solid var(--cn)':'1px solid var(--border)';const hd=el.querySelector('.period-tbl-head');if(hd)hd.style.background=sel?'var(--cnl)':'var(--cgl)';const lb=el.querySelector('.period-tbl-label');if(lb)lb.style.color=sel?'var(--cn)':'var(--sub)';});renderCal();renderLog();const glEl=document.getElementById('grantPeriodLabel');if(glEl)glEl.textContent=curS.periods[curP].label;const gdEl=document.getElementById('inpGrantDate');if(gdEl)gdEl.value=curS.periods[curP].start||'';const gdDEl=document.getElementById('inpGrantDays');if(gdDEl)gdDEl.value=curS.periods[curP].total||'';const grantEl=document.getElementById('dHeadGrant');const cp=curS.periods[curP];if(grantEl&&cp&&cp.start){const gd=new Date(cp.start);grantEl.textContent=gd.getFullYear()+'年'+(gd.getMonth()+1)+'月'+gd.getDate()+'日';}else if(grantEl){grantEl.textContent='—';}}
 
 function renderDetail(){
