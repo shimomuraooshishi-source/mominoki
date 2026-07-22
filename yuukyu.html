@@ -401,7 +401,7 @@ input[type="text"],input[type="number"],input[type="date"],select{
           <hr class="sep">
           <div style="font-size:15px;font-weight:600;color:var(--cn);margin-bottom:10px"><i class="ti ti-list-check" aria-hidden="true" style="margin-right:5px"></i>取得記録</div>
           <table class="lt">
-            <thead><tr><th style="width:32px"></th><th>日付</th><th>取得日数</th><th>時間取得</th><th>期</th><th>累計</th><th></th></tr></thead>
+            <thead><tr id="logHead"></tr></thead>
             <tbody id="logBody"></tbody>
           </table>
         </div>
@@ -1185,124 +1185,109 @@ function addLeave(){const s=curS,dv=document.getElementById('inpDate').value,day
 function delLeave(i){curS.leaves.splice(i,1);renderDetail();}
 
 function renderLog(){
-  const s=curS,tb=document.getElementById('logBody');tb.innerHTML='';
+  const s=curS,isPart=s.type==='part';
+  const hpd=s.hoursPerDay,hasFixed=typeof hpd==='number'&&hpd>0;
+  const wage=s.hourlyWage||1200;
+  const thStyle='padding:10px 12px;background:#EFF6FF;color:#1e40af;font-weight:600;font-size:14px;border-bottom:0.5px solid #BFDBFE;text-align:center';
+  const head=document.getElementById('logHead');
+  if(isPart){
+    head.innerHTML=`<th style="${thStyle};text-align:left">日付</th><th style="${thStyle}">取得日数</th><th style="${thStyle}">時間取得</th><th style="${thStyle}">内訳</th><th style="${thStyle}">賃金</th><th style="${thStyle};width:48px"></th>`;
+  } else {
+    head.innerHTML=`<th style="${thStyle};text-align:left">日付</th><th style="${thStyle}">取得日数</th><th style="${thStyle}">時間取得</th><th style="${thStyle}">内訳</th><th style="${thStyle};width:48px"></th>`;
+  }
+  const tb=document.getElementById('logBody');tb.innerHTML='';
   const pl=s.leaves.map((l,i)=>({...l,idx:i})).filter(l=>l.period===curP);
-  if(!pl.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;color:var(--dim);padding:14px">記録がありません</td></tr>';return;}
+  const cols=isPart?6:5;
+  if(!pl.length){tb.innerHTML=`<tr><td colspan="${cols}" style="text-align:center;color:var(--dim);padding:14px">記録がありません</td></tr>`;return;}
   const buckets=calcPeriodConsumed(s);
   const carryIn=Math.max(0,buckets[curP].avail-s.periods[curP].total);
-  const prevLabel=curP>0?s.periods[curP-1].label:null;
-  let cumul=0;
-  pl.forEach(l=>{
-    const before=cumul;
-    cumul+=l.days;
-    const d=new Date(l.date),tr=document.createElement('tr');
+  function fmtMin(min){const h=Math.floor(min/60),m=min%60;return h>0?(m>0?h+'時間'+m+'分':h+'時間'):(m>0?m+'分':'0分');}
+  function mkTimeCell(l){
+    if(!hasFixed)return'';
+    let min=0;
+    if(l.timeUnit){min=(l.timeH||0)*60+(l.timeM||0);}
+    else{min=Math.round(l.days*hpd*60);}
+    if(!min)return'';
+    return`<span style="font-size:13px;font-weight:500;background:#fff;color:#1e40af;padding:4px 12px;border-radius:20px;border:0.5px solid #BFDBFE;white-space:nowrap">${fmtMin(min)}</span>`;
+  }
+  function mkSource(l,before){
     const fromCarry=Math.max(0,Math.min(l.days,carryIn-before));
     const fromNew=Math.round((l.days-fromCarry)*1000)/1000;
-    const isCarry=fromCarry>0;
-    let sourceLabel='';
-    if(isCarry&&fromNew>0){
-      sourceLabel=`<span style="font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #FCD34D">🔄 繰越から${Math.round(fromCarry*1000)/1000}日</span> <span style="font-size:11px;font-weight:600;background:var(--cnl);color:var(--cn);padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #A8C4DC">本年度から${fromNew}日</span>`;
-    } else if(isCarry){
-      sourceLabel=`<span style="font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #FCD34D">🔄 繰越から${Math.round(fromCarry*1000)/1000}日</span>`;
-    } else {
-      sourceLabel=`<span style="font-size:14px;color:var(--dim)">本年度分</span>`;
-    }
-    if(isCarry) tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
-    const timeCell=(()=>{const hpd=s.hoursPerDay;if(!hpd||hpd==='variable')return'';if(l.days===1)return'';const t=daysToText(l.days,hpd);return t&&t!=='0日'?`<span style="font-size:15px;font-weight:600;color:#065F46">${t}</span>`:'';})();
-    tr.innerHTML=`<td style="text-align:center"><span class="${l.days===1?'dot-full':'dot-frac'}"></span></td>
-      <td style="font-size:17px;font-weight:600;color:var(--text)${isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td>
-      <td style="font-size:17px;font-weight:700;color:${l.days===1?'var(--ct)':'#34D399'}">${l.days}日</td>
-      <td>${timeCell}</td>
-      <td>${sourceLabel}</td>
-      <td><span style="font-size:17px;font-weight:500;color:var(--sub)">${cumul}日</span></td>
-      <td><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
-    tb.appendChild(tr);
-  });
-  const tot=pl.reduce((a,l)=>a+l.days,0);
-  const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
-  const totText=daysToText(tot,s.hoursPerDay);
-  tfr.innerHTML=`<td></td><td style="font-weight:600;color:var(--cn);font-size:14px">合計</td><td style="font-size:16px;font-weight:700;color:var(--cn)">${tot}日</td><td style="font-size:14px;font-weight:600;color:var(--cn)">${totText&&totText!=='0日'?totText:''}</td><td colspan="3"></td>`;
-  tb.appendChild(tfr);
+    if(fromCarry>0&&fromNew>0)return{html:`<span style="font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #FCD34D">🔄 繰越から${Math.round(fromCarry*1000)/1000}日</span>`,isCarry:true};
+    if(fromCarry>0)return{html:`<span style="font-size:11px;font-weight:600;background:#FEF3C7;color:#92400E;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid #FCD34D">🔄 繰越から${Math.round(fromCarry*1000)/1000}日</span>`,isCarry:true};
+    return{html:`<span style="font-size:12px;color:var(--dim)">本年度分</span>`,isCarry:false};
+  }
+  const tdC='padding:10px 12px;border-bottom:0.5px solid var(--border);text-align:center;vertical-align:middle';
+  const tdL='padding:10px 12px;border-bottom:0.5px solid var(--border);vertical-align:middle';
+  const moStyle='padding:10px 12px;border-bottom:0.5px solid #BFDBFE;background:#EFF6FF;text-align:center;vertical-align:middle';
+  if(isPart){
+    const monthMap={};
+    let cumul=0;
+    pl.forEach(l=>{
+      const mo=l.date.slice(0,7);
+      if(!monthMap[mo])monthMap[mo]={days:0,minutes:0,items:[]};
+      monthMap[mo].days=Math.round((monthMap[mo].days+l.days)*10000)/10000;
+      if(l.timeUnit){monthMap[mo].minutes+=(l.timeH||0)*60+(l.timeM||0);}
+      else if(hasFixed){monthMap[mo].minutes+=Math.round(l.days*hpd*60);}
+      monthMap[mo].items.push({l,before:cumul});
+      cumul+=l.days;
+    });
+    Object.keys(monthMap).sort().forEach(mo=>{
+      const md=monthMap[mo];
+      const[y,m]=mo.split('-');
+      const moLabel=y+'年'+parseInt(m)+'月';
+      const mWage=hasFixed?Math.round(md.days*hpd*wage):0;
+      const mtr=document.createElement('tr');
+      mtr.innerHTML=`<td style="${moStyle};text-align:left"><span style="font-size:17px;font-weight:600;color:#1e40af">${moLabel}</span></td><td style="${moStyle}"><span style="font-size:17px;font-weight:600;color:#1e40af">${md.days}日</span></td><td style="${moStyle}"><span style="font-size:17px;font-weight:600;color:#1e40af">${hasFixed?fmtMin(md.minutes):''}</span></td><td style="${moStyle}"></td><td style="${moStyle}"><span style="font-size:17px;font-weight:600;color:#1e40af">${hasFixed?'¥'+mWage.toLocaleString():''}</span></td><td style="${moStyle}"></td>`;
+      tb.appendChild(mtr);
+      md.items.forEach(({l,before})=>{
+        const src=mkSource(l,before);
+        const d=new Date(l.date);
+        const lWage=hasFixed?Math.round(l.days*hpd*wage):0;
+        const tr=document.createElement('tr');
+        if(src.isCarry)tr.style.background='rgba(251,191,36,0.04)';
+        tr.innerHTML=`<td style="${tdL};font-size:15px">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td><td style="${tdC};font-weight:600;font-size:15px">${l.days}日</td><td style="${tdC}">${mkTimeCell(l)}</td><td style="${tdC}">${src.html}</td><td style="${tdC};font-size:15px">${hasFixed?'¥'+lWage.toLocaleString():''}</td><td style="${tdC}"><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
+        tb.appendChild(tr);
+      });
+    });
+    const totalDays=Math.round(pl.reduce((a,l)=>a+l.days,0)*10000)/10000;
+    const totalMin=Object.values(monthMap).reduce((a,v)=>a+v.minutes,0);
+    const totalWage=hasFixed?Math.round(totalDays*hpd*wage):0;
+    const totText=daysToText(totalDays,hpd);
+    const tfr=document.createElement('tr');
+    tfr.innerHTML=`<td colspan="6" style="padding:18px 16px;background:#EFF6FF"><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;align-items:start"><div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-right:20px;border-right:0.5px solid #BFDBFE"><span style="font-size:12px;color:#1e40af">合計日数</span><span style="font-size:20px;font-weight:600;color:#1e40af">${totalDays}日</span>${totText&&totText!=='0日'?`<span style="font-size:13px;font-weight:500;background:#fff;color:#1e40af;padding:5px 14px;border-radius:20px;border:0.5px solid #BFDBFE">${totText}</span>`:''}</div><div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:0 20px;border-right:0.5px solid #BFDBFE"><span style="font-size:12px;color:#1e40af">合計時間</span><span style="font-size:20px;font-weight:600;color:#1e40af">${hasFixed?fmtMin(totalMin):'—'}</span></div><div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding-left:20px"><span style="font-size:12px;color:#1e40af">合計支給額</span><span style="font-size:20px;font-weight:600;color:#1e40af">${hasFixed?'¥'+totalWage.toLocaleString():'—'}</span></div></div></td>`;
+    tb.appendChild(tfr);
+  } else {
+    let cumul=0;
+    pl.forEach(l=>{
+      const before=cumul;cumul+=l.days;
+      const src=mkSource(l,before);
+      const d=new Date(l.date);
+      const tr=document.createElement('tr');
+      if(src.isCarry)tr.style.cssText='background:rgba(251,191,36,0.08);border-left:3px solid var(--ca)';
+      tr.innerHTML=`<td style="${tdL};font-size:15px${src.isCarry?';text-decoration:underline double var(--ca)':''}">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日</td><td style="${tdC};font-weight:600;font-size:15px">${l.days}日</td><td style="${tdC}">${mkTimeCell(l)}</td><td style="${tdC}">${src.html}</td><td style="${tdC}"><button class="bsm" onclick="delLeave(${l.idx})">削除</button></td>`;
+      tb.appendChild(tr);
+    });
+    const tot=pl.reduce((a,l)=>a+l.days,0);
+    const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
+    const totText=daysToText(tot,hpd);
+    tfr.innerHTML=`<td style="${tdL}" colspan="2"><span style="font-weight:600;color:var(--cn);font-size:14px">合計</span></td><td style="${tdC};font-size:16px;font-weight:700;color:var(--cn)">${tot}日</td><td style="${tdC};font-size:14px;font-weight:600;color:var(--cn)">${totText&&totText!=='0日'?totText:''}</td><td></td>`;
+    tb.appendChild(tfr);
+  }
 }
 
 function renderWage(){
   const s=curS,a=document.getElementById('wageArea');
   if(s.type!=='part'){a.innerHTML='';return;}
   const wage=s.hourlyWage||1200;
-  const hpd=s.hoursPerDay;
-  const hasFixed=typeof hpd==='number'&&hpd>0;
-  const leaves=s.leaves.filter(l=>l.period===curP);
-  const todayMo=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0');
-  const monthMap={};
-  leaves.forEach(l=>{
-    const mo=l.date.slice(0,7);
-    if(!monthMap[mo])monthMap[mo]={days:0,minutes:0};
-    monthMap[mo].days=Math.round((monthMap[mo].days+l.days)*10000)/10000;
-    if(l.timeUnit){monthMap[mo].minutes+=(l.timeH||0)*60+(l.timeM||0);}
-    else if(hasFixed){monthMap[mo].minutes+=Math.round(l.days*hpd*60);}
-  });
-  const months=Object.keys(monthMap).sort();
-  const featMo=todayMo;
-  if(!monthMap[featMo])monthMap[featMo]={days:0,minutes:0};
-  const pastMos=months.filter(m=>m!==featMo);
-  function fmtMo(mo){const[y,m]=mo.split('-');return y+'年'+parseInt(m)+'月';}
-  function fmtMin(min){const h=Math.floor(min/60),m=min%60;return h>0?(m>0?h+'時間'+m+'分':h+'時間'):(m>0?m+'分':'0分');}
-  const totalDays=Math.round(leaves.reduce((a,l)=>a+l.days,0)*10000)/10000;
-  const totalMin=Object.values(monthMap).reduce((a,v)=>a+v.minutes,0);
-  const totalWage=hasFixed?Math.round(totalDays*hpd*wage):0;
-  const curD=featMo?monthMap[featMo]:{days:0,minutes:0};
-  const curWage=hasFixed?Math.round(curD.days*hpd*wage):0;
   const brd='1.5px solid #FDE68A';
-  let pastRows='';
-  pastMos.forEach(mo=>{
-    const d=monthMap[mo];
-    const mWage=hasFixed?Math.round(d.days*hpd*wage):0;
-    pastRows+=`<div style="display:grid;grid-template-columns:1fr 110px 120px 120px;padding:15px 20px;border-bottom:0.5px solid var(--border);align-items:center">
-      <span style="font-size:17px;color:var(--text)">${fmtMo(mo)}</span>
-      <span style="font-size:17px;color:var(--dim);text-align:right;font-variant-numeric:tabular-nums">${d.days}日</span>
-      <span style="font-size:17px;color:var(--dim);text-align:right">${hasFixed?fmtMin(d.minutes):'—'}</span>
-      <span style="font-size:18px;font-weight:600;color:var(--text);text-align:right;font-variant-numeric:tabular-nums">${hasFixed?'¥'+mWage.toLocaleString():'—'}</span>
-    </div>`;
-  });
-  a.innerHTML=`<hr class="sep"><div style="padding:4px 0">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px">
-      <div style="font-size:15px;font-weight:700;color:var(--ca);display:flex;align-items:center;gap:7px"><i class="ti ti-currency-yen" aria-hidden="true" style="font-size:17px"></i>有給賃金計算（${tl('part')}）</div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <label style="font-size:13px;color:var(--dim)">時給</label>
-        <input type="number" id="wWage" value="${wage}" min="0" oninput="updWage()" style="width:100px;padding:6px 10px;border:${brd};border-radius:8px;background:#fff;color:var(--text);font-size:15px;font-weight:600">
-        <span style="font-size:13px;color:var(--dim)">円</span>
-      </div>
-    </div>
-    ${featMo?`<div style="background:#FEF3C7;border:${brd};border-radius:14px;padding:20px 24px;margin-bottom:16px">
-      <div style="font-size:22px;font-weight:600;color:var(--text);margin-bottom:16px">${fmtMo(featMo)}</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr">
-        <div style="padding-right:20px;border-right:1px solid #FDE68A">
-          <div style="font-size:12px;color:var(--dim);margin-bottom:6px">取得日数</div>
-          <div style="font-size:26px;font-weight:700;color:var(--ca);font-variant-numeric:tabular-nums;line-height:1">${curD.days}<span style="font-size:14px;font-weight:400;margin-left:2px">日</span></div>
-        </div>
-        <div style="padding:0 20px;border-right:1px solid #FDE68A">
-          <div style="font-size:12px;color:var(--dim);margin-bottom:6px">時間換算</div>
-          <div style="font-size:26px;font-weight:700;color:var(--ca);line-height:1">${hasFixed?fmtMin(curD.minutes):'—'}</div>
-        </div>
-        <div style="padding-left:20px">
-          <div style="font-size:12px;color:var(--dim);margin-bottom:6px">当月賃金</div>
-          <div style="font-size:26px;font-weight:700;color:var(--ca);font-variant-numeric:tabular-nums;line-height:1">${hasFixed?'¥'+curWage.toLocaleString():'—'}</div>
-        </div>
-      </div>
-    </div>`:''}
-    ${pastMos.length>0?`<div style="font-size:12px;font-weight:600;color:var(--dim);margin-bottom:10px;padding-left:4px">過去の取得</div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden">
-      <div style="display:grid;grid-template-columns:1fr 110px 120px 120px;padding:10px 20px;border-bottom:1px solid var(--border);font-size:13px;color:var(--dim);font-weight:600">
-        <span>月</span><span style="text-align:right">取得日数</span><span style="text-align:right">時間換算</span><span style="text-align:right">賃金</span>
-      </div>${pastRows}
-    </div>`:''}
-    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:16px;padding:16px 20px;background:var(--cgl);border:1px solid var(--border);border-radius:10px">
-      <span style="font-size:18px;font-weight:600;color:var(--sub)">年度合計&emsp;${totalDays}日${hasFixed?'&ensp;（'+fmtMin(totalMin)+'）':''}</span>
-      <span style="font-size:24px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums">${hasFixed?'¥'+totalWage.toLocaleString():'—'}</span>
-    </div>
+  a.innerHTML=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+    <div style="font-size:14px;font-weight:600;color:var(--ca);display:flex;align-items:center;gap:6px"><i class="ti ti-currency-yen" aria-hidden="true"></i>時給</div>
+    <input type="number" id="wWage" value="${wage}" min="0" oninput="updWage()" style="width:100px;padding:6px 10px;border:${brd};border-radius:8px;background:#fff;color:var(--text);font-size:15px;font-weight:600">
+    <span style="font-size:13px;color:var(--dim)">円</span>
   </div>`;
 }
-function updWage(){const s=curS,el=document.getElementById('wWage');if(!el)return;const wage=parseFloat(el.value)||0;if(wage)s.hourlyWage=wage;saveToStorage();renderWage();}
+function updWage(){const s=curS,el=document.getElementById('wWage');if(!el)return;const wage=parseFloat(el.value)||0;if(wage)s.hourlyWage=wage;saveToStorage();renderLog();}
 
 function openSet(){document.getElementById('typeSei').value=CFG.tl.seishain;document.getElementById('typePart').value=CFG.tl.part;renderJList();document.getElementById('setMdl').classList.add('open');}
 function renderJList(){const el=document.getElementById('jigyoshoList');el.innerHTML='';CFG.jl.forEach((j,i)=>{const row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:8px;margin-bottom:8px';row.innerHTML=`<input type="text" value="${j}" data-idx="${i}" onchange="renameJ(this)" style="flex:1;font-size:13px;padding:6px 10px;border:1.5px solid var(--border2);border-radius:8px;background:#fff;color:var(--text)"><button class="bsm" onclick="removeJ(${i})" ${CFG.jl.length<=1?'disabled':''}><i class="ti ti-trash" aria-hidden="true"></i></button>`;el.appendChild(row);});}
