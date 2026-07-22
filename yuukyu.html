@@ -1188,7 +1188,7 @@ function delLeave(i){curS.leaves.splice(i,1);renderDetail();}
 
 function renderLog(){
   const s=curS,isPart=s.type==='part';
-  const hpd=s.hoursPerDay,hasFixed=typeof hpd==='number'&&hpd>0;
+  let hpd=s.hoursPerDay;if((!hpd||hpd==='variable')&&s.type==='seishain')hpd=8;const hasFixed=typeof hpd==='number'&&hpd>0;
   const wage=s.hourlyWage||1200;
   const thStyle='padding:10px 12px;background:#EFF6FF;color:#1e40af;font-weight:600;font-size:14px;border-bottom:0.5px solid #BFDBFE;text-align:center';
   const head=document.getElementById('logHead');
@@ -1206,6 +1206,7 @@ function renderLog(){
   function fmtMin(min){const h=Math.floor(min/60),m=min%60;return h>0?(m>0?h+'時間'+m+'分':h+'時間'):(m>0?m+'分':'0分');}
   function mkTimeCell(l){
     if(!hasFixed)return'';
+    if(l.days===1&&!l.timeUnit)return'';
     let min=0;
     if(l.timeUnit){min=(l.timeH||0)*60+(l.timeM||0);}
     else{min=Math.round(l.days*hpd*60);}
@@ -1273,7 +1274,7 @@ function renderLog(){
     const tot=pl.reduce((a,l)=>a+l.days,0);
     const tfr=document.createElement('tr');tfr.style.background='var(--cnl)';
     const totText=daysToText(tot,hpd);
-    tfr.innerHTML=`<td style="${tdL}" colspan="2"><span style="font-weight:600;color:var(--cn);font-size:14px">合計</span></td><td style="${tdC};font-size:16px;font-weight:700;color:var(--cn)">${tot}日</td><td style="${tdC};font-size:14px;font-weight:600;color:var(--cn)">${totText&&totText!=='0日'?totText:''}</td><td></td>`;
+    tfr.innerHTML=`<td colspan="5" style="padding:14px 16px;background:#EFF6FF"><span style="font-size:13px;color:#1e40af">合計日数</span>&ensp;<span style="font-size:18px;font-weight:600;color:#1e40af">${tot}日</span>${totText&&totText!=='0日'?`&ensp;<span style="font-size:13px;font-weight:500;background:#fff;color:#1e40af;padding:4px 12px;border-radius:20px;border:0.5px solid #BFDBFE">${totText}</span>`:''}</td>`;
     tb.appendChild(tfr);
   }
 }
